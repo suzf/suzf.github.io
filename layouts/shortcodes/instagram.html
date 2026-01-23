@@ -1,0 +1,13 @@
+{{- $id := .Get 0 -}}
+{{- if not $id -}}
+  {{ errorf "instagram shortcode requires an ID" }}
+{{- end -}}
+
+<iframe
+  src="https://www.instagram.com/p/{{ $id }}/embed"
+  width="400"
+  height="480"
+  frameborder="0"
+  scrolling="no"
+  allowtransparency="true">
+</iframe>
