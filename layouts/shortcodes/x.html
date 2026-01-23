@@ -1,0 +1,10 @@
+{{- $id := .Get 0 -}}
+{{- if not $id -}}
+  {{ errorf "x shortcode requires an ID" }}
+{{- end -}}
+
+<blockquote class="twitter-tweet">
+  <a href="https://x.com/i/status/{{ $id }}"></a>
+</blockquote>
+
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
