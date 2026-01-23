@@ -1,7 +1,34 @@
-baseURL = 'https://example.org/'
+baseURL = 'https://blog.suzf.net/'
 languageCode = 'en-us'
-title = 'My New Hugo Site'
+title = 'Suzf Blog'
 theme = "LoveIt"
+
+
+[params.header]
+  # desktop header mode ["fixed", "normal", "auto"]
+  # 桌面端导航栏模式 ["fixed", "normal", "auto"]
+  desktopMode = "fixed"
+  # mobile header mode ["fixed", "normal", "auto"]
+  # 移动端导航栏模式 ["fixed", "normal", "auto"]
+  mobileMode = "auto"
+  # Header title config
+  # 页面头部导航栏标题配置
+  [params.header.title]
+    # URL of the LOGO
+    # LOGO 的 URL
+    logo = ""
+    # title name
+    # 标题名称
+    name = "Suzf Blog"
+    # you can add extra information before the name (HTML format is supported), such as icons
+    # 你可以在名称 (允许 HTML 格式) 之前添加其他信息, 例如图标
+    pre = ""
+    # you can add extra information after the name (HTML format is supported), such as icons
+    # 你可以在名称 (允许 HTML 格式) 之后添加其他信息, 例如图标
+    post = ""
+    # whether to use typeit animation for title name
+    # 是否为标题显示打字机动画
+    typeit = false
 
 [params.mermaid]
   enable = true
