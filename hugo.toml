@@ -30,5 +30,31 @@ theme = "LoveIt"
     # 是否为标题显示打字机动画
     typeit = false
 
+# Footer config
+# 页面底部信息配置
+[params.footer]
+  enable = true
+  # Custom content (HTML format is supported)
+  # 自定义内容 (支持 HTML 格式)
+  custom = ""
+  # whether to show Hugo and theme info
+  # 是否显示 Hugo 和主题信息
+  hugo = false
+  # whether to show copyright info
+  # 是否显示版权信息
+  copyright = true
+  # whether to show the author
+  # 是否显示作者
+  author = true
+  # site creation time
+  # 网站创立年份
+  since = 2014
+  # ICP info only in China (HTML format is supported)
+  # ICP 备案信息，仅在中国使用 (支持 HTML 格式)
+  icp = ""
+  # license info (HTML format is supported)
+  # 许可协议信息 (支持 HTML 格式)
+  license= '<a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a>'
+
 [params.mermaid]
   enable = true
