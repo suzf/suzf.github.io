@@ -226,3 +226,8 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
         GitHub = "suzf"
         LinkedIn = ""
         RSS = true
+# permalinks config (https://gohugo.io/content-management/urls/#permalinks)
+# permalinks 配置 (https://gohugo.io/content-management/urls/#permalinks)
+[Permalinks]
+  # posts = ":year/:month/:slug"
+  posts = "posts/:slug"
