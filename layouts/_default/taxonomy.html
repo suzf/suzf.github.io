@@ -1,0 +1,51 @@
+{{- define "title" -}}
+    {{- .Title }} - {{ .Site.Title -}}
+{{- end -}}
+
+{{- define "content" -}}
+    <div class="page archive">
+        {{- /* 1. 标题部分 */ -}}
+        {{- /* 1. 动态标题与图标逻辑 */ -}}
+        <h2 class="single-title animate__animated animate__pulse animate__faster">
+            {{- $taxonomy := .Data.Singular | default .Section -}}
+            {{- if eq $taxonomy "category" "categories" -}}
+                <i class="far fa-folder-open fa-fw" aria-hidden="true"></i>&nbsp;{{ .Title }}
+            {{- else if eq $taxonomy "tag" "tags" -}}
+                <i class="fas fa-tag fa-fw" aria-hidden="true"></i>&nbsp;{{ .Title }}
+            {{- else -}}
+                {{- printf "%v - %v" (T $taxonomy | default $taxonomy) .Title -}}
+            {{- end -}}
+        </h2>
+
+        {{- /* 2. 核心逻辑：按年份分组 */ -}}
+        {{- /* v0.154.5 建议使用 .RegularPages 确保只抓取文章实体 */ -}}
+        {{- $pages := .RegularPages.GroupByDate "2006" -}}
+
+        {{- if $pages -}}
+            {{- range $pages -}}
+                {{- /* 分组标题（年份） */ -}}
+                <h3 class="group-title">{{ .Key }}</h3>
+
+                {{- /* 循环该年份下的所有文章 */ -}}
+                {{- range .Pages -}}
+                    <article class="archive-item">
+                        <a href="{{ .RelPermalink }}" class="archive-item-link">
+                            {{- .Title | emojify -}}
+                        </a>
+                        <span class="archive-item-date">
+                            {{- .Date.Format ($.Site.Params.section.dateFormat | default "01-02") -}}
+                        </span>
+                    </article>
+                {{- end -}}
+            {{- end -}}
+
+            {{- /* 3. 分页处理 */ -}}
+            {{- partial "paginator.html" . -}}
+        {{- else -}}
+            {{- /* 兜底显示 */ -}}
+            <p style="padding: 20px; text-align: center; color: #a9a9b3;">
+                {{ T "no_posts_found" | default "此标签下暂无文章" }}
+            </p>
+        {{- end -}}
+    </div>
+{{- end -}}
