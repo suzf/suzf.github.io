@@ -279,7 +279,7 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
     # comment config
     # 评论系统设置
     [params.page.comment]
-      enable = true
+      enable = false
       # utterances comment config (https://utteranc.es/)
       # utterances comment 评论系统设置 (https://utteranc.es/)
       [params.page.comment.utterances]
@@ -479,14 +479,14 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       description = "Suzf Blog"
       # site keywords
       # 网站关键词
-      keywords = ["suzf", "suzf blog", "jeffrey"]
+      keywords = ["suzf", "suzf blog", "JeffreySu"]
       # google analytics code [UA-XXXXXXXX-X]
       # 谷歌分析代号 [UA-XXXXXXXX-X]
       googleAnalytics = ""
       # author config
       # 作者配置
       [languages.zh-cn.params.author]
-        name = "jeffrey"
+        name = "JeffreySu"
         email = "i@suzf.net"
         link = "/about/"
       # search config
@@ -619,14 +619,14 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       description = "Suzf's Blog"
       # site keywords
       # 网站关键词
-      keywords = ["suzf", "JeffreySu"]
+      keywords = ["suzf", "suzf blog", "JeffreySu"]
       # google analytics code [UA-XXXXXXXX-X]
       # 谷歌分析代号 [UA-XXXXXXXX-X]
       googleAnalytics = ""
       # author config
       # 作者配置
       [languages.en.params.author]
-        name = "suzf"
+        name = "JeffreySu"
         email = "i@suzf.net"
         link = "/en/about/"
       # search config
