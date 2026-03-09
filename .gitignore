@@ -1,13 +1,24 @@
-# Generated files by hugo
-public/
-resources/_gen/
-assets/jsconfig.json
-hugo_stats.json
+# macOS
+.DS_Store
 
-# Executable may be added to repository
-hugo.exe
-hugo.darwin
-hugo.linux
+# Editor
+*~
+*.sw[a-z]
 
-# Temporary lock file while building
+# IDE
+.vscode/
+.idea/
+.ipynb_checkpoints/
+
+# Python
+__pycache__/
+*.py[codz]
+*$py.class
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# Hugo
 .hugo_build.lock
+public/
+resources/

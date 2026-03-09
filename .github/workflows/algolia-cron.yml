@@ -1,0 +1,35 @@
+name: algolia-scheduled-query
+
+on:
+  schedule:
+    # runs every Wednesday at 02:45 UTC
+    - cron: '45 2 * * 3'
+  workflow_dispatch: {}  # allow manual runs
+
+jobs:
+  run-algolia-queries:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read  # minimal permissions
+    env:
+      APP_ID: "T37NSH4YYY"
+      API_KEY: "2b7d83ac63406ccc989a0857442fef17"  # search-only
+      INDICES: "index.zh-cn index.en"
+    steps:
+      - name: run algolia queries
+        shell: bash
+        run: |
+          set -euo pipefail
+          for INDEX in ${INDICES}; do
+            echo "INFO: Querying ${INDEX}..."
+            curl --silent --show-error --fail \
+              -w "%{http_code}\n" \
+              -o /dev/null \
+              -X POST \
+              -H "Content-Type: application/json" \
+              -H "X-Algolia-Application-Id: ${APP_ID}" \
+              -H "X-Algolia-API-Key: ${API_KEY}" \
+              --data '{"params":"query=Kubernetes&hitsPerPage=10"}' \
+              "https://${APP_ID}-dsn.algolia.net/1/indexes/${INDEX}/query"
+          done
+
