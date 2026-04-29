@@ -4,7 +4,7 @@ testedHugoVersion = "0.154.5"
 
 # website link
 # 网站链接
-baseURL = 'https://blog.suzf.net/'
+baseURL = 'https://suzf.net/blog'
 
 # theme
 # 主题
