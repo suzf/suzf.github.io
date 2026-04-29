@@ -2,34 +2,34 @@ name: algolia-scheduled-query
 
 on:
   schedule:
-    # runs every Wednesday at 02:45 UTC
-    - cron: '45 2 * * 3'
-  workflow_dispatch: {}  # allow manual runs
+    - cron: '45 2 * * 3' # Wednesday at 02:45 UTC
+  workflow_dispatch: {}
 
 jobs:
   run-algolia-queries:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read  # minimal permissions
-    env:
-      APP_ID: "IYS25D3F5K"
-      API_KEY: "b7a4cc2eb0599e443eb0ccef061fadca"  # search-only
-      INDICES: "index.zh-cn index.en"
-    steps:
-      - name: run algolia queries
-        shell: bash
-        run: |
-          set -euo pipefail
-          for INDEX in ${INDICES}; do
-            echo "INFO: Querying ${INDEX}..."
-            curl --silent --show-error --fail \
-              -w "%{http_code}\n" \
-              -o /dev/null \
-              -X POST \
-              -H "Content-Type: application/json" \
-              -H "X-Algolia-Application-Id: ${APP_ID}" \
-              -H "X-Algolia-API-Key: ${API_KEY}" \
-              --data '{"params":"query=Kubernetes&hitsPerPage=10"}' \
-              "https://${APP_ID}-dsn.algolia.net/1/indexes/${INDEX}/query"
-          done
+    strategy:
+      matrix:
+        index: ["index.zh-cn", "index.en"]
 
+    steps:
+      - name: Query Algolia Index
+        shell: bash
+        env:
+          APP_ID: ${{ secrets.ALGOLIA_APP_ID }}
+          API_KEY: ${{ secrets.ALGOLIA_SEARCH_KEY }}
+        run: |
+          # Convert APP_ID to lowercase for the URL
+          LOWER_APP_ID=$(echo "${APP_ID}" | tr '[:upper:]' '[:lower:]')
+
+          echo "INFO: Querying ${{ matrix.index }}..."
+
+          curl --silent --show-error --fail \
+            -w "Status: %{http_code}\n" \
+            -o /dev/null \
+            -X POST \
+            -H "Content-Type: application/json" \
+            -H "X-Algolia-Application-Id: ${APP_ID}" \
+            -H "X-Algolia-API-Key: ${API_KEY}" \
+            --data '{"params":"query=Kubernetes&hitsPerPage=10"}' \
+            "https://${LOWER_APP_ID}-dsn.algolia.net/1/indexes/${{ matrix.index }}/query"
