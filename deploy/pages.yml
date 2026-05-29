@@ -1,0 +1,51 @@
+---
+- name: Deploy Hugo site (pages/blog)
+  hosts: web
+  gather_facts: false
+  vars:
+    app_dir: /opt/data/www/blog.suzf.net/
+    project_dir: "{{ playbook_dir }}/../"
+
+  tasks:
+    - name: Check if local build exists
+      delegate_to: localhost
+      become: false
+      stat:
+        path: "{{ project_dir }}/public/index.html"
+      register: build_check
+
+    - name: Build Hugo locally
+      delegate_to: localhost
+      become: false
+      shell: hugo --gc --environment production
+      args:
+        chdir: "{{ project_dir }}"
+      when: not build_check.stat.exists
+
+    - name: Create deployment tarball
+      delegate_to: localhost
+      become: false
+      shell: tar czf /tmp/deploy-pages.tar.gz -C "{{ project_dir }}/public" .
+
+    - name: Ensure app directory exists
+      file:
+        path: "{{ app_dir }}"
+        state: directory
+
+    - name: Upload tarball
+      copy:
+        src: /tmp/deploy-pages.tar.gz
+        dest: /tmp/deploy-pages.tar.gz
+
+    - name: Extract and deploy
+      shell: |
+        rm -rf {{ app_dir }}/*
+        tar xzf /tmp/deploy-pages.tar.gz -C {{ app_dir }}
+        rm -f /tmp/deploy-pages.tar.gz
+
+    - name: Cleanup local tarball
+      delegate_to: localhost
+      become: false
+      file:
+        path: /tmp/deploy-pages.tar.gz
+        state: absent
