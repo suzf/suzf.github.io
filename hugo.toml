@@ -40,6 +40,9 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
   path = "page"
 
 [params]
+  # Google AdSense publisher id — shared with the suzf.net tools site so the
+  # blog is part of the same monetized, reviewed property.
+  googleAdsenseClient = "ca-pub-7346106128957801"
   # site default theme ["auto", "light", "dark"]
   # 网站默认主题 ["auto", "light", "dark"]
   defaultTheme = "auto"
@@ -468,6 +471,12 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
         # title will be shown when you hover on this menu link
         # 当你将鼠标悬停在此菜单链接上时, 将显示标题
         title = ""
+      [[languages.zh-cn.menu.main]]
+        weight = 5
+        identifier = "tools"
+        name = "工具"
+        url = "https://suzf.net/zh/tools"
+        title = "免费在线开发者工具"
     [languages.zh-cn.params]
       # site description for RSS, SEO, Open Graph and X Cards
       # 网站描述, 用于 RSS, SEO, Open Graph 和 X Cards
@@ -603,6 +612,12 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
         # title will be shown when you hover on this menu link
         # 当你将鼠标悬停在此菜单链接上时, 将显示标题
         title = ""
+      [[languages.en.menu.main]]
+        weight = 5
+        identifier = "tools"
+        name = "Tools"
+        url = "https://suzf.net/en/tools"
+        title = "Free online developer tools"
     [languages.en.params]
       # site description for RSS, SEO, Open Graph and X Cards
       # 网站描述, 用于 RSS, SEO, Open Graph 和 X Cards
