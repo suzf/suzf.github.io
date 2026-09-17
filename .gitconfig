@@ -1,0 +1,23 @@
+[user]
+    name = suzf
+    email = i@suzf.net
+#[commit]
+#    gpgsign = true
+# [push]
+#    default = simple
+[alias]
+    lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold       blue)<%an>%Creset' --ab
+    co = checkout
+    st = status
+    cm = commit -m
+    rs = reset HEAD
+    rsa = reset --hard origin/main
+    lazy = "! test -z \"$*\" && echo \"Error: GIT comment required.\" && exit 1; echo \"Comment: $*\"; git pull && git commit -a -m \"$
+[color]
+    ui = auto
+[push]
+    default = matching
+[core]
+    excludesfile = /home/zfsu/.gitignore_global
+[init]
+    defaultBranch = main
