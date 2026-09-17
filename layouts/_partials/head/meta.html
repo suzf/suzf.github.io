@@ -1,0 +1,39 @@
+{{- $params := .Scratch.Get "params" -}}
+
+{{- /* Per-page meta description.
+
+       The theme reads the description off the theme's merged scratch params,
+       which have already fallen back to `.Site.Params.description`. Since
+       almost no post sets a description of its own, every URL on the blog
+       shipped the identical "Suzf's Blog" — which tells Google nothing and
+       reads as boilerplate in a search result.
+
+       Read the page's own front matter instead (`.Params.description`, empty
+       when unset) and fall back to the page's summary, so each post describes
+       itself. List and taxonomy pages have no summary and still land on the
+       site description; those want noindex rather than better copy. */ -}}
+{{- $description := .Params.description -}}
+{{- if not $description -}}
+    {{- with .Summary -}}
+        {{- /* strings.TrimSpace, not trim: `trim` takes its input FIRST, so in a
+               pipeline it trims the cutset instead and hands back "". */ -}}
+        {{- $description = . | plainify | htmlUnescape | replaceRE "\\s+" " " | strings.TrimSpace | truncate 155 -}}
+    {{- end -}}
+{{- end -}}
+{{- $description = $description | default $params.description | default .Site.Params.description -}}
+
+<meta name="Description" content="{{ $description }}">
+
+{{- template "_internal/opengraph.html" . -}}
+{{- template "_internal/twitter_cards.html" . -}}
+
+<meta name="application-name" content="{{ .Site.Params.app.title | default .Site.Title }}">
+<meta name="apple-mobile-web-app-title" content="{{ .Site.Params.app.title | default .Site.Title }}">
+<meta name="referrer" content="no-referrer" />
+{{- with .Site.Params.app.themeColor -}}
+    <meta name="theme-color" content="{{ . }}">
+{{- end -}}
+
+{{- with .Site.Params.app.tileColor -}}
+    <meta name="msapplication-TileColor" content="{{ . }}">
+{{- end -}}
