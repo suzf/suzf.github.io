@@ -5,7 +5,18 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="robots" content="noodp" />
+        {{- /* Taxonomy and term pages carry no content of their own: on a
+               13-post blog the tag and category pages outnumbered the posts
+               60 to 26, so advertising them spent crawl budget to earn
+               "crawled, currently not indexed" back. noindex keeps them out
+               of the index; follow keeps the link equity flowing through to
+               the posts. They are dropped from sitemap.xml to match.
+
+               The theme's `noodp` is gone with it — the Open Directory
+               Project it referred to shut down in 2017. */ -}}
+        {{- if in (slice "taxonomy" "term") .Kind -}}
+        <meta name="robots" content="noindex, follow">
+        {{- end -}}
         <title>{{ block "title" . }}{{ .Site.Title }}{{ end }}</title>
 
         {{- partial "head/meta.html" . -}}
