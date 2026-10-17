@@ -1,5 +1,5 @@
 ---
-title: "nomad server cluster upgrade"
+title: "Nomad Server 集群升级：保持 Quorum 的滚动升级"
 slug: "nomad server cluster upgrade"
 date: 2026-03-31T22:09:08+08:00
 author: "Jeffrey Su"

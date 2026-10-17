@@ -1,0 +1,5 @@
+// Section list titles were promoted from h2 to h1 for the heading outline
+// (layouts/_default/section.html); keep them at the size the theme drew as h2.
+.archive h1.single-title {
+  font-size: 1.5em;
+}

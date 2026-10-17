@@ -1,5 +1,5 @@
 ---
-title: "nomad server cluster upgrade"
+title: "Nomad Server Cluster Upgrade: Rolling Upgrades Without Losing Quorum"
 slug: "nomad server cluster upgrade"
 date: 2026-03-31T22:09:08+08:00
 author: "Jeffrey Su"

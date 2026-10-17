@@ -1,5 +1,5 @@
 ---
-title: "consul server upgrade"
+title: "Consul Server 集群升级：分步滚动升级指南"
 slug: "consul server upgrade"
 date: 2026-01-30T16:32:53+08:00
 author: "Jeffrey Su"

@@ -1,5 +1,5 @@
 ---
-title: "consul server upgrade"
+title: "Consul Server Upgrade: A Step-by-Step Rolling Upgrade Guide"
 slug: "consul server upgrade"
 date: 2026-01-30T16:32:53+08:00
 author: "Jeffrey Su"
