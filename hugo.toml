@@ -64,7 +64,9 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
   # 网站描述, 用于 RSS, SEO, Open Graph 和 X Cards
   description = "Suzf's Blog"
   # 网站图片, 用于 Open Graph 和 X Cards
-  images = ["/apple-touch-icon.png"]
+  # 1200×630 branded card shared with the tools site; the 180px touch icon
+  # was being stretched into a summary_large_image card.
+  images = ["https://suzf.net/og"]
 
   # header config
   # 页面头部导航栏配置
@@ -194,7 +196,7 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
     fontawesome = true
     # whether to show link to Raw Markdown content of the content
     # 是否显示原始 Markdown 文档内容的链接
-    linkToMarkdown = true
+    linkToMarkdown = false
     # whether to show the full text content in RSS
     # 是否在 RSS 中显示全文内容
     rssFullText = false
@@ -492,7 +494,8 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       [languages.zh-cn.params.author]
         name = "JeffreySu"
         email = "i@suzf.net"
-        link = "/about/"
+        # Taken as-is (no baseURL prefix), so it must carry the /blog mount.
+        link = "/blog/zh-cn/about/"
       # search config
       # 搜索配置
       [languages.zh-cn.params.search]
@@ -565,7 +568,10 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       [languages.zh-cn.params.social]
         GitHub = "suzf"
         LinkedIn = ""
-        RSS = true
+        # The theme's default "/index.xml" is root-relative, so relLangURL
+        # leaves it pointing at suzf.net/index.xml instead of the blog feed.
+        [languages.zh-cn.params.social.RSS]
+          url = "index.xml"
   [languages.en]
     weight = 1
     # language code ["en", "zh-CN", "fr", "pl", ...]
@@ -633,7 +639,8 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       [languages.en.params.author]
         name = "JeffreySu"
         email = "i@suzf.net"
-        link = "/en/about/"
+        # Taken as-is (no baseURL prefix), so it must carry the /blog mount.
+        link = "/blog/about/"
       # search config
       # 搜索配置
       [languages.en.params.search]
@@ -706,7 +713,10 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       [languages.en.params.social]
         GitHub = "suzf"
         LinkedIn = ""
-        RSS = true
+        # The theme's default "/index.xml" is root-relative, so relLangURL
+        # leaves it pointing at suzf.net/index.xml instead of the blog feed.
+        [languages.en.params.social.RSS]
+          url = "index.xml"
 
 # Markup related configuration in Hugo
 # Hugo 解析文档的配置
@@ -783,7 +793,7 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
 # 用于 Hugo 输出文档的设置
 [outputs]
   home = ["HTML", "RSS", "JSON"]
-  page = ["HTML", "MarkDown"]
+  page = ["HTML"]
   section = ["HTML", "RSS"]
   taxonomy = ["HTML", "RSS"]
 
