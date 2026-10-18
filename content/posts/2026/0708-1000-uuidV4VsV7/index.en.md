@@ -7,7 +7,6 @@ description: "Random UUID v4 is great for uniqueness but terrible for database i
 categories: ["Developer Tools"]
 tags: ["uuid", "database", "postgres", "identifiers"]
 toc: true
-lightgallery: true
 draft: false
 ---
 

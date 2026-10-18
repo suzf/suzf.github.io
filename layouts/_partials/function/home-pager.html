@@ -1,0 +1,25 @@
+{{- /* The home page's post pager, or false when the home post list is off.
+
+       Hugo builds a page's paginator on the first .Paginate / .Paginator call
+       and hands that same pager to every later call, whatever its arguments.
+       The <head> needs the pager (the <title> and canonical of /page/2/ and
+       on) before index.html renders the list, so both have to ask for exactly
+       the same one — a bare .Paginator in <head> would win the race and page
+       .Site.Pages instead of the posts. This partial is that one definition,
+       lifted unchanged from the theme's index.html. */ -}}
+{{- $pager := false -}}
+{{- $posts := .Site.Params.home.posts -}}
+{{- if ne $posts.enable false | and .Site.RegularPages -}}
+    {{- $pages := where .Site.RegularPages "Type" "posts" -}}
+    {{- if .Site.Params.page.hiddenFromHomePage -}}
+        {{- $pages = where $pages "Params.hiddenfromhomepage" false -}}
+    {{- else -}}
+        {{- $pages = where $pages "Params.hiddenfromhomepage" "!=" true -}}
+    {{- end -}}
+    {{- with $posts.paginate | default .Site.Params.paginate -}}
+        {{- $pager = $.Paginate $pages . -}}
+    {{- else -}}
+        {{- $pager = .Paginate $pages -}}
+    {{- end -}}
+{{- end -}}
+{{- return $pager -}}

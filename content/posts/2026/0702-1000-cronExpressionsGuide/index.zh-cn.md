@@ -7,7 +7,6 @@ description: "逐字段拆解 Cron 表达式：五个字段、特殊字符、真
 categories: ["开发工具"]
 tags: ["cron", "linux", "scheduling", "devops"]
 toc: true
-lightgallery: true
 draft: false
 ---
 

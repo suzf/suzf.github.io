@@ -7,7 +7,6 @@ description: "一套你真的会反复复用的正则套路，外加那些会引
 categories: ["开发工具"]
 tags: ["regex", "programming", "text-processing"]
 toc: true
-lightgallery: true
 draft: false
 ---
 

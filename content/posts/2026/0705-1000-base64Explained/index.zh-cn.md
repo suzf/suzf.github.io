@@ -7,7 +7,6 @@ description: "Base64 如何把二进制变成文本、为什么体积会大约 3
 categories: ["开发工具"]
 tags: ["base64", "encoding", "web", "http"]
 toc: true
-lightgallery: true
 draft: false
 ---
 

@@ -7,7 +7,6 @@ description: "叶子、中间、根——TLS 证书链里每一张证书是什�
 categories: ["开发工具"]
 tags: ["ssl", "tls", "security", "https"]
 toc: true
-lightgallery: true
 draft: false
 ---
 

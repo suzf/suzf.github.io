@@ -1,0 +1,5 @@
+# Strings the theme doesn't ship. Merged with themes/LoveIt/i18n/zh-CN.toml.
+
+# <title> suffix for /page/2/ and on of the home page
+[pageNumber]
+other = "第 {{ .PageNumber }} 页"

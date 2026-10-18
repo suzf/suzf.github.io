@@ -3,11 +3,10 @@ title: "Base64 Explained: What It Is and When Not to Use It"
 slug: "base64 explained when not to use it"
 date: 2026-07-05T10:00:00+08:00
 author: "Jeffrey Su"
-description: "How Base64 turns binary into text, why the output is ~33% bigger, the difference between standard and URL-safe alphabets, and the common mistake of treating it as encryption."
+description: "How Base64 turns binary into text, why the output is ~33% bigger, standard vs URL-safe alphabets, and the common mistake of treating it as encryption."
 categories: ["Developer Tools"]
 tags: ["base64", "encoding", "web", "http"]
 toc: true
-lightgallery: true
 draft: false
 ---
 

@@ -7,7 +7,6 @@ description: ""
 categories: ["Skills Matrix"]
 tags: ["nomad"]
 toc: true
-lightgallery: true
 draft: false
 ---
 

@@ -1,4 +1,10 @@
-{{- define "title" }}{{ .Title }} - {{ .Site.Title }}{{ end -}}
+{{- /* " - Suzf Blog" pushed the longer titles to 63-80 characters, past what
+       a search result shows, so they were truncated and the suffix never
+       showed anyway. Keep it only while the whole thing fits in 60. */ -}}
+{{- define "title" -}}
+    {{- $full := printf "%s - %s" .Title .Site.Title -}}
+    {{- if le (strings.RuneCount $full) 60 }}{{ $full }}{{ else }}{{ .Title }}{{ end -}}
+{{- end -}}
 
 {{- define "content" -}}
     {{- $params := .Scratch.Get "params" -}}

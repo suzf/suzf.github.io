@@ -7,7 +7,6 @@ description: ""
 categories: ["技能矩阵"]
 tags: ["openclaw", "ai"]
 toc: true
-lightgallery: true
 draft: false
 ---
 
