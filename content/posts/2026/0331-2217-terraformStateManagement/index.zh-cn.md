@@ -17,7 +17,7 @@ Terraform 的 State 文件是基础设施即代码的核心，它记录了真实
 
 <!--more-->
 
-### 1. 永远不要使用本地 State
+## 1. 永远不要使用本地 State
 
 默认情况下 Terraform 将状态存储在本地 `terraform.tfstate` 文件中，这在团队协作中是灾难性的：
 
@@ -44,7 +44,7 @@ terraform {
 
 ---
 
-### 2. 状态锁 (State Locking)
+## 2. 状态锁 (State Locking)
 
 状态锁确保同一时间只有一个操作可以修改 State，避免并发冲突。
 
@@ -67,9 +67,9 @@ terraform force-unlock <lock-id>
 
 ---
 
-### 3. State 隔离策略
+## 3. State 隔离策略
 
-#### 方式一：按目录隔离（推荐）
+### 方式一：按目录隔离（推荐）
 
 将不同环境和模块拆分到独立目录，每个目录有自己的 State：
 
@@ -93,7 +93,7 @@ infrastructure/
 - 权限可以按目录粒度控制
 - `plan` / `apply` 速度快
 
-#### 方式二：Workspace 隔离
+### 方式二：Workspace 隔离
 
 ```bash
 terraform workspace new staging
@@ -107,7 +107,7 @@ terraform workspace select prod
 
 ---
 
-### 4. 跨 State 数据引用
+## 4. 跨 State 数据引用
 
 不同目录的 State 之间需要共享数据时，使用 `terraform_remote_state`：
 
@@ -131,7 +131,7 @@ resource "aws_instance" "app" {
 
 ---
 
-### 5. State 日常运维命令
+## 5. State 日常运维命令
 
 ```bash
 # 查看当前 State 中的所有资源
@@ -155,7 +155,7 @@ terraform state pull > state.json
 
 ---
 
-### 6. 安全注意事项
+## 6. 安全注意事项
 
 - **State 包含敏感信息：** 数据库密码、密钥等明文存储在 State 中，务必加密存储并限制访问权限。
 - **S3 Bucket 策略：** 开启版本控制（Versioning），便于 State 回滚；配置 Bucket Policy 限制访问。

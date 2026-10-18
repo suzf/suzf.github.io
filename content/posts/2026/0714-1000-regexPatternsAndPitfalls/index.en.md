@@ -15,7 +15,7 @@ Regular expressions are a small language for describing text patterns, and like 
 
 <!--more-->
 
-### The pieces you use most
+## The pieces you use most
 
 - **Character classes:** `\d` digit, `\w` word char (`[A-Za-z0-9_]`), `\s` whitespace; uppercase negates them (`\D`, `\W`, `\S`). `[abc]` is a custom set, `[^abc]` its negation, `[a-z]` a range.
 - **Quantifiers:** `*` (0+), `+` (1+), `?` (0 or 1), `{n}`, `{n,}`, `{n,m}`.
@@ -23,7 +23,7 @@ Regular expressions are a small language for describing text patterns, and like 
 - **Groups:** `(...)` capturing, `(?:...)` non-capturing, `(?<name>...)` named. Backreference with `$1` (replace) or `\1` (pattern).
 - **Alternation:** `a|b` means a or b. Mind the precedence: `^cat|dog$` is `(^cat)|(dog$)`, not `^(cat|dog)$`.
 
-### Flags change everything
+## Flags change everything
 
 - `g` — global, find all matches, not just the first.
 - `i` — case-insensitive.
@@ -33,7 +33,7 @@ Regular expressions are a small language for describing text patterns, and like 
 
 A huge share of "my regex doesn't match" bugs are just a missing `m`, `s`, or `u`.
 
-### Patterns worth keeping
+## Patterns worth keeping
 
 ```
 # Trim leading/trailing whitespace
@@ -54,7 +54,7 @@ A huge share of "my regex doesn't match" bugs are just a missing `m`, `s`, or `u
 
 A note on the IPv4 pattern: it matches `999.999.999.999`. Regex is great for *shape*; range validation (each octet 0–255) is clumsy in pure regex and better done in code. This is a general principle — use regex to tokenize, use code to validate semantics.
 
-### The traps that cause real bugs
+## The traps that cause real bugs
 
 **1. Greedy quantifiers grab too much.** `<.+>` on `<a><b>` matches the *entire* `<a><b>`, not `<a>`, because `+` is greedy and backtracks from the end. Use the lazy version `<.+?>` or, better, a negated class `<[^>]+>`.
 
@@ -68,11 +68,11 @@ A note on the IPv4 pattern: it matches `999.999.999.999`. Regex is great for *sh
 
 **6. Don't parse structured formats with regex.** HTML, JSON, and nested brackets are not *regular* languages — a regex fundamentally can't match arbitrarily nested structure. Use a real parser. Regex is fine for extracting a simple, flat pattern out of such text, not for understanding its structure.
 
-### Build and test interactively
+## Build and test interactively
 
 Regex is much easier to get right when you can see matches highlighted live and inspect capture groups as you type. I built a free [Regex Tester](https://suzf.net/en/tools/regex-tester) that highlights matches in real time, shows each capture group, supports the `g/i/m/s/u` flags and `$1` replacement, and ships with common-pattern presets and a cheatsheet — all running locally in your browser.
 
-### Takeaways
+## Takeaways
 
 - Anchor when validating; make quantifiers lazy or use negated classes.
 - Escape user input and literal metacharacters.

@@ -15,7 +15,7 @@ draft: false
 
 <!--more-->
 
-### 坑 1：apt-get update 和 install 分开写
+## 坑 1：apt-get update 和 install 分开写
 
 ```dockerfile
 # ❌ 缓存层问题：update 被缓存后，install 可能安装旧版本甚至找不到包
@@ -31,7 +31,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl \
 
 ---
 
-### 坑 2：COPY . . 放在 RUN install 之前
+## 坑 2：COPY . . 放在 RUN install 之前
 
 ```dockerfile
 # ❌ 任何文件改动都会让依赖安装缓存失效
@@ -48,7 +48,7 @@ COPY . .
 
 ---
 
-### 坑 3：用 shell 格式写 ENTRYPOINT
+## 坑 3：用 shell 格式写 ENTRYPOINT
 
 ```dockerfile
 # ❌ shell 格式：进程以 /bin/sh -c 启动，PID 1 是 sh 而不是你的应用
@@ -65,7 +65,7 @@ shell 格式的后果：
 
 ---
 
-### 坑 4：在 RUN 中设置环境变量
+## 坑 4：在 RUN 中设置环境变量
 
 ```dockerfile
 # ❌ 每个 RUN 是独立的 shell，变量不会传递
@@ -79,7 +79,7 @@ RUN cd $APP_HOME && do_something
 
 ---
 
-### 坑 5：忽略 .dockerignore 导致镜像臃肿
+## 坑 5：忽略 .dockerignore 导致镜像臃肿
 
 没有 `.dockerignore` 时，`COPY . .` 会把所有文件发送到 Docker daemon：
 
@@ -96,7 +96,7 @@ dist/
 
 ---
 
-### 坑 6：在镜像中硬编码密钥
+## 坑 6：在镜像中硬编码密钥
 
 ```dockerfile
 # ❌ 密钥会永久留在镜像层中，即使后续删除也能通过 docker history 看到
@@ -112,7 +112,7 @@ RUN echo "password=my_secret_password" > /app/config
 
 ---
 
-### 坑 7：alpine 镜像的 DNS 和 glibc 问题
+## 坑 7：alpine 镜像的 DNS 和 glibc 问题
 
 ```dockerfile
 # ❌ 某些应用依赖 glibc，alpine 用的是 musl libc
@@ -128,7 +128,7 @@ COPY myapp /usr/local/bin/
 
 ---
 
-### 坑 8：多阶段构建忘记复制运行时依赖
+## 坑 8：多阶段构建忘记复制运行时依赖
 
 ```dockerfile
 FROM golang:1.22 AS builder
@@ -150,7 +150,7 @@ RUN apk add --no-cache ca-certificates tzdata
 
 ---
 
-### 坑 9：VOLUME 指令的隐式行为
+## 坑 9：VOLUME 指令的隐式行为
 
 ```dockerfile
 # ⚠️ VOLUME 之后对该目录的修改会被丢弃
@@ -162,7 +162,7 @@ RUN echo "init" > /data/config  # 这行写入会在运行时被匿名卷覆盖
 
 ---
 
-### 坑 10：构建时的时区和 locale 问题
+## 坑 10：构建时的时区和 locale 问题
 
 ```dockerfile
 # ❌ 容器内默认 UTC 时区，日志时间和宿主机不一致
@@ -181,7 +181,7 @@ ENV LANG=en_US.UTF-8
 
 ---
 
-### 坑 11：docker build 缓存不生效的隐藏原因
+## 坑 11：docker build 缓存不生效的隐藏原因
 
 缓存失效的常见原因：
 
@@ -205,7 +205,7 @@ RUN echo $VERSION  # 3.19
 
 ---
 
-### 坑 12：僵尸进程问题
+## 坑 12：僵尸进程问题
 
 容器内 PID 1 进程不会自动回收子进程，导致僵尸进程堆积：
 

@@ -15,7 +15,7 @@ OpenClaw 的 Skills 生态（ClawHub）已经超过 13000 个技能包，但质�
 
 <!--more-->
 
-### 安装方式
+## 安装方式
 
 所有 Skills 通过 `clawhub` 命令安装：
 
@@ -37,7 +37,7 @@ openclaw skills search "keyword"
 
 ---
 
-### 🏆 Top 10 必装 Skills
+## 🏆 Top 10 必装 Skills
 
 | 排名 | Skill | 分类 | 安装命令 | 状态 |
 |------|-------|------|---------|------|
@@ -54,9 +54,9 @@ openclaw skills search "keyword"
 
 ---
 
-### 🔧 开发者必备
+## 🔧 开发者必备
 
-#### GitHub（排名 #1，评分 72/80）
+### GitHub（排名 #1，评分 72/80）
 
 OpenClaw 生态中评分最高的 Skill。支持 PR 创建、代码审查、Issue 管理、分支操作，直接在对话中完成 Git 工作流。
 
@@ -70,7 +70,7 @@ clawhub install openclaw/github
 "Create a new issue for the login bug with reproduction steps"
 ```
 
-#### Security-check（排名 #12，评分 60/80）
+### Security-check（排名 #12，评分 60/80）
 
 自动扫描项目依赖和代码中的安全漏洞，集成 CVE 数据库。
 
@@ -78,7 +78,7 @@ clawhub install openclaw/github
 clawhub install community/security-check
 ```
 
-#### Linear（排名 #14，评分 59/80）
+### Linear（排名 #14，评分 59/80）
 
 与 Linear 项目管理工具集成，在对话中创建/更新 Issue、查看 Sprint 进度。
 
@@ -86,7 +86,7 @@ clawhub install community/security-check
 clawhub install community/linear-claw
 ```
 
-#### Cron-backup（排名 #20，评分 57/80）
+### Cron-backup（排名 #20，评分 57/80）
 
 定时备份 OpenClaw 配置和记忆数据，防止数据丢失。
 
@@ -96,9 +96,9 @@ clawhub install community/cron-backup
 
 ---
 
-### 🔍 搜索与研究
+## 🔍 搜索与研究
 
-#### Tavily（排名 #4，评分 67/80）
+### Tavily（排名 #4，评分 67/80）
 
 专为 AI Agent 设计的搜索引擎 API，返回结构化结果，比 Web Browsing 更快更精准。需要 [Tavily API Key](https://tavily.com)。
 
@@ -106,11 +106,11 @@ clawhub install community/cron-backup
 clawhub install framix-team/openclaw-tavily
 ```
 
-#### Web Browsing（排名 #2，内置）
+### Web Browsing（排名 #2，内置）
 
 OpenClaw 的基础能力，让 Agent 能浏览网页、提取内容、跟踪链接。没有它，大多数工作流都无法运行。
 
-#### Felo Search（排名 #15，评分 59/80）
+### Felo Search（排名 #15，评分 59/80）
 
 多语言搜索引擎集成，对中文搜索支持较好。
 
@@ -120,9 +120,9 @@ clawhub install community/felo-search
 
 ---
 
-### 📋 效率与生产力
+## 📋 效率与生产力
 
-#### GOG（排名 #3，评分 68/80）
+### GOG（排名 #3，评分 68/80）
 
 "Get Organized with GOG" — 任务规划和目标追踪，帮助 Agent 将复杂任务拆解为可执行的步骤。下载量排名前三。
 
@@ -130,7 +130,7 @@ clawhub install community/felo-search
 clawhub install openclaw/gog
 ```
 
-#### Obsidian（排名 #9，评分 62/80）
+### Obsidian（排名 #9，评分 62/80）
 
 与 Obsidian 笔记集成，Agent 可以读写你的知识库、创建笔记、搜索已有内容。
 
@@ -138,7 +138,7 @@ clawhub install openclaw/gog
 clawhub install community/obsidian-claw
 ```
 
-#### Notion（排名 #13，评分 59/80）
+### Notion（排名 #13，评分 59/80）
 
 Notion 数据库和页面的读写操作，适合用 Notion 做项目管理的团队。
 
@@ -146,7 +146,7 @@ Notion 数据库和页面的读写操作，适合用 Notion 做项目管理的�
 clawhub install community/notion-claw
 ```
 
-#### Summarize（排名 #19，评分 58/80）
+### Summarize（排名 #19，评分 58/80）
 
 长文档/网页摘要生成，安全评分高（9/10），适合处理大量阅读材料。
 
@@ -156,9 +156,9 @@ clawhub install community/summarize
 
 ---
 
-### 🤖 自动化
+## 🤖 自动化
 
-#### n8n（排名 #8，评分 63/80）
+### n8n（排名 #8，评分 63/80）
 
 将 OpenClaw 与 n8n 工作流引擎打通，实现跨平台自动化。例如：收到邮件 → 分析内容 → 创建 Jira Issue → 通知 Slack。
 
@@ -166,7 +166,7 @@ clawhub install community/summarize
 clawhub install community/n8n-openclaw
 ```
 
-#### Browser Automation（排名 #16，评分 58/80）
+### Browser Automation（排名 #16，评分 58/80）
 
 基于 Playwright 的浏览器自动化，可以填表、点击、截图，处理需要登录的网站。
 
@@ -174,7 +174,7 @@ clawhub install community/n8n-openclaw
 clawhub install community/browser-automation
 ```
 
-#### Home Assistant（排名 #10，评分 61/80）
+### Home Assistant（排名 #10，评分 61/80）
 
 通过对话控制智能家居设备。"关掉客厅的灯" "把空调调到 24 度"。
 
@@ -184,9 +184,9 @@ clawhub install openclaw/homeassistant
 
 ---
 
-### 🧠 AI/ML 进阶
+## 🧠 AI/ML 进阶
 
-#### Capability Evolver（排名 #11，评分 60/80）
+### Capability Evolver（排名 #11，评分 60/80）
 
 让 Agent 能自我改进——分析失败的任务并自动调整策略。学习价值极高（LRN 9/10）。
 
@@ -194,7 +194,7 @@ clawhub install openclaw/homeassistant
 clawhub install community/capability-evolver
 ```
 
-#### RAG Pipeline（排名 #38，评分 51/80）
+### RAG Pipeline（排名 #38，评分 51/80）
 
 为 OpenClaw 添加检索增强生成能力，可以对本地文档建立向量索引并检索。
 
@@ -204,9 +204,9 @@ clawhub install community/rag-pipeline
 
 ---
 
-### 📊 数据处理
+## 📊 数据处理
 
-#### Firecrawl（排名 #18，评分 58/80）
+### Firecrawl（排名 #18，评分 58/80）
 
 结构化网页爬取，支持分页、JavaScript 渲染，输出干净的 Markdown/JSON。
 
@@ -214,7 +214,7 @@ clawhub install community/rag-pipeline
 clawhub install community/firecrawl
 ```
 
-#### DuckDB CRM（排名 #28，评分 55/80）
+### DuckDB CRM（排名 #28，评分 55/80）
 
 基于 DuckDB 的轻量级本地 CRM，用 SQL 管理联系人和客户数据，数据完全本地化。
 
@@ -224,9 +224,9 @@ clawhub install community/duckdb-crm
 
 ---
 
-### 按角色推荐组合
+## 按角色推荐组合
 
-#### 软件工程师
+### 软件工程师
 
 ```bash
 clawhub install openclaw/github
@@ -234,7 +234,7 @@ clawhub install community/security-check
 clawhub install community/n8n-openclaw
 ```
 
-#### 研究员 / 知识工作者
+### 研究员 / 知识工作者
 
 ```bash
 clawhub install framix-team/openclaw-tavily
@@ -242,7 +242,7 @@ clawhub install community/obsidian-claw
 clawhub install community/summarize
 ```
 
-#### 项目经理
+### 项目经理
 
 ```bash
 clawhub install openclaw/gog
@@ -250,7 +250,7 @@ clawhub install community/notion-claw
 clawhub install community/todoist-claw
 ```
 
-#### 内容创作者
+### 内容创作者
 
 ```bash
 clawhub install community/image-generation
@@ -260,7 +260,7 @@ clawhub install community/youtube-digest
 
 ---
 
-### 安全提醒
+## 安全提醒
 
 1. **只安装你需要的 Skill** — 每个 Skill 都有权限访问你的数据
 2. **优先选择官方 Skill**（`openclaw/` 前缀）和高 Star 社区 Skill
@@ -274,9 +274,9 @@ clawhub install community/youtube-digest
 
 ---
 
-### 🔒 安全审计
+## 🔒 安全审计
 
-#### Skill Vetter（评分 4.9/5，695 Stars）
+### Skill Vetter（评分 4.9/5，695 Stars）
 
 **装 Skill 之前必须先装这个。** 这是一个安全审计协议，在安装任何第三方 Skill 之前执行标准化的安全检查。纯文档 Skill，零可执行代码，零权限要求。
 
@@ -309,9 +309,9 @@ clawhub install openclaw/skill-vetter
 
 ---
 
-### 🧬 自我进化
+## 🧬 自我进化
 
-#### Self-Improvement（v2，2.6k 下载）
+### Self-Improvement（v2，2.6k 下载）
 
 让 Agent 从错误中学习、持续改进。它将错误、用户纠正、功能请求和经验教训记录到结构化的 Markdown 文件中，供后续 session 参考。
 

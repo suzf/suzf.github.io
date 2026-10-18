@@ -17,7 +17,7 @@ This post summarizes State management best practices, covering remote backend co
 
 <!--more-->
 
-### 1. Never Use Local State
+## 1. Never Use Local State
 
 By default, Terraform stores state in a local `terraform.tfstate` file, which is disastrous for team collaboration:
 
@@ -44,7 +44,7 @@ Key points:
 
 ---
 
-### 2. State Locking
+## 2. State Locking
 
 State locking ensures only one operation can modify the State at a time, preventing concurrent conflicts.
 
@@ -67,9 +67,9 @@ terraform force-unlock <lock-id>
 
 ---
 
-### 3. State Isolation Strategies
+## 3. State Isolation Strategies
 
-#### Option 1: Directory Isolation (Recommended)
+### Option 1: Directory Isolation (Recommended)
 
 Split different environments and modules into separate directories, each with its own State:
 
@@ -93,7 +93,7 @@ Benefits:
 - Permissions can be controlled at directory granularity
 - Faster `plan` / `apply` execution
 
-#### Option 2: Workspace Isolation
+### Option 2: Workspace Isolation
 
 ```bash
 terraform workspace new staging
@@ -107,7 +107,7 @@ Suitable when configuration differences between environments are minimal. State 
 
 ---
 
-### 4. Cross-State Data References
+## 4. Cross-State Data References
 
 When different directories need to share data, use `terraform_remote_state`:
 
@@ -131,7 +131,7 @@ resource "aws_instance" "app" {
 
 ---
 
-### 5. Daily State Operations
+## 5. Daily State Operations
 
 ```bash
 # List all resources in the current State
@@ -155,7 +155,7 @@ terraform state pull > state.json
 
 ---
 
-### 6. Security Considerations
+## 6. Security Considerations
 
 - **State contains sensitive data:** Database passwords, keys, etc. are stored in plaintext in State. Always encrypt storage and restrict access.
 - **S3 Bucket policy:** Enable Versioning for State rollback capability; configure Bucket Policy to restrict access.

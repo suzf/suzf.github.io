@@ -17,7 +17,7 @@ draft: false
 
 <!--more-->
 
-### 1. 升级前准备
+## 1. 升级前准备
 
 - **版本兼容性：** 查阅 [Nomad Upgrade Guides](https://developer.hashicorp.com/nomad/docs/upgrade) 确认目标版本的升级路径。Nomad 支持从前一个次要版本直接升级（例如 1.7.x → 1.8.x），**不建议跳版本升级**。
 
@@ -39,7 +39,7 @@ draft: false
 
 ---
 
-### 2. Server 滚动升级步骤 (Rolling Upgrade)
+## 2. Server 滚动升级步骤 (Rolling Upgrade)
 
 以 3 节点 Server 集群为例（1 Leader + 2 Follower）：
 
@@ -79,7 +79,7 @@ nomad operator raft list-peers
 
 ---
 
-### 3. 升级后验证
+## 3. 升级后验证
 
 ```bash
 # 确认所有节点版本一致
@@ -97,7 +97,7 @@ journalctl -u nomad --since "10 minutes ago" --no-pager
 
 ---
 
-### 4. 回滚方案
+## 4. 回滚方案
 
 如果升级后出现异常：
 
@@ -111,7 +111,7 @@ journalctl -u nomad --since "10 minutes ago" --no-pager
 
 ---
 
-### 5. 常见问题
+## 5. 常见问题
 
 - **升级后无法选举 Leader：** 检查各节点 Raft 协议版本是否一致（`nomad agent-info | grep raft`），确保网络连通性正常。
 

@@ -17,7 +17,7 @@ draft: false
 
 <!--more-->
 
-### 1. 升级前的核心准则
+## 1. 升级前的核心准则
 
 - **版本跨度限制：** 非 LTS（长期支持）版本建议 **一次最多跨越 2 个次要版本**（例如：1.18 → 1.20）。如果版本极老，需按照官方提供的中间节点版本逐步升级。
 
@@ -28,7 +28,7 @@ draft: false
 
 ---
 
-### 2. Server 集群滚动升级步骤 (Rolling Upgrade)
+## 2. Server 集群滚动升级步骤 (Rolling Upgrade)
 
 Server 端的升级必须保证 **Quorum (法定人数)** 不丢失，否则集群会陷入选举死循环。
 
@@ -55,7 +55,7 @@ Server 端的升级必须保证 **Quorum (法定人数)** 不丢失，否则集�
 
 ---
 
-### 3. Kubernetes (Helm) 模式下的升级
+## 3. Kubernetes (Helm) 模式下的升级
 
 如果你在 K8s 上运行 Consul，可以利用 `updatePartition` 实现精细化滚动：
 
@@ -69,7 +69,7 @@ Server 端的升级必须保证 **Quorum (法定人数)** 不丢失，否则集�
 ---
 
 
-### 4. 常见故障处理
+## 4. 常见故障处理
 
 - **脑裂/无 Leader：** 如果升级后无法选出 Leader，请检查各节点的 `Raft Protocol` 版本是否一致（通过 `consul info` 查看）。
 

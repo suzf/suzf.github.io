@@ -15,7 +15,7 @@ Almost every TLS problem that isn't "the cert expired" is a **chain** problem. T
 
 <!--more-->
 
-### The three kinds of certificate
+## The three kinds of certificate
 
 A TLS chain is a short list of certificates that link the server back to a trusted root:
 
@@ -25,7 +25,7 @@ A TLS chain is a short list of certificates that link the server back to a trust
 
 The chain is a signature ladder: root signs intermediate, intermediate signs leaf. Trust flows down.
 
-### How validation works
+## How validation works
 
 When a client connects, the server presents its leaf plus any intermediates. The client then tries to build a path from the leaf up to a certificate it already trusts in its local root store. For each link it checks:
 
@@ -36,7 +36,7 @@ When a client connects, the server presents its leaf plus any intermediates. The
 
 If it can build an unbroken path to a trusted root and every check passes, you get the padlock. Break any link and validation fails.
 
-### Why "works in browser, fails in curl"
+## Why "works in browser, fails in curl"
 
 This is the classic symptom of a **missing intermediate**. Here's the trick: the server is *supposed* to send the leaf **and** the intermediates. If it only sends the leaf, some clients can still succeed because:
 
@@ -45,7 +45,7 @@ This is the classic symptom of a **missing intermediate**. Here's the trick: the
 
 So the browser papers over the server's misconfiguration and curl exposes it. The fix is on the **server**: configure it to serve the **full chain** (leaf + all intermediates), usually a `fullchain.pem`, not just the leaf `cert.pem`. Order matters too — leaf first, then intermediates in ascending order.
 
-### Common chain failures and what they mean
+## Common chain failures and what they mean
 
 - **"unable to get local issuer certificate"** — missing intermediate; serve the full chain.
 - **"certificate has expired"** — check the leaf *and* every intermediate; an expired intermediate breaks everything (this has caused large outages).
@@ -53,7 +53,7 @@ So the browser papers over the server's misconfiguration and curl exposes it. Th
 - **"hostname mismatch"** — the SAN list doesn't include the name you connected to. Note: the legacy Common Name (CN) is ignored by modern clients; only SANs count.
 - **Wrong order** — some strict servers/clients reject a chain whose certs aren't in leaf-to-root order.
 
-### Inspect a chain quickly
+## Inspect a chain quickly
 
 The classic CLI check is:
 
@@ -63,7 +63,7 @@ openssl s_client -connect example.com:443 -servername example.com
 
 ...but reading raw `openssl` output is a chore. To see the whole chain laid out — leaf, intermediates, root, each issuer/subject, validity dates, days-until-expiry, and the SAN list — I built a free [SSL Certificate Checker](https://suzf.net/en/tools/ssl-checker). Enter a domain (custom ports supported, e.g. `host:8443`) and it makes a real TLS connection and visualizes the chain and server details, so a missing or expiring intermediate is obvious at a glance.
 
-### Takeaways
+## Takeaways
 
 - A chain is leaf → intermediate(s) → root; trust flows down by signatures.
 - Clients don't need the root (it's in their trust store); they *do* need the intermediates.

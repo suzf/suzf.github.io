@@ -17,7 +17,7 @@ Here is the detailed upgrade procedure:
 
 <!--more-->
 
-### 1. Pre-Upgrade Preparation
+## 1. Pre-Upgrade Preparation
 
 - **Version Compatibility:** Review the [Nomad Upgrade Guides](https://developer.hashicorp.com/nomad/docs/upgrade) to confirm the upgrade path. Nomad supports upgrading from the previous minor version (e.g., 1.7.x → 1.8.x). **Skipping versions is not recommended.**
 
@@ -39,7 +39,7 @@ Here is the detailed upgrade procedure:
 
 ---
 
-### 2. Server Rolling Upgrade Steps
+## 2. Server Rolling Upgrade Steps
 
 Using a 3-node Server cluster as an example (1 Leader + 2 Followers):
 
@@ -79,7 +79,7 @@ After all Followers are upgraded, perform the same operation on the Leader. Stop
 
 ---
 
-### 3. Post-Upgrade Verification
+## 3. Post-Upgrade Verification
 
 ```bash
 # Confirm all nodes are on the same version
@@ -97,7 +97,7 @@ journalctl -u nomad --since "10 minutes ago" --no-pager
 
 ---
 
-### 4. Rollback Plan
+## 4. Rollback Plan
 
 If issues arise after the upgrade:
 
@@ -111,7 +111,7 @@ If issues arise after the upgrade:
 
 ---
 
-### 5. Common Issues
+## 5. Common Issues
 
 - **Unable to elect Leader after upgrade:** Check that the Raft protocol version is consistent across all nodes (`nomad agent-info | grep raft`) and ensure network connectivity is normal.
 

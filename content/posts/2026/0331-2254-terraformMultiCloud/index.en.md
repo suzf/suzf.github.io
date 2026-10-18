@@ -15,7 +15,7 @@ When infrastructure spans AWS, GCP, and Azure, Terraform's management complexity
 
 <!--more-->
 
-### 1. Directory Structure
+## 1. Directory Structure
 
 ```
 infrastructure/
@@ -52,9 +52,9 @@ Core principles:
 
 ---
 
-### 2. Provider Management
+## 2. Provider Management
 
-#### Version Pinning
+### Version Pinning
 
 ```hcl
 terraform {
@@ -79,7 +79,7 @@ terraform {
 
 > Always pin Provider versions. In multi-cloud environments, a breaking change in one Provider can cause cascading failures.
 
-#### Authentication Isolation
+### Authentication Isolation
 
 ```hcl
 # providers.tf — separate auth config per cloud
@@ -105,11 +105,11 @@ provider "azurerm" {
 
 ---
 
-### 3. Abstract Module Design
+## 3. Abstract Module Design
 
 The core multi-cloud challenge: the same concept (VPC/network, VM, load balancer) has completely different APIs across clouds.
 
-#### Approach 1: Unified Interface Module (Recommended for Simple Cases)
+### Approach 1: Unified Interface Module (Recommended for Simple Cases)
 
 ```hcl
 # modules/compute/main.tf
@@ -139,7 +139,7 @@ module "gcp" {
 }
 ```
 
-#### Approach 2: Separate Cloud Modules + Unified Outputs (Recommended for Complex Cases)
+### Approach 2: Separate Cloud Modules + Unified Outputs (Recommended for Complex Cases)
 
 ```hcl
 # modules/networking/aws/outputs.tf
@@ -155,7 +155,7 @@ Unified output interface (`network_id`, `subnet_ids`) — callers don't need to 
 
 ---
 
-### 4. State Management Strategy
+## 4. State Management Strategy
 
 In multi-cloud environments, State must be isolated by cloud and environment:
 
@@ -184,7 +184,7 @@ terraform {
 
 ---
 
-### 5. Cross-Cloud Resource References
+## 5. Cross-Cloud Resource References
 
 When different clouds need to share data (e.g., AWS IPs needed in GCP firewall rules):
 
@@ -220,7 +220,7 @@ resource "cloudflare_record" "gcp" {
 
 ---
 
-### 6. Unified CI/CD Workflow
+## 6. Unified CI/CD Workflow
 
 ```yaml
 # .github/workflows/terraform.yml
@@ -263,7 +263,7 @@ Key points:
 
 ---
 
-### 7. Variables & Naming Conventions
+## 7. Variables & Naming Conventions
 
 ```hcl
 # variables.tf
@@ -297,7 +297,7 @@ Cross-cloud naming conventions:
 
 ---
 
-### 8. Common Pitfalls
+## 8. Common Pitfalls
 
 - **Provider version inconsistency:** Team members using different Provider versions cause State incompatibility. Fix: commit `.terraform.lock.hcl` to Git.
 

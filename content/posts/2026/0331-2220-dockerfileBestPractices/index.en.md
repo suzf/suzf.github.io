@@ -15,7 +15,7 @@ A well-written Dockerfile can significantly reduce image size, speed up builds, 
 
 <!--more-->
 
-### 1. Use Multi-stage Builds
+## 1. Use Multi-stage Builds
 
 Separate the build environment from the runtime environment — the final image only contains the artifacts needed to run:
 
@@ -40,7 +40,7 @@ Result: Go build image ~1GB → final image ~20MB.
 
 ---
 
-### 2. Choose the Right Base Image
+## 2. Choose the Right Base Image
 
 | Use Case | Recommended Image | Size |
 |----------|------------------|------|
@@ -53,7 +53,7 @@ Result: Go build image ~1GB → final image ~20MB.
 
 ---
 
-### 3. Leverage Build Cache Effectively
+## 3. Leverage Build Cache Effectively
 
 Docker caches by layer. **Place less frequently changing instructions first:**
 
@@ -74,7 +74,7 @@ If you `COPY . .` before `npm install`, every code change triggers a full depend
 
 ---
 
-### 4. Minimize Layers and Image Size
+## 4. Minimize Layers and Image Size
 
 ```dockerfile
 # ❌ Multiple RUN instructions create multiple layers
@@ -94,7 +94,7 @@ Key points:
 
 ---
 
-### 5. Don't Run as Root
+## 5. Don't Run as Root
 
 ```dockerfile
 RUN addgroup -S app && adduser -S app -G app
@@ -105,7 +105,7 @@ Running containers as a non-root user reduces the attack surface in case of cont
 
 ---
 
-### 6. Use .dockerignore
+## 6. Use .dockerignore
 
 Create a `.dockerignore` in the project root to exclude irrelevant files from the build context:
 
@@ -123,7 +123,7 @@ A smaller build context means faster `docker build` startup.
 
 ---
 
-### 7. COPY vs ADD
+## 7. COPY vs ADD
 
 ```dockerfile
 # ✅ Prefer COPY (explicit behavior)
@@ -137,7 +137,7 @@ Only use `ADD` when you need automatic tar extraction. Use `COPY` for everything
 
 ---
 
-### 8. ENTRYPOINT vs CMD
+## 8. ENTRYPOINT vs CMD
 
 ```dockerfile
 # ENTRYPOINT defines the container's main process
@@ -160,7 +160,7 @@ docker run myapp --port 9090
 
 ---
 
-### 9. Health Checks
+## 9. Health Checks
 
 ```dockerfile
 HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
@@ -171,7 +171,7 @@ Works with orchestration tools (Docker Compose / Kubernetes) to automatically re
 
 ---
 
-### 10. Security Scanning
+## 10. Security Scanning
 
 Scan images for vulnerabilities after building:
 

@@ -15,7 +15,7 @@ Cron is the quiet workhorse behind almost every scheduled job — log rotation, 
 
 <!--more-->
 
-### The five fields
+## The five fields
 
 A standard cron expression has five space-separated fields:
 
@@ -33,7 +33,7 @@ So `30 2 * * *` means "at 02:30 every day," and `0 9 * * 1` means "at 09:00 ever
 
 Some schedulers (Quartz, Spring, some Kubernetes tooling) prepend a **seconds** field, making it six fields. Vixie cron — the one on most Linux boxes — does **not** have seconds. Always know which dialect you are writing for; this is the single most common source of "why did my expression break when I moved it" confusion.
 
-### Special characters
+## Special characters
 
 | Character | Meaning | Example |
 |-----------|---------|---------|
@@ -48,7 +48,7 @@ Some schedulers (Quartz, Spring, some Kubernetes tooling) prepend a **seconds** 
 
 Steps combine with ranges: `0-30/10` means minutes 0, 10, 20, 30. And `*/20` on the minute field fires at :00, :20, :40 — **not** every 20 minutes rolling from whenever you deployed. Cron always aligns to the wall clock.
 
-### Reading real schedules
+## Reading real schedules
 
 - `*/5 * * * *` — every 5 minutes
 - `0 * * * *` — top of every hour
@@ -58,7 +58,7 @@ Steps combine with ranges: `0-30/10` means minutes 0, 10, 20, 30. And `*/20` on 
 - `15 14 1 * *` — 14:15 on the 1st of every month
 - `0 22 * * 1-5` — 22:00 Monday through Friday
 
-### The pitfalls that actually bite
+## The pitfalls that actually bite
 
 **1. Day-of-month and day-of-week are OR, not AND.** This is the famous one. `0 0 13 * 5` does **not** mean "Friday the 13th." When *both* the day-of-month and day-of-week fields are restricted (neither is `*`), cron runs when **either** matches. So that expression fires on *every* 13th **and** *every* Friday. To get Friday the 13th you need application logic, not cron alone.
 
@@ -70,11 +70,11 @@ Steps combine with ranges: `0-30/10` means minutes 0, 10, 20, 30. And `*/20` on 
 
 **5. Environment.** Cron runs with a minimal environment — no `.bashrc`, a bare `PATH`, often no `HOME` you expect. "Works in my shell, fails in cron" is almost always a missing PATH or env var. Use absolute paths and set what you need at the top of the crontab.
 
-### Test before you trust
+## Test before you trust
 
 The safest way to validate an expression is to see the next few fire times spelled out as real dates, and to read the schedule back in plain English. I built a free, browser-based [Cron Expression Generator](https://suzf.net/en/tools/cron-generator) that does exactly this: edit each field visually, get a human-readable description, and preview the next five executions before you commit anything to a crontab. Everything runs locally in the page — nothing is uploaded.
 
-### Takeaways
+## Takeaways
 
 - Count your fields (5 vs 6) and know your cron dialect.
 - Cron aligns to the wall clock; steps are not "rolling" intervals.

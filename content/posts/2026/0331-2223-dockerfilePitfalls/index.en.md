@@ -15,7 +15,7 @@ Writing a Dockerfile seems simple, but production environments are full of hidde
 
 <!--more-->
 
-### Pitfall 1: Separating apt-get update and install
+## Pitfall 1: Separating apt-get update and install
 
 ```dockerfile
 # ❌ Cache layer issue: cached update may cause install to fail or use stale packages
@@ -31,7 +31,7 @@ When `apt-get update` is in its own layer, it gets cached. Later changes to the 
 
 ---
 
-### Pitfall 2: COPY . . Before Dependency Install
+## Pitfall 2: COPY . . Before Dependency Install
 
 ```dockerfile
 # ❌ Any file change invalidates the dependency install cache
@@ -48,7 +48,7 @@ A single line of code change triggers a full dependency reinstall — build time
 
 ---
 
-### Pitfall 3: Shell Form ENTRYPOINT
+## Pitfall 3: Shell Form ENTRYPOINT
 
 ```dockerfile
 # ❌ Shell form: process starts via /bin/sh -c, PID 1 is sh, not your app
@@ -65,7 +65,7 @@ Consequences of shell form:
 
 ---
 
-### Pitfall 4: Setting Environment Variables in RUN
+## Pitfall 4: Setting Environment Variables in RUN
 
 ```dockerfile
 # ❌ Each RUN is an independent shell, variables don't persist
@@ -79,7 +79,7 @@ RUN cd $APP_HOME && do_something
 
 ---
 
-### Pitfall 5: Missing .dockerignore Causes Bloated Images
+## Pitfall 5: Missing .dockerignore Causes Bloated Images
 
 Without `.dockerignore`, `COPY . .` sends everything to the Docker daemon:
 
@@ -96,7 +96,7 @@ dist/
 
 ---
 
-### Pitfall 6: Hardcoded Secrets in Images
+## Pitfall 6: Hardcoded Secrets in Images
 
 ```dockerfile
 # ❌ Secrets persist in image layers, visible via docker history even after deletion
@@ -112,7 +112,7 @@ Even if you `RUN rm /app/config` in a later layer, the intermediate layer still 
 
 ---
 
-### Pitfall 7: Alpine DNS and glibc Issues
+## Pitfall 7: Alpine DNS and glibc Issues
 
 ```dockerfile
 # ❌ Some apps depend on glibc, but alpine uses musl libc
@@ -128,7 +128,7 @@ Solutions:
 
 ---
 
-### Pitfall 8: Forgetting Runtime Dependencies in Multi-stage Builds
+## Pitfall 8: Forgetting Runtime Dependencies in Multi-stage Builds
 
 ```dockerfile
 FROM golang:1.22 AS builder
@@ -150,7 +150,7 @@ Commonly missed:
 
 ---
 
-### Pitfall 9: Implicit VOLUME Behavior
+## Pitfall 9: Implicit VOLUME Behavior
 
 ```dockerfile
 # ⚠️ Modifications to the directory after VOLUME are discarded
@@ -162,7 +162,7 @@ After a `VOLUME` declaration, subsequent RUN writes to that path are overridden 
 
 ---
 
-### Pitfall 10: Timezone and Locale Issues
+## Pitfall 10: Timezone and Locale Issues
 
 ```dockerfile
 # ❌ Default UTC timezone — log timestamps don't match host
@@ -181,7 +181,7 @@ ENV LANG=en_US.UTF-8
 
 ---
 
-### Pitfall 11: Hidden Causes of Cache Invalidation
+## Pitfall 11: Hidden Causes of Cache Invalidation
 
 Common reasons cache breaks unexpectedly:
 
@@ -205,7 +205,7 @@ RUN echo $VERSION  # 3.19
 
 ---
 
-### Pitfall 12: Zombie Process Problem
+## Pitfall 12: Zombie Process Problem
 
 PID 1 inside a container doesn't automatically reap child processes, leading to zombie process accumulation:
 

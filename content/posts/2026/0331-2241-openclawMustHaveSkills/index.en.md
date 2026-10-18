@@ -15,7 +15,7 @@ The OpenClaw Skills ecosystem (ClawHub) has surpassed 13,000 skill packages, but
 
 <!--more-->
 
-### Installation
+## Installation
 
 All Skills are installed via the `clawhub` command:
 
@@ -37,7 +37,7 @@ openclaw skills search "keyword"
 
 ---
 
-### 🏆 Top 10 Must-Install Skills
+## 🏆 Top 10 Must-Install Skills
 
 | Rank | Skill | Category | Install | Status |
 |------|-------|----------|---------|--------|
@@ -54,9 +54,9 @@ openclaw skills search "keyword"
 
 ---
 
-### 🔧 Developer Essentials
+## 🔧 Developer Essentials
 
-#### GitHub (#1, Score 72/80)
+### GitHub (#1, Score 72/80)
 
 The highest-rated Skill in the OpenClaw ecosystem. Supports PR creation, code review, issue management, and branch operations — complete Git workflows through conversation.
 
@@ -70,7 +70,7 @@ Typical usage:
 "Create a new issue for the login bug with reproduction steps"
 ```
 
-#### Security-check (#12, Score 60/80)
+### Security-check (#12, Score 60/80)
 
 Automatically scans project dependencies and code for security vulnerabilities, integrated with CVE databases.
 
@@ -78,7 +78,7 @@ Automatically scans project dependencies and code for security vulnerabilities, 
 clawhub install community/security-check
 ```
 
-#### Linear (#14, Score 59/80)
+### Linear (#14, Score 59/80)
 
 Integrates with Linear project management — create/update issues and check sprint progress through conversation.
 
@@ -86,7 +86,7 @@ Integrates with Linear project management — create/update issues and check spr
 clawhub install community/linear-claw
 ```
 
-#### Cron-backup (#20, Score 57/80)
+### Cron-backup (#20, Score 57/80)
 
 Scheduled backups of OpenClaw configuration and memory data to prevent data loss.
 
@@ -96,9 +96,9 @@ clawhub install community/cron-backup
 
 ---
 
-### 🔍 Search & Research
+## 🔍 Search & Research
 
-#### Tavily (#4, Score 67/80)
+### Tavily (#4, Score 67/80)
 
 A search engine API designed specifically for AI Agents. Returns structured results — faster and more precise than Web Browsing. Requires a [Tavily API Key](https://tavily.com).
 
@@ -106,11 +106,11 @@ A search engine API designed specifically for AI Agents. Returns structured resu
 clawhub install framix-team/openclaw-tavily
 ```
 
-#### Web Browsing (#2, Built-in)
+### Web Browsing (#2, Built-in)
 
 OpenClaw's foundational capability — lets the Agent browse pages, extract content, and follow links. Most workflows depend on this.
 
-#### Felo Search (#15, Score 59/80)
+### Felo Search (#15, Score 59/80)
 
 Multi-language search engine integration with strong CJK language support.
 
@@ -120,9 +120,9 @@ clawhub install community/felo-search
 
 ---
 
-### 📋 Productivity
+## 📋 Productivity
 
-#### GOG (#3, Score 68/80)
+### GOG (#3, Score 68/80)
 
 "Get Organized with GOG" — task planning and goal tracking. Helps the Agent break complex tasks into executable steps. Top 3 in download count.
 
@@ -130,7 +130,7 @@ clawhub install community/felo-search
 clawhub install openclaw/gog
 ```
 
-#### Obsidian (#9, Score 62/80)
+### Obsidian (#9, Score 62/80)
 
 Integrates with Obsidian notes — the Agent can read/write your knowledge base, create notes, and search existing content.
 
@@ -138,7 +138,7 @@ Integrates with Obsidian notes — the Agent can read/write your knowledge base,
 clawhub install community/obsidian-claw
 ```
 
-#### Notion (#13, Score 59/80)
+### Notion (#13, Score 59/80)
 
 Read/write operations on Notion databases and pages. Great for teams using Notion for project management.
 
@@ -146,7 +146,7 @@ Read/write operations on Notion databases and pages. Great for teams using Notio
 clawhub install community/notion-claw
 ```
 
-#### Summarize (#19, Score 58/80)
+### Summarize (#19, Score 58/80)
 
 Long document/webpage summarization with a high security score (9/10). Ideal for processing large amounts of reading material.
 
@@ -156,9 +156,9 @@ clawhub install community/summarize
 
 ---
 
-### 🤖 Automation
+## 🤖 Automation
 
-#### n8n (#8, Score 63/80)
+### n8n (#8, Score 63/80)
 
 Connects OpenClaw with the n8n workflow engine for cross-platform automation. Example: receive email → analyze content → create Jira issue → notify Slack.
 
@@ -166,7 +166,7 @@ Connects OpenClaw with the n8n workflow engine for cross-platform automation. Ex
 clawhub install community/n8n-openclaw
 ```
 
-#### Browser Automation (#16, Score 58/80)
+### Browser Automation (#16, Score 58/80)
 
 Playwright-based browser automation — fill forms, click buttons, take screenshots, handle sites requiring login.
 
@@ -174,7 +174,7 @@ Playwright-based browser automation — fill forms, click buttons, take screensh
 clawhub install community/browser-automation
 ```
 
-#### Home Assistant (#10, Score 61/80)
+### Home Assistant (#10, Score 61/80)
 
 Control smart home devices through conversation. "Turn off the living room lights." "Set the AC to 24°C."
 
@@ -184,9 +184,9 @@ clawhub install openclaw/homeassistant
 
 ---
 
-### 🧠 AI/ML Advanced
+## 🧠 AI/ML Advanced
 
-#### Capability Evolver (#11, Score 60/80)
+### Capability Evolver (#11, Score 60/80)
 
 Enables the Agent to self-improve — analyzes failed tasks and automatically adjusts strategies. Extremely high learning value (LRN 9/10).
 
@@ -194,7 +194,7 @@ Enables the Agent to self-improve — analyzes failed tasks and automatically ad
 clawhub install community/capability-evolver
 ```
 
-#### RAG Pipeline (#38, Score 51/80)
+### RAG Pipeline (#38, Score 51/80)
 
 Adds Retrieval-Augmented Generation to OpenClaw — build vector indexes on local documents and retrieve relevant context.
 
@@ -204,9 +204,9 @@ clawhub install community/rag-pipeline
 
 ---
 
-### 📊 Data Processing
+## 📊 Data Processing
 
-#### Firecrawl (#18, Score 58/80)
+### Firecrawl (#18, Score 58/80)
 
 Structured web scraping with pagination support, JavaScript rendering, and clean Markdown/JSON output.
 
@@ -214,7 +214,7 @@ Structured web scraping with pagination support, JavaScript rendering, and clean
 clawhub install community/firecrawl
 ```
 
-#### DuckDB CRM (#28, Score 55/80)
+### DuckDB CRM (#28, Score 55/80)
 
 Lightweight local CRM powered by DuckDB. Manage contacts and customer data with SQL — all data stays local.
 
@@ -224,9 +224,9 @@ clawhub install community/duckdb-crm
 
 ---
 
-### Recommended Combos by Role
+## Recommended Combos by Role
 
-#### Software Engineer
+### Software Engineer
 
 ```bash
 clawhub install openclaw/github
@@ -234,7 +234,7 @@ clawhub install community/security-check
 clawhub install community/n8n-openclaw
 ```
 
-#### Researcher / Knowledge Worker
+### Researcher / Knowledge Worker
 
 ```bash
 clawhub install framix-team/openclaw-tavily
@@ -242,7 +242,7 @@ clawhub install community/obsidian-claw
 clawhub install community/summarize
 ```
 
-#### Project Manager
+### Project Manager
 
 ```bash
 clawhub install openclaw/gog
@@ -250,7 +250,7 @@ clawhub install community/notion-claw
 clawhub install community/todoist-claw
 ```
 
-#### Content Creator
+### Content Creator
 
 ```bash
 clawhub install community/image-generation
@@ -260,7 +260,7 @@ clawhub install community/youtube-digest
 
 ---
 
-### Security Reminders
+## Security Reminders
 
 1. **Only install Skills you need** — each Skill has access to your data
 2. **Prefer official Skills** (`openclaw/` prefix) and high-star community Skills
@@ -274,9 +274,9 @@ clawhub install community/youtube-digest
 
 ---
 
-### 🔒 Security Auditing
+## 🔒 Security Auditing
 
-#### Skill Vetter (Rating 4.9/5, 695 Stars)
+### Skill Vetter (Rating 4.9/5, 695 Stars)
 
 **Install this before installing anything else.** A security-first vetting protocol that enforces a standardized checklist before any third-party Skill installation. It's a docs-only Skill — zero executable code, zero permissions required.
 
@@ -309,9 +309,9 @@ Produces a standardized report with red flag detection results, permission inven
 
 ---
 
-### 🧬 Self-Evolution
+## 🧬 Self-Evolution
 
-#### Self-Improvement (v2, 2.6k Downloads)
+### Self-Improvement (v2, 2.6k Downloads)
 
 Enables the Agent to learn from mistakes and continuously improve. It captures errors, user corrections, feature requests, and learnings into structured Markdown files for future sessions to reference.
 
