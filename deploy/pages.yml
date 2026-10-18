@@ -5,6 +5,11 @@
   vars:
     app_dir: /opt/data/www/blog.suzf.net/
     project_dir: "{{ playbook_dir }}/../"
+    # Cloudflare purge credentials, read from the environment of the machine
+    # running ansible-playbook so they never land in git. See the purge tasks
+    # at the end of this play.
+    cf_api_token: "{{ lookup('env', 'CF_API_TOKEN') }}"
+    cf_zone_id: "{{ lookup('env', 'CF_ZONE_ID') }}"
 
   tasks:
     - name: Check if local build exists
@@ -49,3 +54,58 @@
       file:
         path: /tmp/deploy-pages.tar.gz
         state: absent
+
+    # ---- Cloudflare cache purge ----
+    # Cloudflare may hold HTML for up to an hour (s-maxage=3600), so without a
+    # purge a deploy can take that long to show up. Needs, on the deploying
+    # machine:
+    #   CF_API_TOKEN  API token with Zone > Cache Purge > Purge on suzf.net
+    #   CF_ZONE_ID    suzf.net zone ID (dashboard > Overview > API)
+    # Without them the purge is skipped with a warning and the deploy still
+    # counts as done. purge_everything also clears the main site (suzf.net/en, /zh) under the same
+    # zone; that only costs one refill per URL.
+    - name: Purge Cloudflare cache
+      delegate_to: localhost
+      become: false
+      run_once: true
+      when: cf_api_token != "" and cf_zone_id != ""
+      uri:
+        url: "https://api.cloudflare.com/client/v4/zones/{{ cf_zone_id }}/purge_cache"
+        method: POST
+        headers:
+          Authorization: "Bearer {{ cf_api_token }}"
+        body_format: json
+        body:
+          purge_everything: true
+        timeout: 30
+      register: cf_purge
+      # no_log keeps the token out of the output; the next task reports the
+      # result, so the uri task itself never fails.
+      no_log: true
+      failed_when: false
+
+    - name: Check Cloudflare purge result
+      delegate_to: localhost
+      become: false
+      run_once: true
+      when: cf_purge is not skipped
+      assert:
+        that:
+          - cf_purge.json is defined
+          - cf_purge.json.success | default(false)
+        fail_msg: >-
+          Cloudflare purge failed (HTTP {{ cf_purge.status | default('n/a') }}):
+          {{ cf_purge.json.errors | default(cf_purge.msg | default('no response')) }}.
+          The new release is live on the server, but Cloudflare may keep serving
+          cached pages for up to an hour.
+        success_msg: Cloudflare cache purged
+
+    - name: Warn when Cloudflare purge is not configured
+      delegate_to: localhost
+      become: false
+      run_once: true
+      when: cf_api_token == "" or cf_zone_id == ""
+      debug:
+        msg: >-
+          CF_API_TOKEN / CF_ZONE_ID not set, so the Cloudflare cache was not
+          purged. Cached pages can stay stale for up to an hour.
