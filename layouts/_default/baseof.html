@@ -17,7 +17,10 @@
         {{- if in (slice "taxonomy" "term") .Kind -}}
         <meta name="robots" content="noindex, follow">
         {{- end -}}
-        <title>{{ block "title" . }}{{ .Site.Title }}{{ end }}</title>
+        {{- /* The home page has no "title" block of its own, so it used to fall back
+               to the bare site title, identical in both languages. Use the home
+               page's own title (content/_index.<lang>.md) there instead. */}}
+        <title>{{ block "title" . }}{{ if .IsHome }}{{ .Title }}{{ else }}{{ .Site.Title }}{{ end }}{{ end }}</title>
 
         {{- partial "head/meta.html" . -}}
         {{- partial "head/link.html" . -}}
