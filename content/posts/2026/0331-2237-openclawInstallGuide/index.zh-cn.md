@@ -15,7 +15,7 @@ OpenClaw 是一个开源的自托管 AI 助手平台（前身为 Clawdbot / Molt
 
 <!--more-->
 
-### 1. 环境要求
+## 1. 环境要求
 
 | 组件 | 最低要求 | 推荐 |
 |------|---------|------|
@@ -29,7 +29,7 @@ OpenClaw 是一个开源的自托管 AI 助手平台（前身为 Clawdbot / Molt
 
 ---
 
-### 2. 安装 Node.js
+## 2. 安装 Node.js
 
 推荐使用 nvm 管理 Node.js 版本：
 
@@ -48,23 +48,23 @@ node --version  # 应显示 v24.x.x
 
 ---
 
-### 3. 安装 OpenClaw
+## 3. 安装 OpenClaw
 
-#### 方式一：npm 安装（推荐）
+### 方式一：npm 安装（推荐）
 
 ```bash
 npm install -g @openclaw/cli
 openclaw --version
 ```
 
-#### 方式二：Homebrew（macOS）
+### 方式二：Homebrew（macOS）
 
 ```bash
 brew tap openclaw/tap
 brew install openclaw
 ```
 
-#### 方式三：从源码构建
+### 方式三：从源码构建
 
 ```bash
 git clone https://github.com/openclaw/openclaw.git
@@ -75,7 +75,7 @@ npm link
 openclaw --version
 ```
 
-#### 方式四：Docker
+### 方式四：Docker
 
 ```bash
 docker pull openclaw/openclaw:latest
@@ -84,7 +84,7 @@ docker run --rm openclaw/openclaw:latest --version
 
 ---
 
-### 4. 安装容器引擎
+## 4. 安装容器引擎
 
 OpenClaw 的技能沙箱依赖容器引擎。推荐 Podman（无需 root 权限，攻击面更小）：
 
@@ -105,7 +105,7 @@ sudo usermod -aG docker $USER
 
 ---
 
-### 5. 初始化与验证
+## 5. 初始化与验证
 
 ```bash
 # 初始化（创建配置目录）
@@ -131,11 +131,11 @@ openclaw doctor
 
 ---
 
-### 6. 配置 AI 模型
+## 6. 配置 AI 模型
 
 编辑 `~/.openclaw/config.yaml`：
 
-#### 使用云端模型（需要 API Key）
+### 使用云端模型（需要 API Key）
 
 ```yaml
 model:
@@ -156,7 +156,7 @@ agent:
 > export OPENAI_API_KEY=sk-your-key-here
 > ```
 
-#### 使用本地模型（Ollama，完全免费离线）
+### 使用本地模型（Ollama，完全免费离线）
 
 ```bash
 # 安装 Ollama
@@ -181,7 +181,7 @@ model:
 
 ---
 
-### 7. 安全配置（重要！）
+## 7. 安全配置（重要！）
 
 OpenClaw Gateway 默认监听 18789 端口，**必须确保只绑定到 localhost**：
 
@@ -211,7 +211,7 @@ sudo iptables -A INPUT -p tcp -s 127.0.0.1 --dport 18789 -j ACCEPT
 
 ---
 
-### 8. 第一次运行
+## 8. 第一次运行
 
 ```bash
 # 简单测试
@@ -226,7 +226,7 @@ openclaw run "Find all TODO comments in this project and create a summary report
 
 ---
 
-### 9. Windows 用户安装指南 (WSL2)
+## 9. Windows 用户安装指南 (WSL2)
 
 OpenClaw **不支持原生 Windows**，必须通过 WSL2：
 
@@ -260,7 +260,7 @@ swap=4GB
 
 ---
 
-### 10. 常见问题
+## 10. 常见问题
 
 **`command not found`：**
 ```bash
@@ -294,7 +294,7 @@ podman machine start
 
 ---
 
-### 11. 目录结构说明
+## 11. 目录结构说明
 
 ```
 ~/.openclaw/
@@ -313,7 +313,7 @@ podman machine start
 
 ---
 
-### 12. 常用命令速查
+## 12. 常用命令速查
 
 ```bash
 openclaw run "你的任务"          # 执行任务

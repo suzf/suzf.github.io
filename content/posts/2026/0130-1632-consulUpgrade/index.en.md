@@ -17,7 +17,7 @@ Below is a detailed upgrade roadmap and procedure:
 
 <!--more-->
 
-### 1. Core Principles Before Upgrading
+## 1. Core Principles Before Upgrading
 
 - **Version gap limit:** For non-LTS versions, it is recommended to **skip no more than 2 minor versions at a time** (e.g., 1.18 → 1.20). For very old versions, follow the official intermediate version path for step-by-step upgrades.
 
@@ -27,7 +27,7 @@ Below is a detailed upgrade roadmap and procedure:
 
 ---
 
-### 2. Server Cluster Rolling Upgrade
+## 2. Server Cluster Rolling Upgrade
 
 Server upgrades must maintain **Quorum** at all times, otherwise the cluster will enter an election loop.
 
@@ -53,7 +53,7 @@ Server upgrades must maintain **Quorum** at all times, otherwise the cluster wil
 
 ---
 
-### 3. Upgrading in Kubernetes (Helm)
+## 3. Upgrading in Kubernetes (Helm)
 
 If you run Consul on K8s, you can use `updatePartition` for fine-grained rolling upgrades:
 
@@ -65,7 +65,7 @@ If you run Consul on K8s, you can use `updatePartition` for fine-grained rolling
 
 ---
 
-### 4. Common Troubleshooting
+## 4. Common Troubleshooting
 
 - **Split-brain / No Leader:** If no Leader can be elected after the upgrade, check whether the `Raft Protocol` version is consistent across all nodes (use `consul info`).
 

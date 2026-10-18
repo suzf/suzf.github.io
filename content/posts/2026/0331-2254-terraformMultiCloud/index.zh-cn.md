@@ -15,7 +15,7 @@ draft: false
 
 <!--more-->
 
-### 1. 目录结构设计
+## 1. 目录结构设计
 
 ```
 infrastructure/
@@ -52,9 +52,9 @@ infrastructure/
 
 ---
 
-### 2. Provider 管理
+## 2. Provider 管理
 
-#### 版本锁定
+### 版本锁定
 
 ```hcl
 terraform {
@@ -79,7 +79,7 @@ terraform {
 
 > 始终锁定 Provider 版本。多云环境下一个 Provider 的 breaking change 可能导致连锁故障。
 
-#### 认证隔离
+### 认证隔离
 
 ```hcl
 # providers.tf — 每个云独立配置认证
@@ -105,11 +105,11 @@ provider "azurerm" {
 
 ---
 
-### 3. 抽象模块设计
+## 3. 抽象模块设计
 
 多云的核心挑战是：同一个概念（VPC/网络、虚拟机、负载均衡）在不同云上 API 完全不同。
 
-#### 方式一：统一接口模块（推荐简单场景）
+### 方式一：统一接口模块（推荐简单场景）
 
 ```hcl
 # modules/compute/main.tf
@@ -140,7 +140,7 @@ module "gcp" {
 }
 ```
 
-#### 方式二：各云独立模块 + 统一输出（推荐复杂场景）
+### 方式二：各云独立模块 + 统一输出（推荐复杂场景）
 
 ```hcl
 # modules/networking/aws/outputs.tf
@@ -156,7 +156,7 @@ output "subnet_ids"  { value = google_compute_subnetwork.main[*].id }
 
 ---
 
-### 4. State 管理策略
+## 4. State 管理策略
 
 多云环境下 State 必须按云和环境隔离：
 
@@ -185,7 +185,7 @@ terraform {
 
 ---
 
-### 5. 跨云资源引用
+## 5. 跨云资源引用
 
 不同云之间需要共享数据时（如 AWS 的 IP 需要配到 GCP 的防火墙）：
 
@@ -222,7 +222,7 @@ resource "cloudflare_record" "gcp" {
 
 ---
 
-### 6. CI/CD 工作流统一
+## 6. CI/CD 工作流统一
 
 ```yaml
 # .github/workflows/terraform.yml
@@ -265,7 +265,7 @@ jobs:
 
 ---
 
-### 7. 变量与命名规范
+## 7. 变量与命名规范
 
 ```hcl
 # variables.tf — 统一变量命名
@@ -300,7 +300,7 @@ locals {
 
 ---
 
-### 8. 常见陷阱
+## 8. 常见陷阱
 
 - **Provider 版本不一致：** 团队成员用不同版本的 Provider 导致 State 不兼容。解决：提交 `.terraform.lock.hcl` 到 Git。
 

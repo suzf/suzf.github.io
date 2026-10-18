@@ -15,7 +15,7 @@ draft: false
 
 <!--more-->
 
-### 1. 使用多阶段构建 (Multi-stage Build)
+## 1. 使用多阶段构建 (Multi-stage Build)
 
 将编译环境和运行环境分离，最终镜像只包含运行所需的产物：
 
@@ -40,7 +40,7 @@ ENTRYPOINT ["server"]
 
 ---
 
-### 2. 选择合适的基础镜像
+## 2. 选择合适的基础镜像
 
 | 场景 | 推荐镜像 | 大小 |
 |------|---------|------|
@@ -53,7 +53,7 @@ ENTRYPOINT ["server"]
 
 ---
 
-### 3. 合理利用构建缓存
+## 3. 合理利用构建缓存
 
 Docker 按层缓存，**变化频率低的指令放前面**：
 
@@ -74,7 +74,7 @@ RUN npm run build
 
 ---
 
-### 4. 减少镜像层数和体积
+## 4. 减少镜像层数和体积
 
 ```dockerfile
 # ❌ 多个 RUN 产生多层
@@ -94,7 +94,7 @@ RUN apt-get update && \
 
 ---
 
-### 5. 不要以 root 运行
+## 5. 不要以 root 运行
 
 ```dockerfile
 RUN addgroup -S app && adduser -S app -G app
@@ -105,7 +105,7 @@ USER app
 
 ---
 
-### 6. 使用 .dockerignore
+## 6. 使用 .dockerignore
 
 在项目根目录创建 `.dockerignore`，避免将无关文件发送到构建上下文：
 
@@ -123,7 +123,7 @@ coverage
 
 ---
 
-### 7. COPY vs ADD
+## 7. COPY vs ADD
 
 ```dockerfile
 # ✅ 优先使用 COPY（行为明确）
@@ -137,7 +137,7 @@ ADD app.tar.gz /app/
 
 ---
 
-### 8. ENTRYPOINT vs CMD
+## 8. ENTRYPOINT vs CMD
 
 ```dockerfile
 # ENTRYPOINT 定义容器的主进程
@@ -160,7 +160,7 @@ docker run myapp --port 9090
 
 ---
 
-### 9. 健康检查
+## 9. 健康检查
 
 ```dockerfile
 HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
@@ -171,7 +171,7 @@ HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
 
 ---
 
-### 10. 安全扫描
+## 10. 安全扫描
 
 构建完成后扫描镜像漏洞：
 

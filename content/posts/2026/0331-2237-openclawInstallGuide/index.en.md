@@ -15,7 +15,7 @@ OpenClaw is an open-source, self-hosted AI assistant platform (formerly Clawdbot
 
 <!--more-->
 
-### 1. System Requirements
+## 1. System Requirements
 
 | Component | Minimum | Recommended |
 |-----------|---------|-------------|
@@ -29,7 +29,7 @@ OpenClaw is an open-source, self-hosted AI assistant platform (formerly Clawdbot
 
 ---
 
-### 2. Install Node.js
+## 2. Install Node.js
 
 Use nvm (Node Version Manager) for easy version management:
 
@@ -48,23 +48,23 @@ node --version  # Should display v24.x.x
 
 ---
 
-### 3. Install OpenClaw
+## 3. Install OpenClaw
 
-#### Option 1: npm (Recommended)
+### Option 1: npm (Recommended)
 
 ```bash
 npm install -g @openclaw/cli
 openclaw --version
 ```
 
-#### Option 2: Homebrew (macOS)
+### Option 2: Homebrew (macOS)
 
 ```bash
 brew tap openclaw/tap
 brew install openclaw
 ```
 
-#### Option 3: Build from Source
+### Option 3: Build from Source
 
 ```bash
 git clone https://github.com/openclaw/openclaw.git
@@ -75,7 +75,7 @@ npm link
 openclaw --version
 ```
 
-#### Option 4: Docker
+### Option 4: Docker
 
 ```bash
 docker pull openclaw/openclaw:latest
@@ -84,7 +84,7 @@ docker run --rm openclaw/openclaw:latest --version
 
 ---
 
-### 4. Install a Container Engine
+## 4. Install a Container Engine
 
 OpenClaw's skill sandbox requires a container engine. Podman is recommended (rootless, smaller attack surface):
 
@@ -105,7 +105,7 @@ sudo usermod -aG docker $USER
 
 ---
 
-### 5. Initialize and Verify
+## 5. Initialize and Verify
 
 ```bash
 # Initialize (creates config directory)
@@ -131,11 +131,11 @@ openclaw doctor
 
 ---
 
-### 6. Configure AI Model
+## 6. Configure AI Model
 
 Edit `~/.openclaw/config.yaml`:
 
-#### Cloud Models (API Key Required)
+### Cloud Models (API Key Required)
 
 ```yaml
 model:
@@ -156,7 +156,7 @@ agent:
 > export OPENAI_API_KEY=sk-your-key-here
 > ```
 
-#### Local Models (Ollama, Fully Free & Offline)
+### Local Models (Ollama, Fully Free & Offline)
 
 ```bash
 # Install Ollama
@@ -181,7 +181,7 @@ Start Ollama and use OpenClaw — no API key needed.
 
 ---
 
-### 7. Security Configuration (Important!)
+## 7. Security Configuration (Important!)
 
 The OpenClaw Gateway listens on port 18789 by default. **Ensure it only binds to localhost:**
 
@@ -211,7 +211,7 @@ sudo iptables -A INPUT -p tcp -s 127.0.0.1 --dport 18789 -j ACCEPT
 
 ---
 
-### 8. First Run
+## 8. First Run
 
 ```bash
 # Simple test
@@ -226,7 +226,7 @@ openclaw run "Find all TODO comments in this project and create a summary report
 
 ---
 
-### 9. Windows Installation (WSL2)
+## 9. Windows Installation (WSL2)
 
 OpenClaw **does not support native Windows**. Use WSL2:
 
@@ -260,7 +260,7 @@ swap=4GB
 
 ---
 
-### 10. Troubleshooting
+## 10. Troubleshooting
 
 **`command not found`:**
 ```bash
@@ -294,7 +294,7 @@ podman machine start
 
 ---
 
-### 11. Directory Structure
+## 11. Directory Structure
 
 ```
 ~/.openclaw/
@@ -313,7 +313,7 @@ podman machine start
 
 ---
 
-### 12. Quick Command Reference
+## 12. Quick Command Reference
 
 ```bash
 openclaw run "your task"          # Execute a task
