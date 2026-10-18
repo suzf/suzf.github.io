@@ -482,7 +482,7 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
     [languages.zh-cn.params]
       # site description for RSS, SEO, Open Graph and X Cards
       # 网站描述, 用于 RSS, SEO, Open Graph 和 X Cards
-      description = "Suzf Blog"
+      description = "Jeffrey Su 的运维与开发实践笔记：Terraform、Docker、Consul 和 Nomad 集群升级，以及正则、SSL 证书、UUID、Base64、Cron 等开发者工具详解。"
       # site keywords
       # 网站关键词
       keywords = ["suzf", "suzf blog", "JeffreySu"]
@@ -627,7 +627,7 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
     [languages.en.params]
       # site description for RSS, SEO, Open Graph and X Cards
       # 网站描述, 用于 RSS, SEO, Open Graph 和 X Cards
-      description = "Suzf's Blog"
+      description = "Hands-on DevOps and developer notes by Jeffrey Su: Terraform, Docker, Consul and Nomad upgrades, plus regex, SSL, UUID, Base64 and cron explained."
       # site keywords
       # 网站关键词
       keywords = ["suzf", "suzf blog", "JeffreySu"]
