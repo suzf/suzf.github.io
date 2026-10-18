@@ -7,7 +7,6 @@ description: ""
 categories: ["Skills Matrix"]
 tags: ["terraform", "devops", "multi-cloud"]
 toc: true
-lightgallery: true
 draft: false
 ---
 

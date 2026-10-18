@@ -58,19 +58,26 @@ token 的权限、Zone ID 的位置、凭据的保存方法，以及清理失败
 
 | 文件 | 改了什么 |
 |---|---|
-| `layouts/_default/baseof.html` | 标签页和分类页加 `noindex, follow`；首页 `<title>` 使用 `content/_index.<lang>.md` 里的标题；接入 AdSense |
+| `layouts/_default/baseof.html` | 标签页和分类页加 `noindex, follow`；首页 `<title>` 使用 `content/_index.<lang>.md` 里的标题，分页第 2 页起加"第 N 页"；接入 AdSense |
 | `layouts/_partials/head/meta.html` | 每篇文章输出自己的 meta description，而不是全站统一的描述 |
 | `layouts/_partials/head/hreflang.html` | 中英文页面互相声明 hreflang（en、zh-CN、x-default） |
+| `layouts/_partials/head/link.html` | 首页分页第 2 页起的 canonical 指向自身，不再指向第 1 页 |
+| `layouts/_partials/head/seo.html` | About 页输出 ProfilePage + Person，不再是 BlogPosting；文章的 author 带上 About 页链接 |
+| `layouts/index.html` | 首页文章分页改由 `layouts/_partials/function/home-pager.html` 生成，和 `<head>` 共用同一个分页器（原因见该文件注释） |
 | `layouts/sitemap.xml` | 不收录标签和分类页；hreflang 使用 `zh-CN` |
-| `layouts/posts/single.html` | 文章页的目录标题不再是 h2，避免出现在 h1 之前 |
+| `layouts/posts/single.html` | 文章页的目录标题不再是 h2，避免出现在 h1 之前；`<title>` 加上 " - Suzf Blog" 超过 60 个字符时去掉后缀 |
 | `layouts/_default/summary.html` | 首页文章卡片的标题从 h1 改为 h2 |
-| `layouts/_default/section.html` | 列表页的标题从 h2 改为 h1 |
+| `layouts/_default/section.html` | 列表页的标题从 h2 改为 h1，年份分组从 h3 改为 h2 |
 | `layouts/_default/taxonomy.html` | 标签和分类页按年份分组 |
-| `assets/css/_custom.scss` | 列表页标题改为 h1 后，保持原来的字号 |
+| `assets/css/_custom.scss` | 列表页标题和年份分组升级标签后，保持原来的字号 |
+| `i18n/` | 主题没有的文案（分页标题里的"第 N 页"），和主题的 i18n 合并 |
 | `layouts/_partials/internal/`、`layouts/shortcodes/` | 兼容 Hugo 0.154 的 X/Twitter 嵌入 |
 
 其他相关配置在 `hugo.toml` 里：
 
 - **RSS 链接**：各语言的 `params.social.RSS.url` 写成不带开头斜杠的 `index.xml`。主题默认的 `/index.xml` 会跳过 `/blog` 前缀。
 - **作者链接**：各语言的 `params.author.link` 会原样输出，所以要写完整路径，包括 `/blog/` 前缀。
-- **分享图**：`params.images` 指向主站的 1200×630 分享图 `https://suzf.net/og`。
+- **分享图**：`params.images` 指向主站的 1200×630 分享图 `https://suzf.net/og`；结构化数据用的 `params.seo.image` 也指向它。
+- **出版者**：`params.page.seo.publisher` 和主站的 Organization 一致（名称 Suzf，logo `https://suzf.net/logo`）。
+- **图标**：`params.app.noFavicon = true`。主题会引用站点根目录下的 `/favicon-32x32.png` 等文件，但根目录是主站，没有这些文件。现在由浏览器自动回退到主站提供的 `/favicon.ico` 和 `/apple-touch-icon.png`。
+- **标题层级**：文章正文的小节标题从 `##` 开始（文章标题是 h1）。

@@ -7,7 +7,6 @@ description: "随机的 UUID v4 保证唯一性很好，但对数据库索引局
 categories: ["开发工具"]
 tags: ["uuid", "database", "postgres", "identifiers"]
 toc: true
-lightgallery: true
 draft: false
 ---
 

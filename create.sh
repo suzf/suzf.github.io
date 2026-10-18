@@ -80,7 +80,7 @@ cat > content/posts/${post_dir}/index.zh-cn.md <<EOF
 title: "${post_title}"
 slug: "${post_slug}"
 date: ${post_date_str}
-author: "郭冬"
+author: "Jeffrey Su"
 description: "${post_description}"
 categories: ["${post_category}"]
 tags: ["${post_tags_formatted}"]
@@ -102,7 +102,6 @@ EOF
 fi
 
 cat >> content/posts/${post_dir}/index.zh-cn.md <<EOF
-lightgallery: true
 ---
 
 ${post_description}
@@ -119,7 +118,7 @@ if [[ "$enable_english" == "yes" ]]; then
 title: "${post_title}"
 slug: "${post_slug}"
 date: ${post_date_str}
-author: "Damon"
+author: "Jeffrey Su"
 description: "${post_description}"
 categories: ["${post_category_en}"]
 tags: ["${post_tags_formatted}"]
@@ -141,7 +140,6 @@ EOF
   fi
 
   cat >> content/posts/${post_dir}/index.en.md <<EOF
-lightgallery: true
 ---
 
 ${post_description}

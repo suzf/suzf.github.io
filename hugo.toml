@@ -156,7 +156,12 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
     title = "LoveIt"
     # whether to omit favicon resource links
     # 是否隐藏网站图标资源链接
-    noFavicon = false
+    # The theme links /favicon-32x32.png, /favicon-16x16.png and
+    # /site.webmanifest at the site root, none of which exist (the root is the
+    # Next.js tools site), so every page shipped four 404ing <link>s. Drop
+    # them: browsers fall back to /favicon.ico, and iOS to
+    # /apple-touch-icon.png, both served by the tools site for the whole host.
+    noFavicon = true
     # modern SVG favicon to use in place of older style .png and .ico files
     # 更现代的 SVG 网站图标, 可替代旧的 .png 和 .ico 文件
     svgFavicon = ""
@@ -336,9 +341,11 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       images = []
       # publisher info
       # 出版者信息
+      # Same publisher as the tools site's Organization JSON-LD (name + square
+      # logo), so Google sees one entity behind suzf.net and suzf.net/blog.
       [params.page.seo.publisher]
-        name = "suzf"
-        logoUrl = "/images/avatar.jpg"
+        name = "Suzf"
+        logoUrl = "https://suzf.net/logo"
 
   # TypeIt config
   # TypeIt 配置
@@ -370,10 +377,15 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
   [params.seo]
     # image URL
     # 图片 URL
-    image = "/images/screenshot.png"
+    # absURL keeps a leading-slash path at the host root and skips the /blog
+    # mount, so "/images/screenshot.png" became suzf.net/images/screenshot.png
+    # — a 404 — in the JSON-LD `image` of every post and the home page. Use
+    # the absolute 1200×630 share card from the tools site, same as
+    # `params.images`.
+    image = "https://suzf.net/og"
     # thumbnail URL
     # 缩略图 URL
-    thumbnailUrl = "/images/screenshot.png"
+    thumbnailUrl = "https://suzf.net/og"
 
   # analytics config
   # 网站分析配置
@@ -492,7 +504,7 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       # author config
       # 作者配置
       [languages.zh-cn.params.author]
-        name = "JeffreySu"
+        name = "Jeffrey Su"
         email = "i@suzf.net"
         # Taken as-is (no baseURL prefix), so it must carry the /blog mount.
         link = "/blog/zh-cn/about/"
@@ -543,7 +555,9 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
           avatarURL = "/images/avatar.jpg"
           # title shown in home page (HTML format is supported)
           # 主页显示的网站标题 (支持 HTML 格式)
-          title = "Jeffrey Su"
+          # Rendered as the home page's h1. It was the author name, which said
+          # nothing about the site and didn't match the English "Suzf Blog".
+          title = "Suzf 博客"
           # subtitle shown in home page (HTML format is supported)
           # 主页显示的网站副标题 (允许 HTML 格式)
           subtitle = ""
@@ -637,7 +651,7 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       # author config
       # 作者配置
       [languages.en.params.author]
-        name = "JeffreySu"
+        name = "Jeffrey Su"
         email = "i@suzf.net"
         # Taken as-is (no baseURL prefix), so it must carry the /blog mount.
         link = "/blog/about/"

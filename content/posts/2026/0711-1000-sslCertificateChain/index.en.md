@@ -3,11 +3,10 @@ title: "Reading an SSL Certificate Chain (and Debugging a Broken One)"
 slug: "reading ssl certificate chain debugging"
 date: 2026-07-11T10:00:00+08:00
 author: "Jeffrey Su"
-description: "Leaf, intermediate, root — what each certificate in a TLS chain is, how the chain is validated, and why 'works in my browser, fails in curl' almost always means a missing intermediate."
+description: "Leaf, intermediate, root: what each certificate in a TLS chain is, how it's checked, and why 'works in the browser, fails in curl' means a missing intermediate."
 categories: ["Developer Tools"]
 tags: ["ssl", "tls", "security", "https"]
 toc: true
-lightgallery: true
 draft: false
 ---
 

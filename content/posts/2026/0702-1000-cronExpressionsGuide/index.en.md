@@ -3,11 +3,10 @@ title: "Cron Expressions Explained: A Practical Guide"
 slug: "cron expressions explained practical guide"
 date: 2026-07-02T10:00:00+08:00
 author: "Jeffrey Su"
-description: "A field-by-field guide to cron expressions — the five fields, special characters, real-world schedules, and the timezone and day-of-week pitfalls that bite people in production."
+description: "A field-by-field guide to cron expressions: the five fields, special characters, real-world schedules, and the timezone and day-of-week traps of production."
 categories: ["Developer Tools"]
 tags: ["cron", "linux", "scheduling", "devops"]
 toc: true
-lightgallery: true
 draft: false
 ---
 

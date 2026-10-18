@@ -19,8 +19,10 @@
         {{- end -}}
         {{- /* The home page has no "title" block of its own, so it used to fall back
                to the bare site title, identical in both languages. Use the home
-               page's own title (content/_index.<lang>.md) there instead. */}}
-        <title>{{ block "title" . }}{{ if .IsHome }}{{ .Title }}{{ else }}{{ .Site.Title }}{{ end }}{{ end }}</title>
+               page's own title (content/_index.<lang>.md) there instead, plus
+               "Page N" on /page/2/ and on so the pager pages don't all share
+               page 1's title. */}}
+        <title>{{ block "title" . }}{{ if .IsHome }}{{ .Title }}{{ with partial "function/home-pager.html" . }}{{ if gt .PageNumber 1 }} - {{ T "pageNumber" . }}{{ end }}{{ end }}{{ else }}{{ .Site.Title }}{{ end }}{{ end }}</title>
 
         {{- partial "head/meta.html" . -}}
         {{- partial "head/link.html" . -}}

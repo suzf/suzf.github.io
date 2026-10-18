@@ -7,7 +7,6 @@ description: ""
 categories: ["Skills Matrix"]
 tags: ["openclaw", "ai"]
 toc: true
-lightgallery: true
 draft: false
 ---
 

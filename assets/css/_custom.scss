@@ -3,3 +3,9 @@
 .archive h1.single-title {
   font-size: 1.5em;
 }
+
+// The year headings under it went from h3 to h2 for the same reason; keep
+// them at the browser's h3 size.
+.archive h2.group-title {
+  font-size: 1.17em;
+}

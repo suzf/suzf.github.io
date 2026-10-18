@@ -3,11 +3,10 @@ title: "Regex in Practice: Handy Patterns and the Traps to Avoid"
 slug: "regex patterns and pitfalls"
 date: 2026-07-14T10:00:00+08:00
 author: "Jeffrey Su"
-description: "A working set of regex patterns you'll actually reuse, plus the traps that cause bugs and outages — greedy quantifiers, unanchored matches, catastrophic backtracking, and the 'don't parse HTML with regex' rule."
+description: "Regex patterns you'll actually reuse, plus the traps behind real bugs and outages: greedy quantifiers, missing anchors, catastrophic backtracking, parsing HTML."
 categories: ["Developer Tools"]
 tags: ["regex", "programming", "text-processing"]
 toc: true
-lightgallery: true
 draft: false
 ---
 
