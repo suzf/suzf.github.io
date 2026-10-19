@@ -1,5 +1,6 @@
-{{- /* Theme's head/seo.html with two changes, marked below: the about page
-       gets ProfilePage instead of BlogPosting, and post authors get a url. */ -}}
+{{- /* Theme's head/seo.html with three changes, marked below: the about page
+       gets ProfilePage instead of BlogPosting, section archives get a
+       CollectionPage, and post authors get a url. */ -}}
 {{- $params := .Scratch.Get "params" -}}
 
 {{- with .Site.Params.verification.google -}}
@@ -83,6 +84,33 @@
     {{- end -}}
     <script type="application/ld+json">
     {{ dict "@context" "https://schema.org" "@type" "ProfilePage" "url" .Permalink "inLanguage" .Site.LanguageCode "mainEntity" $person | jsonify | safeJS }}
+    </script>
+
+{{- /* Section archive (/posts/): a CollectionPage listing its posts, plus a
+       breadcrumb back to the blog home. The theme emitted nothing here. */ -}}
+{{- else if eq .Kind "section" -}}
+    {{- $items := slice -}}
+    {{- range $i, $p := .Pages -}}
+        {{- $items = $items | append (dict "@type" "ListItem" "position" (add $i 1) "name" $p.Title "url" $p.Permalink) -}}
+    {{- end -}}
+    {{- $title := .Params.Title | default (T .Section) | default .Section | dict "Some" | T "allSome" -}}
+    {{- $page := dict
+        "@context" "https://schema.org"
+        "@type" "CollectionPage"
+        "name" $title
+        "description" .Description
+        "url" .Permalink
+        "inLanguage" .Site.LanguageCode
+        "isPartOf" (dict "@type" "WebSite" "name" .Site.Title "url" .Site.Home.Permalink)
+        "mainEntity" (dict "@type" "ItemList" "numberOfItems" (len $items) "itemListElement" $items) -}}
+    {{- $crumbs := dict
+        "@context" "https://schema.org"
+        "@type" "BreadcrumbList"
+        "itemListElement" (slice
+            (dict "@type" "ListItem" "position" 1 "name" .Site.Title "item" .Site.Home.Permalink)
+            (dict "@type" "ListItem" "position" 2 "name" $title "item" .Permalink)) -}}
+    <script type="application/ld+json">
+    {{ slice $page $crumbs | jsonify | safeJS }}
     </script>
 
 {{- /* Page SEO */ -}}
