@@ -3,7 +3,7 @@ title: "Dockerfile 最佳实践"
 slug: "dockerfile best practices"
 date: 2026-03-31T22:20:51+08:00
 author: "Jeffrey Su"
-description: ""
+description: "10 条实用的 Dockerfile 编写规范：多阶段构建、选对基础镜像、利用构建缓存、减少层数、非 root 运行、.dockerignore、健康检查与安全扫描。"
 categories: ["技能矩阵"]
 tags: ["docker", "devops"]
 toc: true

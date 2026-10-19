@@ -3,7 +3,7 @@ title: "Nomad Server Cluster Upgrade: Rolling Upgrades Without Losing Quorum"
 slug: "nomad server cluster upgrade"
 date: 2026-03-31T22:09:08+08:00
 author: "Jeffrey Su"
-description: ""
+description: "Upgrade Nomad Servers without losing Quorum: back up the Raft snapshot, roll Followers before the Leader, never skip versions, then verify or roll back."
 categories: ["Skills Matrix"]
 tags: ["nomad"]
 toc: true

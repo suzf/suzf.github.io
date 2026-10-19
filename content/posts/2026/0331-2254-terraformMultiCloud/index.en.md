@@ -3,7 +3,7 @@ title: "Terraform Multi-Cloud Best Practices"
 slug: "terraform multi cloud best practices"
 date: 2026-03-31T22:54:13+08:00
 author: "Jeffrey Su"
-description: ""
+description: "Terraform across AWS, GCP and Azure: directory layout, provider pinning and auth isolation, module design, per-cloud State, cross-cloud refs, one CI/CD flow."
 categories: ["Skills Matrix"]
 tags: ["terraform", "devops", "multi-cloud"]
 toc: true

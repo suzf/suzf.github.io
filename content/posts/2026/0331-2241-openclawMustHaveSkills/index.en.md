@@ -3,7 +3,7 @@ title: "OpenClaw Must-Have Skills — Highly Recommended"
 slug: "openclaw must have skills"
 date: 2026-03-31T22:41:40+08:00
 author: "Jeffrey Su"
-description: ""
+description: "ClawHub lists 13,000+ OpenClaw Skills and ~13.4% were flagged in a 2026 audit. The ones actually worth installing, by use case: dev, search, productivity."
 categories: ["Skills Matrix"]
 tags: ["openclaw", "ai"]
 toc: true

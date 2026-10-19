@@ -3,7 +3,7 @@ title: "Dockerfile Pitfalls Guide"
 slug: "dockerfile pitfalls guide"
 date: 2026-03-31T22:23:03+08:00
 author: "Jeffrey Su"
-description: ""
+description: "12 Dockerfile traps that bite in production, from apt-get caching and shell-form ENTRYPOINT to hardcoded secrets, Alpine DNS and zombie processes, with fixes."
 categories: ["Skills Matrix"]
 tags: ["docker", "devops"]
 toc: true

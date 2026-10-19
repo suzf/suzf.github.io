@@ -3,7 +3,7 @@ title: "Dockerfile 避坑指南"
 slug: "dockerfile pitfalls guide"
 date: 2026-03-31T22:23:03+08:00
 author: "Jeffrey Su"
-description: ""
+description: "生产环境里 12 个常见的 Dockerfile 坑：apt-get 缓存、shell 格式 ENTRYPOINT、硬编码密钥、Alpine 的 DNS 与 glibc、僵尸进程等，附解决方案。"
 categories: ["技能矩阵"]
 tags: ["docker", "devops"]
 toc: true

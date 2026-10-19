@@ -3,7 +3,7 @@ title: "OpenClaw 保姆级安装教程"
 slug: "openclaw install guide"
 date: 2026-03-31T22:37:32+08:00
 author: "Jeffrey Su"
-description: ""
+description: "从零安装开源自托管 AI 助手 OpenClaw：准备 Node.js，用 npm、Homebrew、源码或 Docker 安装，再接入云端模型或本地 Ollama 完成首次运行。"
 categories: ["技能矩阵"]
 tags: ["openclaw", "ai"]
 toc: true
