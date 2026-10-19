@@ -3,7 +3,7 @@ title: "OpenClaw 必备 Skills 强烈推荐"
 slug: "openclaw must have skills"
 date: 2026-03-31T22:41:40+08:00
 author: "Jeffrey Su"
-description: ""
+description: "ClawHub 上超过 13000 个 OpenClaw Skills 质量参差不齐，约 13.4% 有安全问题。按开发、搜索、效率等场景推荐真正值得装的 Skills。"
 categories: ["技能矩阵"]
 tags: ["openclaw", "ai"]
 toc: true

@@ -3,7 +3,7 @@ title: "Terraform 状态管理与团队协作最佳实践"
 slug: "terraform state management best practices"
 date: 2026-03-31T22:17:52+08:00
 author: "Jeffrey Su"
-description: ""
+description: "Terraform State 团队协作最佳实践：远程后端与状态锁、按目录或 Workspace 隔离、跨 State 引用、日常运维命令和安全注意事项。"
 categories: ["技能矩阵"]
 tags: ["terraform", "devops"]
 toc: true
