@@ -12,6 +12,12 @@ Jeffrey Su 的运维与开发笔记，线上地址 <https://suzf.net/blog/>，�
 git submodule update --init
 ```
 
+首次克隆后，启用仓库里的提交身份（`.gitconfig`，Jeffrey <i@suzf.net>）。git 出于安全原因不会自动加载仓库里的配置文件，所以每个克隆要运行一次：
+
+```bash
+git config include.path ../.gitconfig
+```
+
 本地预览（包含草稿和未来日期的文章）：
 
 ```bash
