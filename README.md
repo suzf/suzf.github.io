@@ -81,3 +81,4 @@ token 的权限、Zone ID 的位置、凭据的保存方法，以及清理失败
 - **出版者**：`params.page.seo.publisher` 和主站的 Organization 一致（名称 Suzf，logo `https://suzf.net/logo`）。
 - **图标**：`params.app.noFavicon = true`。主题会引用站点根目录下的 `/favicon-32x32.png` 等文件，但根目录是主站，没有这些文件。现在由浏览器自动回退到主站提供的 `/favicon.ico` 和 `/apple-touch-icon.png`。
 - **标题层级**：文章正文的小节标题从 `##` 开始（文章标题是 h1）。
+- **资源指纹**：`params.fingerprint = "sha256"`，主题自己的 CSS/JS 文件名里带内容哈希（并加上 SRI 的 `integrity`），改样式后 Cloudflare 和浏览器不会继续用旧文件。只在 `--environment production` 下生效。

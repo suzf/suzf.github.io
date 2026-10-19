@@ -53,7 +53,11 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
   # ["sha256", "sha384", "sha512", "md5"]
   # 哪种哈希函数用来 SRI, 为空时表示不使用 SRI
   # ["sha256", "sha384", "sha512", "md5"]
-  fingerprint = ""
+  # Also puts a content hash in the theme's own CSS/JS file names. Without
+  # it, /blog/css/style.min.css kept one URL across deploys and Cloudflare
+  # and browsers (max-age 7d) kept serving the old stylesheet after a change.
+  # Adds SRI integrity attributes too; CDN-hosted libraries are unaffected.
+  fingerprint = "sha256"
   # date format
   # 日期格式
   dateFormat = "2006-01-02"
