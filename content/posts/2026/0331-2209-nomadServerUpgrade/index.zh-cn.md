@@ -3,7 +3,7 @@ title: "Nomad Server 集群升级：保持 Quorum 的滚动升级"
 slug: "nomad server cluster upgrade"
 date: 2026-03-31T22:09:08+08:00
 author: "Jeffrey Su"
-description: ""
+description: "Nomad Server 集群滚动升级：先备份 Raft 快照，先 Follower 后 Leader，全程保持 Quorum，不跳版本升级，附升级后验证与回滚方案。"
 categories: ["技能矩阵"]
 tags: ["nomad"]
 toc: true

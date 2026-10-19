@@ -3,7 +3,7 @@ title: "Consul Server 集群升级：分步滚动升级指南"
 slug: "consul server upgrade"
 date: 2026-01-30T16:32:53+08:00
 author: "Jeffrey Su"
-description: ""
+description: "Consul 集群滚动升级指南：先备份快照，先升级 Server 再升级 Client，先 Follower 后 Leader，一次最多跨两个次要版本，附 Helm 升级与故障处理。"
 categories: ["技能矩阵"]
 tags: ["consul"]
 toc: true
