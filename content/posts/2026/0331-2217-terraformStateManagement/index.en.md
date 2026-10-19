@@ -3,7 +3,7 @@ title: "Terraform State Management & Team Collaboration Best Practices"
 slug: "terraform state management best practices"
 date: 2026-03-31T22:17:52+08:00
 author: "Jeffrey Su"
-description: ""
+description: "Terraform State for teams: remote backends and locking, directory vs Workspace isolation, cross-State references, everyday state commands and security."
 categories: ["Skills Matrix"]
 tags: ["terraform", "devops"]
 toc: true

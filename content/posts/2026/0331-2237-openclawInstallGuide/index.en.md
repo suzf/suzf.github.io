@@ -3,7 +3,7 @@ title: "OpenClaw Step-by-Step Installation Guide"
 slug: "openclaw install guide"
 date: 2026-03-31T22:37:32+08:00
 author: "Jeffrey Su"
-description: ""
+description: "Install OpenClaw, the open-source self-hosted AI assistant, from scratch: Node.js, npm, Homebrew, source or Docker, then connect a cloud model or local Ollama."
 categories: ["Skills Matrix"]
 tags: ["openclaw", "ai"]
 toc: true

@@ -3,7 +3,7 @@ title: "Dockerfile Best Practices"
 slug: "dockerfile best practices"
 date: 2026-03-31T22:20:51+08:00
 author: "Jeffrey Su"
-description: ""
+description: "10 Dockerfile practices for smaller, faster, safer images: multi-stage builds, base images, build cache, non-root users, .dockerignore, health checks, scanning."
 categories: ["Skills Matrix"]
 tags: ["docker", "devops"]
 toc: true

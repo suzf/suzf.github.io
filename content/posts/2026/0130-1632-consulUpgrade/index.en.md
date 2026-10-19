@@ -3,7 +3,7 @@ title: "Consul Server Upgrade: A Step-by-Step Rolling Upgrade Guide"
 slug: "consul server upgrade"
 date: 2026-01-30T16:32:53+08:00
 author: "Jeffrey Su"
-description: ""
+description: "Upgrade a Consul cluster safely: snapshot first, Servers before Clients, Followers before the Leader, at most two minor versions per hop, plus Helm and fixes."
 categories: ["Skills Matrix"]
 tags: ["consul"]
 toc: true

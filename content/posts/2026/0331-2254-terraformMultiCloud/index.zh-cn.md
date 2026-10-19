@@ -3,7 +3,7 @@ title: "Terraform 多云管理最佳实践"
 slug: "terraform multi cloud best practices"
 date: 2026-03-31T22:54:13+08:00
 author: "Jeffrey Su"
-description: ""
+description: "用 Terraform 管理 AWS、GCP、Azure 多云：目录结构、Provider 版本锁定与认证隔离、模块抽象、State 策略、跨云引用和统一 CI/CD 工作流。"
 categories: ["技能矩阵"]
 tags: ["terraform", "devops", "multi-cloud"]
 toc: true
