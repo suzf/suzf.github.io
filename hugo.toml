@@ -23,7 +23,10 @@ defaultContentLanguage = "en"
 enableRobotsTXT = true
 # whether to use git commit log
 # 是否使用 git 信息
-enableGitInfo = false
+# Lastmod (sitemap <lastmod>, JSON-LD dateModified, "Updated on") comes from
+# each file's last commit instead of its front-matter date, so an edited post
+# shows as edited. Builds need the full git history (no shallow clone).
+enableGitInfo = true
 # whether to use emoji code
 # 是否使用 emoji 代码
 enableEmoji = true
