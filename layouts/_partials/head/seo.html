@@ -1,6 +1,7 @@
-{{- /* Theme's head/seo.html with three changes, marked below: the about page
+{{- /* Theme's head/seo.html with four changes, marked below: the about page
        gets ProfilePage instead of BlogPosting, section archives get a
-       CollectionPage, and post authors get a url. */ -}}
+       CollectionPage, posts use their own share card as image, and post
+       authors get a url. */ -}}
 {{- $params := .Scratch.Get "params" -}}
 
 {{- with .Site.Params.verification.google -}}
@@ -132,6 +133,13 @@
             {{- end -}}
             {{- with .Resources.GetMatch "featured-image" -}}
                 {{- $images = slice "featured-image" -}}
+            {{- end -}}
+        {{- end -}}
+        {{- /* The post's own share card ahead of the site-wide image. */ -}}
+        {{- if not $images -}}
+            {{- $card := partialCached "function/og-card.html" . .RelPermalink -}}
+            {{- if $card -}}
+                {{- $images = slice $card.Permalink -}}
             {{- end -}}
         {{- end -}}
         {{- with .Site.Params.seo.image -}}

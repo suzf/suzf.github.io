@@ -1,0 +1,21 @@
+{{- /* Greedy line fill for og-card.html. Input: dict "tokens" (each a dict of
+       text `t` and width `w` in em) and "limit" (line width in em). Returns
+       the lines. A space never starts a line, and closing CJK punctuation is
+       kept on the line before it. */ -}}
+{{- $noStart := "：，。、；！？）」』》”’" -}}
+{{- $lines := slice -}}
+{{- $line := "" -}}
+{{- $w := 0.0 -}}
+{{- range .tokens -}}
+    {{- if and (eq .t " ") (eq $line "") -}}{{- continue -}}{{- end -}}
+    {{- if and (gt (add $w .w) $.limit) (ne $line "") (not (strings.Contains $noStart .t)) -}}
+        {{- $lines = $lines | append (strings.TrimRight " " $line) -}}
+        {{- $line = "" -}}
+        {{- $w = 0.0 -}}
+        {{- if eq .t " " -}}{{- continue -}}{{- end -}}
+    {{- end -}}
+    {{- $line = printf "%s%s" $line .t -}}
+    {{- $w = add $w .w -}}
+{{- end -}}
+{{- with strings.TrimRight " " $line -}}{{- $lines = $lines | append . -}}{{- end -}}
+{{- return $lines -}}

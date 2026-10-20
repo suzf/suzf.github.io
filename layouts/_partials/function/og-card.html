@@ -1,0 +1,109 @@
+{{- /* Per-post 1200×630 share card: the post title on the brand gradient
+       (assets/images/og-base.png, same colours as suzf.net/og), drawn at build
+       time. Returns the image resource, or false when the page isn't a post or
+       the card can't be made — callers then fall back to the site-wide card.
+       Call it through partialCached (keyed by the page): og:image,
+       twitter:image and the JSON-LD all ask for it.
+
+       Font: Noto Sans SC Bold from Google Fonts, requested with `text=` so the
+       response is a TrueType subset of just this card's characters (tens of
+       KB). Hugo keeps remote resources in its cache dir, so only a new or
+       changed title needs the network. If Google Fonts can't be reached the
+       build warns and this post uses the generic card; it never fails. */ -}}
+{{- $card := false -}}
+{{- if and .IsPage (eq .Type "posts") -}}
+    {{- $title := .Title | plainify | htmlUnescape -}}
+    {{- $brand := "Suzf Blog" -}}
+    {{- $footer := "suzf.net/blog" -}}
+
+    {{- /* Font subset covering every character drawn on the card. */ -}}
+    {{- $font := false -}}
+    {{- $cssURL := printf "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@700&text=%s" (urlquery (printf "%s%s%s…" $title $brand $footer)) -}}
+    {{- with try (resources.GetRemote $cssURL) -}}
+        {{- with .Err -}}
+            {{- warnf "og-card: font CSS for %q: %s" $title . -}}
+        {{- else with .Value -}}
+            {{- with findRESubmatch `url\((https://[^)]+)\)\s*format\('truetype'\)` .Content 1 -}}
+                {{- with try (resources.GetRemote (index . 0 1)) -}}
+                    {{- with .Err -}}
+                        {{- warnf "og-card: font for %q: %s" $title . -}}
+                    {{- else with .Value -}}
+                        {{- $font = . -}}
+                    {{- end -}}
+                {{- end -}}
+            {{- else -}}
+                {{- warnf "og-card: no TrueType font in Google Fonts CSS for %q" $title -}}
+            {{- end -}}
+        {{- end -}}
+    {{- end -}}
+
+    {{- with $font -}}
+        {{- /* Line breaking. images.Text only wraps at spaces, so an all-CJK title
+               would run off the card. Split the title into tokens — each wide
+               (non-ASCII) character on its own, ASCII runs as words — with
+               widths in em measured on rendered cards (Noto Sans SC Bold): wide
+               0.97, capitals 0.7, narrow letters and punctuation 0.3, other
+               ASCII 0.6, space 0.3. Pick the largest size whose title fits in three
+               lines of a 1000px column (the 1024px text area less some slack for the estimate), then balance the lines (each aims for
+               an equal share) so no word or character is left on its own. Past
+               three lines at the smallest size, cut with an ellipsis. */ -}}
+        {{- $narrow := "iljtfrI.,:;'!|()-" -}}
+        {{- $tokens := slice -}}
+        {{- $word := "" -}}
+        {{- $ww := 0.0 -}}
+        {{- range split $title "" -}}
+            {{- if or (gt (len .) 1) (eq . " ") -}}
+                {{- with $word -}}{{- $tokens = $tokens | append (dict "t" . "w" $ww) -}}{{- end -}}
+                {{- $word = "" -}}
+                {{- $ww = 0.0 -}}
+                {{- $tokens = $tokens | append (dict "t" . "w" (cond (eq . " ") 0.3 0.97)) -}}
+            {{- else -}}
+                {{- $word = printf "%s%s" $word . -}}
+                {{- if strings.Contains $narrow . -}}{{- $ww = add $ww 0.3 -}}
+                {{- else if and (ge . "A") (le . "Z") -}}{{- $ww = add $ww 0.7 -}}
+                {{- else -}}{{- $ww = add $ww 0.6 -}}{{- end -}}
+            {{- end -}}
+        {{- end -}}
+        {{- with $word -}}{{- $tokens = $tokens | append (dict "t" . "w" $ww) -}}{{- end -}}
+        {{- $total := 0.0 -}}
+        {{- range $tokens -}}{{- $total = add $total .w -}}{{- end -}}
+
+        {{- $size := 72 -}}
+        {{- $lines := slice -}}
+        {{- range slice 72 62 54 -}}
+            {{- $size = . -}}
+            {{- $max := div 1000.0 . -}}
+            {{- $lines = partial "function/og-card-wrap.html" (dict "tokens" $tokens "limit" $max) -}}
+            {{- if le (len $lines) 3 -}}
+                {{- $n := len $lines -}}
+                {{- if gt $n 1 -}}
+                    {{- $even := partial "function/og-card-wrap.html" (dict "tokens" $tokens "limit" (math.Min $max (add (div $total $n) 1.0))) -}}
+                    {{- if eq (len $even) $n -}}{{- $lines = $even -}}{{- end -}}
+                {{- end -}}
+                {{- break -}}
+            {{- end -}}
+        {{- end -}}
+        {{- if gt (len $lines) 3 -}}
+            {{- $lines = slice (index $lines 0) (index $lines 1) (printf "%s…" (index $lines 2)) -}}
+        {{- end -}}
+
+        {{- /* Centre the title block between the brand line and the footer. */ -}}
+        {{- $gap := math.Round (mul $size 0.17) -}}
+        {{- $lineH := add (mul $size 1.22) $gap -}}
+        {{- $blockH := sub (mul $lineH (len $lines)) $gap -}}
+        {{- $top := int (math.Round (sub 335 (div $blockH 2))) -}}
+
+        {{- $img := resources.Get "images/og-base.png" -}}
+        {{- $img = $img | images.Filter
+            (images.Text $brand (dict "font" $font "size" 36 "x" 88 "y" 64 "color" "#ffffff"))
+            (images.Text (delimit $lines "\n") (dict "font" $font "size" $size "x" 88 "y" $top "color" "#ffffff" "linespacing" (int $gap)))
+            (images.Text $footer (dict "font" $font "size" 28 "x" 88 "y" 530 "color" "#e0e7ff")) -}}
+
+        {{- /* Stable, readable path with a content hash, so a retitled post gets
+               a new URL instead of a week-old CDN copy. */ -}}
+        {{- $base := (urls.Parse site.BaseURL).Path -}}
+        {{- $path := strings.Trim ($.RelPermalink | strings.TrimPrefix $base) "/" -}}
+        {{- $card = $img | resources.Copy (printf "og/%s-%s.png" $path (substr (md5 (printf "%s|%d|%s" $title $size (delimit $lines "\n"))) 0 8)) -}}
+    {{- end -}}
+{{- end -}}
+{{- return $card -}}
