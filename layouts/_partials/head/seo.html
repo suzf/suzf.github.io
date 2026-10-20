@@ -1,7 +1,8 @@
-{{- /* Theme's head/seo.html with four changes, marked below: the about page
+{{- /* Theme's head/seo.html with these changes, marked below: the about page
        gets ProfilePage instead of BlogPosting, section archives get a
-       CollectionPage, posts use their own share card as image, and post
-       authors get a url. */ -}}
+       CollectionPage, posts use their own share card as image, post authors
+       get a url, a remote publisher logo is an ImageObject, and posts get a
+       BreadcrumbList. @context is https throughout. */ -}}
 {{- $params := .Scratch.Get "params" -}}
 
 {{- with .Site.Params.verification.google -}}
@@ -24,7 +25,7 @@
 {{- if .IsHome -}}
     <script type="application/ld+json">
     {
-        "@context": "http://schema.org",
+        "@context": "https://schema.org",
         "@type": "WebSite",
         "url": "{{ .Permalink }}",
         {{- with .Site.LanguageCode -}}
@@ -118,7 +119,7 @@
 {{- else if .IsPage -}}
     <script type="application/ld+json">
     {
-        "@context": "http://schema.org",
+        "@context": "https://schema.org",
         "@type": "BlogPosting",
         "headline": {{ .Title | safeHTML }},
         "inLanguage": "{{ .Site.LanguageCode }}",
@@ -195,8 +196,16 @@
                     "height": {{ .Height }}
                 }
             {{- else -}}
+                {{- /* A remote logo (the tools site's /logo) is no local
+                       resource, so its size comes from the publisher config.
+                       Google wants an ImageObject here, not a bare URL. */ -}}
                 {{- with $logo -}}
-                    ,"logo": "{{ . | absURL }}"
+                    ,"logo": {
+                        "@type": "ImageObject",
+                        "url": "{{ . | absURL }}"
+                        {{- with $publisher.logoWidth -}},"width": {{ . }}{{- end -}}
+                        {{- with $publisher.logoHeight -}},"height": {{ . }}{{- end -}}
+                    }
                 {{- end -}}
             {{- end -}}
         },
@@ -213,5 +222,19 @@
         {{- end -}}
         "description": {{ .Description | safeHTML }}
     }
+    </script>
+    {{- /* Breadcrumb: blog home > section archive > post, named like the
+           archive's own CollectionPage crumb. A post outside any section
+           gets just home > post. */ -}}
+    {{- $crumbs := slice (dict "@type" "ListItem" "position" 1 "name" .Site.Title "item" .Site.Home.Permalink) -}}
+    {{- with .CurrentSection -}}
+        {{- if not .IsHome -}}
+            {{- $title := .Params.Title | default (T .Section) | default .Section | dict "Some" | T "allSome" -}}
+            {{- $crumbs = $crumbs | append (dict "@type" "ListItem" "position" 2 "name" $title "item" .Permalink) -}}
+        {{- end -}}
+    {{- end -}}
+    {{- $crumbs = $crumbs | append (dict "@type" "ListItem" "position" (add (len $crumbs) 1) "name" .Title "item" .Permalink) -}}
+    <script type="application/ld+json">
+    {{ dict "@context" "https://schema.org" "@type" "BreadcrumbList" "itemListElement" $crumbs | jsonify | safeJS }}
     </script>
 {{- end -}}

@@ -353,6 +353,8 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       [params.page.seo.publisher]
         name = "Suzf"
         logoUrl = "https://suzf.net/logo"
+        logoWidth = 512
+        logoHeight = 512
 
   # TypeIt config
   # TypeIt 配置
