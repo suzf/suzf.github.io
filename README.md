@@ -58,6 +58,15 @@ ansible-playbook -i deploy/inventory.ini deploy/pages.yml
 
 token 的权限、Zone ID 的位置、凭据的保存方法，以及清理失败时的表现，和主站一样，详见 [suzf/mysite 的 README](https://github.com/suzf/mysite#cloudflare-缓存清理)。两个仓库共用同一组凭据。
 
+## 文章分享图
+
+每篇文章在构建时生成一张 1200×630 的分享图（`/blog/og/<语言>/posts/<文章>-<哈希>.png`），用作 og:image、twitter:image 和结构化数据里的图片。底图是和主站 `suzf.net/og` 同色的渐变（`assets/images/og-base.png`），上面画"Suzf Blog"、文章标题和"suzf.net/blog"。
+
+- **字体**：构建时向 Google Fonts 请求 Noto Sans SC Bold，只要这张图用到的字（`text=` 参数），返回几十 KB 的 TrueType 子集。Hugo 会把它缓存在 `~/.cache/hugo_cache`，所以只有新文章或改过标题的文章需要联网。
+- **拿不到字体时**：构建照常成功，会打印一条 `og-card:` 警告，这篇文章退回用通用的 `suzf.net/og` 分享图。
+- **换行**：`images.Text` 只会在空格处换行，纯中文标题会超出画面，所以模板自己断行：按估算宽度，尽量让各行一样长，中文的右括号、逗号等不放行首。标题三行放不下时缩小字号，还放不下就截断加省略号。
+- **文件名里的哈希**：由标题和断行结果算出。改了标题就换新网址，不会被 CDN 或浏览器缓存成旧图。
+
 ## 对主题的覆盖
 
 以下文件覆盖了 `themes/LoveIt` 里的同名模板，主要用于 SEO 修正。升级主题时要和新版本的对应文件逐个对比。各文件的修改原因都写在文件开头的注释里。
@@ -68,7 +77,8 @@ token 的权限、Zone ID 的位置、凭据的保存方法，以及清理失败
 | `layouts/_partials/head/meta.html` | 每篇文章输出自己的 meta description，而不是全站统一的描述 |
 | `layouts/_partials/head/hreflang.html` | 中英文页面互相声明 hreflang（en、zh-CN、x-default） |
 | `layouts/_partials/head/link.html` | 首页分页第 2 页起的 canonical 指向自身，不再指向第 1 页 |
-| `layouts/_partials/head/seo.html` | About 页输出 ProfilePage + Person，不再是 BlogPosting；文章的 author 带上 About 页链接 |
+| `layouts/_partials/head/seo.html` | About 页输出 ProfilePage + Person，不再是 BlogPosting；归档页输出 CollectionPage；文章的结构化数据图片用自己的分享图，author 带上 About 页链接 |
+| `layouts/_partials/_funcs/get-page-images.html` | 覆盖 Hugo 内置模板取 og:image / twitter:image 的逻辑：文章用自己的分享图，其他页面照旧用 `params.images` |
 | `layouts/index.html` | 首页文章分页改由 `layouts/_partials/function/home-pager.html` 生成，和 `<head>` 共用同一个分页器（原因见该文件注释） |
 | `layouts/sitemap.xml` | 不收录标签和分类页；hreflang 使用 `zh-CN` |
 | `layouts/posts/single.html` | 文章页的目录标题不再是 h2，避免出现在 h1 之前；`<title>` 加上 " - Suzf Blog" 超过 60 个字符时去掉后缀 |
@@ -77,6 +87,7 @@ token 的权限、Zone ID 的位置、凭据的保存方法，以及清理失败
 | `layouts/_default/taxonomy.html` | 标签和分类页按年份分组 |
 | `assets/css/_custom.scss` | 列表页标题和年份分组升级标签后，保持原来的字号 |
 | `i18n/` | 主题没有的文案（分页标题里的"第 N 页"），和主题的 i18n 合并 |
+| `layouts/_partials/function/og-card.html`、`og-card-wrap.html`、`assets/images/og-base.png` | 每篇文章的分享图（不是主题覆盖，是新增的），见下 |
 | `layouts/_partials/internal/`、`layouts/shortcodes/` | 兼容 Hugo 0.154 的 X/Twitter 嵌入 |
 
 其他相关配置在 `hugo.toml` 里：
