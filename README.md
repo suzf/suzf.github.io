@@ -77,7 +77,7 @@ token 的权限、Zone ID 的位置、凭据的保存方法，以及清理失败
 | `layouts/_partials/head/meta.html` | 每篇文章输出自己的 meta description，而不是全站统一的描述 |
 | `layouts/_partials/head/hreflang.html` | 中英文页面互相声明 hreflang（en、zh-CN、x-default） |
 | `layouts/_partials/head/link.html` | 首页分页第 2 页起的 canonical 指向自身，不再指向第 1 页 |
-| `layouts/_partials/head/seo.html` | About 页输出 ProfilePage + Person，不再是 BlogPosting；归档页输出 CollectionPage；文章的结构化数据图片用自己的分享图，author 带上 About 页链接 |
+| `layouts/_partials/head/seo.html` | About 页输出 ProfilePage + Person，不再是 BlogPosting；归档页输出 CollectionPage；文章的结构化数据图片用自己的分享图，author 带上 About 页链接，publisher logo 写成 ImageObject，另输出 BreadcrumbList；`@context` 统一用 https |
 | `layouts/_partials/_funcs/get-page-images.html` | 覆盖 Hugo 内置模板取 og:image / twitter:image 的逻辑：文章用自己的分享图，其他页面照旧用 `params.images` |
 | `layouts/index.html` | 首页文章分页改由 `layouts/_partials/function/home-pager.html` 生成，和 `<head>` 共用同一个分页器（原因见该文件注释） |
 | `layouts/sitemap.xml` | 不收录标签和分类页；hreflang 使用 `zh-CN` |
