@@ -107,7 +107,7 @@ RUN echo "password=my_secret_password" > /app/config
 # 或使用 Docker secrets / Vault
 ```
 
-即使你在后面的层 `RUN rm /app/config`，中间层仍然包含该文件。
+即使你在后面的层 `RUN rm /app/config`，中间层仍然包含该文件。如果密钥已经打进推送过的镜像，就当它已经泄露，立即轮换；新密钥可以用[密码生成器](https://suzf.net/zh/tools/password-generator)生成一个足够强的随机值。
 
 ---
 

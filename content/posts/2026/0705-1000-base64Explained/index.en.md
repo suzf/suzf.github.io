@@ -48,11 +48,11 @@ The standard alphabet uses `+` and `/`, but both have special meaning in URLs (`
 - `+` → `-`
 - `/` → `_`
 
-JWTs use URL-safe Base64 **without padding**. If you decode a JWT segment with a strict standard-Base64 decoder, it may fail on the missing `=` or the `-`/`_` characters. When something "won't decode," an alphabet mismatch is the usual culprit.
+JWTs use URL-safe Base64 **without padding**. If you decode a JWT segment with a strict standard-Base64 decoder, it may fail on the missing `=` or the `-`/`_` characters. When something "won't decode," an alphabet mismatch is the usual culprit. The other way to put standard Base64 in a query string is to percent-encode it, so `+` becomes `%2B` and `/` becomes `%2F`; a [URL Encode / Decode](https://suzf.net/en/tools/url-codec) tool shows exactly what changes.
 
 ## Two misconceptions that cause bugs
 
-**1. "Base64 is encryption / it hides my data."** It does not. Base64 is fully reversible by anyone, with no key. Putting a password or API key in Base64 is exactly as secure as writing it in plain text — arguably worse, because it *looks* obscured and invites complacency. Kubernetes Secrets, for example, are Base64-encoded, not encrypted; that's why cluster RBAC (and encryption-at-rest) matters. Use Base64 for transport, never for protection.
+**1. "Base64 is encryption / it hides my data."** It does not. Base64 is fully reversible by anyone, with no key. Putting a password or API key in Base64 is exactly as secure as writing it in plain text — arguably worse, because it *looks* obscured and invites complacency. Kubernetes Secrets, for example, are Base64-encoded, not encrypted; that's why cluster RBAC (and encryption-at-rest) matters. Use Base64 for transport, never for protection. What protects a credential is that it's long, random and stored encrypted; a [Password Generator](https://suzf.net/en/tools/password-generator) covers the first two.
 
 **2. "Base64 handles Unicode automatically."** Base64 encodes **bytes**, not characters. To Base64 a string like `café`, you first have to turn it into bytes with a character encoding — almost always UTF-8. Skip that step (or use the wrong encoding) and you get mojibake on the other side. In the browser, the old `btoa()` throws on non-Latin1 characters for exactly this reason; you must UTF-8-encode first.
 

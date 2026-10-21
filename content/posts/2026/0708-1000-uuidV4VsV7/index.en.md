@@ -43,7 +43,7 @@ On a small table you'll never notice. On a table with tens of millions of rows a
 
 v7 (standardized in RFC 9562, 2024) is built to fix exactly this. Its layout is:
 
-- **48 bits:** a Unix timestamp in **milliseconds**
+- **48 bits:** a Unix timestamp in **milliseconds** (13 digits today, not the 10-digit seconds many systems use; a [Timestamp Converter](https://suzf.net/en/tools/timestamp) tells the two apart)
 - **74 bits:** random
 - plus the fixed version/variant bits
 

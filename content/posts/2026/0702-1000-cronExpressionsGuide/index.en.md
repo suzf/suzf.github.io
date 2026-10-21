@@ -61,7 +61,7 @@ Steps combine with ranges: `0-30/10` means minutes 0, 10, 20, 30. And `*/20` on 
 
 **1. Day-of-month and day-of-week are OR, not AND.** This is the famous one. `0 0 13 * 5` does **not** mean "Friday the 13th." When *both* the day-of-month and day-of-week fields are restricted (neither is `*`), cron runs when **either** matches. So that expression fires on *every* 13th **and** *every* Friday. To get Friday the 13th you need application logic, not cron alone.
 
-**2. Timezone.** Classic cron runs in the server's local time. If your server is UTC but you think in Asia/Shanghai, `0 9 * * *` is 17:00 for you, not 09:00. Daylight-saving transitions make it worse: a job scheduled at 02:30 may run twice or not at all on the switch day. Prefer UTC on servers, or use a scheduler that takes an explicit `CRON_TZ=` / timezone setting.
+**2. Timezone.** Classic cron runs in the server's local time. If your server is UTC but you think in Asia/Shanghai, `0 9 * * *` is 17:00 for you, not 09:00. Daylight-saving transitions make it worse: a job scheduled at 02:30 may run twice or not at all on the switch day. Prefer UTC on servers, or use a scheduler that takes an explicit `CRON_TZ=` / timezone setting. To see what a UTC time is in your own zone, a [Timestamp Converter](https://suzf.net/en/tools/timestamp) switches between the two.
 
 **3. The seconds field.** Copy a six-field Quartz expression into Linux crontab and the whole thing shifts by one field — your "minute" becomes the "second" cron doesn't have, and behavior goes sideways. Count the fields before you paste.
 

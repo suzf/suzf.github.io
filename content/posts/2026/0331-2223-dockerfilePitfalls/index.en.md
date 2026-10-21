@@ -107,7 +107,7 @@ RUN echo "password=my_secret_password" > /app/config
 # Or use Docker secrets / Vault
 ```
 
-Even if you `RUN rm /app/config` in a later layer, the intermediate layer still contains the file.
+Even if you `RUN rm /app/config` in a later layer, the intermediate layer still contains the file. If a secret has already been baked into an image you pushed, treat it as leaked and rotate it; a [Password Generator](https://suzf.net/en/tools/password-generator) gives you a strong random replacement.
 
 ---
 

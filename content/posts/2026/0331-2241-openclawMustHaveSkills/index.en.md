@@ -87,7 +87,7 @@ clawhub install community/linear-claw
 
 ### Cron-backup (#20, Score 57/80)
 
-Scheduled backups of OpenClaw configuration and memory data to prevent data loss.
+Scheduled backups of OpenClaw configuration and memory data to prevent data loss. If you set the schedule with a cron expression, the [Cron Expression Generator](https://suzf.net/en/tools/cron-generator) lists the next five run times so you can check it before relying on it.
 
 ```bash
 clawhub install community/cron-backup
