@@ -65,7 +65,7 @@ A note on the IPv4 pattern: it matches `999.999.999.999`. Regex is great for *sh
 
 **5. Unicode surprises.** Without the `u` flag, `.` and `\w` think in UTF-16 code units, so an emoji or a CJK character can be counted as two, and `\w` won't match letters like `é` or `中`. Add `u` and use `\p{L}` for "any letter."
 
-**6. Don't parse structured formats with regex.** HTML, JSON, and nested brackets are not *regular* languages — a regex fundamentally can't match arbitrarily nested structure. Use a real parser. Regex is fine for extracting a simple, flat pattern out of such text, not for understanding its structure.
+**6. Don't parse structured formats with regex.** HTML, JSON, and nested brackets are not *regular* languages — a regex fundamentally can't match arbitrarily nested structure. Use a real parser; for JSON, `JSON.parse` or a [JSON Formatter](https://suzf.net/en/tools/json-formatter) that validates as you type will point at the actual syntax error. Regex is fine for extracting a simple, flat pattern out of such text, not for understanding its structure.
 
 ## Build and test interactively
 

@@ -87,7 +87,7 @@ clawhub install community/linear-claw
 
 ### Cron-backup（排名 #20，评分 57/80）
 
-定时备份 OpenClaw 配置和记忆数据，防止数据丢失。
+定时备份 OpenClaw 配置和记忆数据，防止数据丢失。如果用 cron 表达式设置备份时间，可以先在 [Cron 表达式生成器](https://suzf.net/zh/tools/cron-generator)里看看接下来 5 次执行时间，确认无误再用。
 
 ```bash
 clawhub install community/cron-backup
