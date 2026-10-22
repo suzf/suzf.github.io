@@ -14,6 +14,8 @@ draft: false
 
 <!--more-->
 
+想检查自己的 Dockerfile 有没有踩这些坑，可以把它粘贴到我做的免费 [Dockerfile 检查器](https://suzf.net/zh/tools/dockerfile-linter)。它在浏览器里运行，每条结果都会链接回本文讲解对应问题的那一节。
+
 ## 坑 1：apt-get update 和 install 分开写
 
 ```dockerfile

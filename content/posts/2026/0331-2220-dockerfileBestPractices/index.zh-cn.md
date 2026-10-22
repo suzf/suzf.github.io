@@ -14,6 +14,8 @@ draft: false
 
 <!--more-->
 
+想检查自己的 Dockerfile 是否符合这些规范，可以把它粘贴到我做的免费 [Dockerfile 检查器](https://suzf.net/zh/tools/dockerfile-linter)。它在浏览器里运行，每条结果都会链接回本文讲解对应做法的那一节。
+
 ## 1. 使用多阶段构建 (Multi-stage Build)
 
 将编译环境和运行环境分离，最终镜像只包含运行所需的产物：
