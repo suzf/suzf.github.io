@@ -14,6 +14,8 @@ A well-written Dockerfile can significantly reduce image size, speed up builds, 
 
 <!--more-->
 
+To check your own Dockerfile against these practices, paste it into the free [Dockerfile Linter](https://suzf.net/en/tools/dockerfile-linter) I built. It runs in your browser and links each finding back to the section here that explains it.
+
 ## 1. Use Multi-stage Builds
 
 Separate the build environment from the runtime environment — the final image only contains the artifacts needed to run:

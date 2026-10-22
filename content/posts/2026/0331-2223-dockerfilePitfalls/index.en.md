@@ -14,6 +14,8 @@ Writing a Dockerfile seems simple, but production environments are full of hidde
 
 <!--more-->
 
+To check your own Dockerfile against these pitfalls, paste it into the free [Dockerfile Linter](https://suzf.net/en/tools/dockerfile-linter) I built. It runs in your browser and links each finding back to the pitfall below that explains it.
+
 ## Pitfall 1: Separating apt-get update and install
 
 ```dockerfile
