@@ -9,3 +9,31 @@
 .archive h2.group-title {
   font-size: 1.17em;
 }
+
+// Brand mark in the header title (hugo.toml params.header.title.pre): the
+// gradient "S" square from the tools site header and https://suzf.net/logo.
+.header-title .brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  margin-right: 0.25rem;
+  border-radius: 0.5rem;
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 55%, #8b5cf6 100%);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  vertical-align: 0.15em;
+}
+
+// A hairline under the header like the tools site, now that both are white.
+header {
+  border-bottom: 1px solid $global-border-color;
+
+  [theme=dark] & {
+    border-bottom-color: $global-border-color-dark;
+  }
+}

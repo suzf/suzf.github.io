@@ -95,7 +95,9 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       name = "Suzf Blog"
       # you can add extra information before the name (HTML format is supported), such as icons
       # 你可以在名称 (允许 HTML 格式) 之前添加其他信息, 例如图标
-      pre = ""
+      # Same gradient "S" square as the tools site header and https://suzf.net/logo,
+      # so /blog/ and the tools read as one site (styled in assets/css/_custom.scss).
+      pre = "<span class='brand-mark' aria-hidden='true'>S</span>"
       # you can add extra information after the name (HTML format is supported), such as icons
       # 你可以在名称 (允许 HTML 格式) 之后添加其他信息, 例如图标
       post = ""

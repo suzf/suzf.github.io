@@ -1,0 +1,45 @@
+// ==============================
+// Palette shared with the tools site
+// ==============================
+// The tools site (suzf/mysite) is Tailwind slate + indigo; these are the hex
+// equivalents of the Tailwind 4 values it uses, so moving between /blog/ and
+// the tools doesn't change colour scheme. Dark values match the tools site's
+// dark mode (slate-950 page, slate-200/400 text, indigo-400 accents). The
+// light/dark choice itself is shared through localStorage "theme".
+
+// slate-950 / slate-800 / slate-200
+$global-background-color-dark: #020618;
+$global-font-color: #1d293d;
+$global-font-color-dark: #e2e8f0;
+
+// slate-500 / slate-400
+$global-font-secondary-color: #62748e;
+$global-font-secondary-color-dark: #90a1b9;
+
+$global-link-color: #1d293d;
+$global-link-color-dark: #e2e8f0;
+// indigo-600 / indigo-400
+$global-link-hover-color: #4f39f6;
+$global-link-hover-color-dark: #7c86ff;
+
+// slate-100 / slate-800
+$global-border-color: #f1f5f9;
+$global-border-color-dark: #1d293d;
+
+// indigo-400, as ::selection on the tools site
+$selection-color: rgba(124, 134, 255, 0.3);
+$selection-color-dark: rgba(124, 134, 255, 0.4);
+
+$header-background-color: #fff;
+$header-background-color-dark: #020618;
+$header-hover-color: #4f39f6;
+$header-hover-color-dark: #7c86ff;
+
+$search-background-color: #f1f5f9;
+$search-background-color-dark: #1d293d;
+
+// indigo-600 / indigo-400, hover indigo-700 / indigo-300
+$single-link-color: #4f39f6;
+$single-link-color-dark: #7c86ff;
+$single-link-hover-color: #432dd7;
+$single-link-hover-color-dark: #a3b3ff;
