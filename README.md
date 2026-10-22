@@ -45,8 +45,10 @@ git config include.path ../.gitconfig
 先构建，再部署：
 
 ```bash
-hugo --gc --cleanDestinationDir --environment production
+rm -rf public && hugo --gc --environment production
 ```
+
+先删掉整个 `public/`：multihost 模式下 `--cleanDestinationDir` 只清理各语言自己的 `public/en/`、`public/zh-cn/`，清不掉 `public/` 根目录下的旧文件，它们会被一起打包部署。
 
 ```bash
 ansible-playbook -i deploy/inventory.ini deploy/pages.yml
