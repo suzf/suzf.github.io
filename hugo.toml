@@ -4,7 +4,13 @@ testedHugoVersion = "0.154.5"
 
 # website link
 # 网站链接
-baseURL = 'https://suzf.net/blog'
+# Each language sets its own baseURL below (Hugo "multihost"), so every URL
+# on suzf.net follows /{lang}/{path}: the blog is /en/blog/ and /zh/blog/,
+# next to the tools' /en/tools/ and /zh/tools/. Hugo then builds each language
+# into its own directory (public/en/, public/zh-cn/), which nginx serves at
+# those two paths. This top-level value only applies where Hugo needs a
+# site-wide URL.
+baseURL = 'https://suzf.net/'
 
 # theme
 # 主题
@@ -57,7 +63,7 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
   # 哪种哈希函数用来 SRI, 为空时表示不使用 SRI
   # ["sha256", "sha384", "sha512", "md5"]
   # Also puts a content hash in the theme's own CSS/JS file names. Without
-  # it, /blog/css/style.min.css kept one URL across deploys and Cloudflare
+  # it, /en/blog/css/style.min.css kept one URL across deploys and Cloudflare
   # and browsers (max-age 7d) kept serving the old stylesheet after a change.
   # Adds SRI integrity attributes too; CDN-hosted libraries are unaffected.
   fingerprint = "sha256"
@@ -96,7 +102,7 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       # you can add extra information before the name (HTML format is supported), such as icons
       # 你可以在名称 (允许 HTML 格式) 之前添加其他信息, 例如图标
       # Same gradient "S" square as the tools site header and https://suzf.net/logo,
-      # so /blog/ and the tools read as one site (styled in assets/css/_custom.scss).
+      # so the blog and the tools read as one site (styled in assets/css/_custom.scss).
       pre = "<span class='brand-mark' aria-hidden='true'>S</span>"
       # you can add extra information after the name (HTML format is supported), such as icons
       # 你可以在名称 (允许 HTML 格式) 之后添加其他信息, 例如图标
@@ -388,8 +394,8 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
   [params.seo]
     # image URL
     # 图片 URL
-    # absURL keeps a leading-slash path at the host root and skips the /blog
-    # mount, so "/images/screenshot.png" became suzf.net/images/screenshot.png
+    # absURL keeps a leading-slash path at the host root and skips the
+    # /{lang}/blog mount, so "/images/screenshot.png" became suzf.net/images/screenshot.png
     # — a 404 — in the JSON-LD `image` of every post and the home page. Use
     # the absolute 1200×630 share card from the tools site, same as
     # `params.images`.
@@ -452,6 +458,9 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
 [languages]
   [languages.zh-cn]
     weight = 2
+    # The URL segment is "zh" like the tools site; the language key stays
+    # zh-cn so content files keep their index.zh-cn.md names.
+    baseURL = "https://suzf.net/zh/blog/"
     # language code ["en", "zh-CN", "fr", "pl", ...]
     # 网站语言, 仅在这里 CN 大写 ["en", "zh-CN", "fr", "pl", ...]
     languageCode = "zh-CN"
@@ -523,8 +532,8 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       [languages.zh-cn.params.author]
         name = "Jeffrey Su"
         email = "i@suzf.net"
-        # Taken as-is (no baseURL prefix), so it must carry the /blog mount.
-        link = "/blog/zh-cn/about/"
+        # Taken as-is (no baseURL prefix), so it must carry the full path.
+        link = "/zh/blog/about/"
       # search config
       # 搜索配置
       [languages.zh-cn.params.search]
@@ -605,6 +614,7 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
           url = "index.xml"
   [languages.en]
     weight = 1
+    baseURL = "https://suzf.net/en/blog/"
     # language code ["en", "zh-CN", "fr", "pl", ...]
     # 网站语言, 仅在这里 CN 大写 ["en", "zh-CN", "fr", "pl", ...]
     languageCode = "en"
@@ -672,8 +682,8 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       [languages.en.params.author]
         name = "Jeffrey Su"
         email = "i@suzf.net"
-        # Taken as-is (no baseURL prefix), so it must carry the /blog mount.
-        link = "/blog/about/"
+        # Taken as-is (no baseURL prefix), so it must carry the full path.
+        link = "/en/blog/about/"
       # search config
       # 搜索配置
       [languages.en.params.search]

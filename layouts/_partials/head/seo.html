@@ -81,7 +81,7 @@
            and with every post's author below, so Google sees one person behind
            the posts, the tools and both About pages. Both language versions of
            this page declare the same @id: they are one person. */ -}}
-    {{- $person := dict "@type" "Person" "@id" "https://suzf.net/blog/about/#person" "name" $author.name "url" .Permalink "description" .Description -}}
+    {{- $person := dict "@type" "Person" "@id" "https://suzf.net/en/blog/about/#person" "name" $author.name "url" .Permalink "description" .Description -}}
     {{- with resources.Get "images/avatar.jpg" -}}
         {{- $person = merge $person (dict "image" .Permalink) -}}
     {{- end -}}
@@ -216,7 +216,7 @@
         {{- with .Params.author | default .Site.Params.Author.name | default (T "author") -}}
             "author": {
                 "@type": "Person",
-                "@id": "https://suzf.net/blog/about/#person",
+                "@id": "https://suzf.net/en/blog/about/#person",
                 "name": {{ . | safeHTML }}
                 {{- /* Link the author to the about page so Google can tie the
                        posts to one person (author.url is a recommended field). */ -}}
