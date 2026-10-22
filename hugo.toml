@@ -503,6 +503,12 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
         url = "https://suzf.net/zh/tools"
         title = "免费在线开发者工具"
     [languages.zh-cn.params]
+      # hreflang codes for this language (head/hreflang.html, sitemap.xml). The
+      # posts are Simplified Chinese for every Chinese reader, so besides zh-CN
+      # they also claim language-only "zh": a region code matches only that
+      # region, and readers in Singapore, Malaysia, Taiwan or Hong Kong would
+      # otherwise fall through to x-default (English). Same set as the tools site.
+      hreflang = ["zh-CN", "zh"]
       # site description for RSS, SEO, Open Graph and X Cards
       # 网站描述, 用于 RSS, SEO, Open Graph 和 X Cards
       description = "Jeffrey Su 的运维与开发实践笔记：Terraform、Docker、Consul 和 Nomad 集群升级，以及正则、SSL 证书、UUID、Base64、Cron 等开发者工具详解。"
@@ -650,6 +656,8 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
         url = "https://suzf.net/en/tools"
         title = "Free online developer tools"
     [languages.en.params]
+      # hreflang codes for this language; see languages.zh-cn.params.hreflang.
+      hreflang = ["en"]
       # site description for RSS, SEO, Open Graph and X Cards
       # 网站描述, 用于 RSS, SEO, Open Graph 和 X Cards
       description = "Hands-on DevOps and developer notes by Jeffrey Su: Terraform, Docker, Consul and Nomad upgrades, plus regex, SSL, UUID, Base64 and cron explained."

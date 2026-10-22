@@ -7,9 +7,10 @@
          _default/baseof.html), so listing them here would contradict that and
          spend crawl budget on pages we have asked Google not to index.
 
-       - hreflang uses the configured language code (zh-CN) rather than Hugo's
-         internal lang key (zh-cn), so the sitemap agrees with what the pages
-         themselves emit and with the main suzf.net site. */ -}}
+       - hreflang uses each language's params.hreflang codes (en / zh-CN + zh)
+         rather than Hugo's internal lang key (zh-cn), plus x-default for the
+         English version, so the sitemap agrees with what the pages themselves
+         emit (head/hreflang.html) and with the main suzf.net site. */ -}}
 {{- $pages := where .Data.Pages "Section" "!=" "gallery" -}}
 {{- $pages = where $pages "Kind" "not in" (slice "taxonomy" "term") -}}
 <urlset
@@ -44,9 +45,19 @@
 
             {{- if .IsTranslated -}}
                 {{- range .AllTranslations -}}
+                    {{- $href := .Permalink -}}
+                    {{- range .Site.Params.hreflang | default (slice (.Language.LanguageCode | default .Language.Lang)) -}}
+                        <xhtml:link
+                            rel="alternate"
+                            hreflang="{{ . }}"
+                            href="{{ $href }}"
+                            />
+                    {{- end -}}
+                {{- end -}}
+                {{- range where .AllTranslations "Language.Lang" "en" -}}
                     <xhtml:link
                         rel="alternate"
-                        hreflang="{{ .Language.LanguageCode | default .Language.Lang }}"
+                        hreflang="x-default"
                         href="{{ .Permalink }}"
                         />
                 {{- end -}}
