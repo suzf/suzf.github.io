@@ -1,6 +1,6 @@
 # Suzf Blog
 
-Jeffrey Su 的运维与开发笔记，线上地址 <https://suzf.net/blog/>，中英双语（英文在 `/blog/`，中文在 `/blog/zh-cn/`）。
+Jeffrey Su 的运维与开发笔记，中英双语：英文 <https://suzf.net/en/blog/>，中文 <https://suzf.net/zh/blog/>。和主站工具（`/en/tools/`、`/zh/tools/`）一样遵循 `/{lang}/{path}`。
 
 用 Hugo 0.154.5 extended 构建，主题是 [LoveIt](https://github.com/dillonzq/LoveIt)，以 git submodule 的形式放在 `themes/LoveIt`。主站 suzf.net 的源码在 [suzf/mysite](https://github.com/suzf/mysite)。
 
@@ -24,7 +24,11 @@ git config include.path ../.gitconfig
 ./server.sh
 ```
 
-`baseURL` 是 `https://suzf.net/blog`，所以本地预览地址是 <http://localhost:1313/blog/>。
+每种语言在 `hugo.toml` 里有自己的 `baseURL`（Hugo 的 multihost 模式），所以构建产物按语言分目录：`public/en/` 对应 `/en/blog/`，`public/zh-cn/` 对应 `/zh/blog/`（语言键仍是 `zh-cn`，内容文件照旧叫 `index.zh-cn.md`）。
+
+本地预览时两种语言各占一个端口：英文 <http://localhost:1313/en/blog/>，中文 <http://localhost:1314/zh/blog/>。
+
+2026-10 之前博客在 `/blog/`（英文）和 `/blog/zh-cn/`（中文），旧地址由主站 nginx 一律 301 到新地址（见 suzf/mysite 的 `deploy/nginx.yml`）。
 
 新建文章：
 
@@ -48,9 +52,9 @@ hugo --gc --cleanDestinationDir --environment production
 ansible-playbook -i deploy/inventory.ini deploy/pages.yml
 ```
 
-一定要先构建。`pages.yml` 只在 `public/index.html` 不存在时才会自己构建；只要 `public/` 里还有上次的产物，它就会把旧内容原样部署上去。
+一定要先构建。`pages.yml` 只在 `public/en/index.html` 不存在时才会自己构建；只要 `public/` 里还有上次的产物，它就会把旧内容原样部署上去。
 
-`deploy.sh` 是另一套流程，把 `public/` 推送到 `gh-pages` 分支，不会更新 suzf.net/blog。
+`deploy.sh` 是另一套流程，把 `public/` 推送到 `gh-pages` 分支，不会更新 suzf.net 上的博客。
 
 ### Cloudflare 缓存清理
 
@@ -60,7 +64,7 @@ token 的权限、Zone ID 的位置、凭据的保存方法，以及清理失败
 
 ## 文章分享图
 
-每篇文章在构建时生成一张 1200×630 的分享图（`/blog/og/<语言>/posts/<文章>-<哈希>.png`），用作 og:image、twitter:image 和结构化数据里的图片。底图是和主站 `suzf.net/og` 同色的渐变（`assets/images/og-base.png`），上面画"Suzf Blog"、文章标题和"suzf.net/blog"。
+每篇文章在构建时生成一张 1200×630 的分享图（`/<语言>/blog/og/posts/<文章>-<哈希>.png`），用作 og:image、twitter:image 和结构化数据里的图片。底图是和主站 `suzf.net/og` 同色的渐变（`assets/images/og-base.png`），上面画"Suzf Blog"、文章标题和"suzf.net/blog"。
 
 - **字体**：构建时向 Google Fonts 请求 Noto Sans SC Bold，只要这张图用到的字（`text=` 参数），返回几十 KB 的 TrueType 子集。Hugo 会把它缓存在 `~/.cache/hugo_cache`，所以只有新文章或改过标题的文章需要联网。
 - **拿不到字体时**：构建照常成功，会打印一条 `og-card:` 警告，这篇文章退回用通用的 `suzf.net/og` 分享图。
@@ -92,8 +96,8 @@ token 的权限、Zone ID 的位置、凭据的保存方法，以及清理失败
 
 其他相关配置在 `hugo.toml` 里：
 
-- **RSS 链接**：各语言的 `params.social.RSS.url` 写成不带开头斜杠的 `index.xml`。主题默认的 `/index.xml` 会跳过 `/blog` 前缀。
-- **作者链接**：各语言的 `params.author.link` 会原样输出，所以要写完整路径，包括 `/blog/` 前缀。
+- **RSS 链接**：各语言的 `params.social.RSS.url` 写成不带开头斜杠的 `index.xml`。主题默认的 `/index.xml` 会跳过 `/{lang}/blog` 前缀。
+- **作者链接**：各语言的 `params.author.link` 会原样输出，所以要写完整路径，例如 `/en/blog/about/`。
 - **分享图**：`params.images` 指向主站的 1200×630 分享图 `https://suzf.net/og`；结构化数据用的 `params.seo.image` 也指向它。
 - **出版者**：`params.page.seo.publisher` 和主站的 Organization 一致（名称 Suzf，logo `https://suzf.net/logo`）。
 - **图标**：`params.app.noFavicon = true`。主题会引用站点根目录下的 `/favicon-32x32.png` 等文件，但根目录是主站，没有这些文件。现在由浏览器自动回退到主站提供的 `/favicon.ico` 和 `/apple-touch-icon.png`。

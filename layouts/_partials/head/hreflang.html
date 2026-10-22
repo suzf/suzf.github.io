@@ -1,7 +1,7 @@
 {{- /* hreflang alternates.
 
-       The blog serves two near-identical language trees (/blog/ and
-       /blog/zh-cn/) with no link between them, leaving Google to guess which
+       The blog serves two near-identical language trees (/en/blog/ and
+       /zh/blog/) with no link between them, leaving Google to guess which
        one to show and inviting it to treat the pair as duplicates. Emit the
        reciprocal set every page needs, using the same codes as the main site
        (en / zh-CN + zh) so the two halves of suzf.net agree. Each language's
@@ -12,7 +12,7 @@
        reference comes for free. Pages with no translation emit nothing. */ -}}
 {{- $translations := .AllTranslations -}}
 {{- /* /page/2/ and on share the home page's translations, so they used to
-       declare /blog/ and /blog/zh-cn/ (page 1) as their alternates — pairs
+       declare /en/blog/ and /zh/blog/ (page 1) as their alternates — pairs
        page 1 never confirms back, which Google discards. The two languages
        page different post lists, so page N has no true counterpart: emit
        nothing past page 1. Same pager as the canonical (head/link.html). */ -}}

@@ -16,7 +16,7 @@
       delegate_to: localhost
       become: false
       stat:
-        path: "{{ project_dir }}/public/index.html"
+        path: "{{ project_dir }}/public/en/index.html"
       register: build_check
 
     - name: Build Hugo locally
