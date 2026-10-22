@@ -77,7 +77,11 @@
     {{- with .Site.Params.social.GitHub -}}
         {{- $sameAs = $sameAs | append (printf "https://github.com/%s" .) -}}
     {{- end -}}
-    {{- $person := dict "@type" "Person" "name" $author.name "url" .Permalink "description" .Description -}}
+    {{- /* "@id" is shared with the tools site (suzf/mysite, lib/seo.ts PERSON_ID)
+           and with every post's author below, so Google sees one person behind
+           the posts, the tools and both About pages. Both language versions of
+           this page declare the same @id: they are one person. */ -}}
+    {{- $person := dict "@type" "Person" "@id" "https://suzf.net/blog/about/#person" "name" $author.name "url" .Permalink "description" .Description -}}
     {{- with resources.Get "images/avatar.jpg" -}}
         {{- $person = merge $person (dict "image" .Permalink) -}}
     {{- end -}}
@@ -212,6 +216,7 @@
         {{- with .Params.author | default .Site.Params.Author.name | default (T "author") -}}
             "author": {
                 "@type": "Person",
+                "@id": "https://suzf.net/blog/about/#person",
                 "name": {{ . | safeHTML }}
                 {{- /* Link the author to the about page so Google can tie the
                        posts to one person (author.url is a recommended field). */ -}}
