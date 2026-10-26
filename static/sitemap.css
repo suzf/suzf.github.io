@@ -1,0 +1,99 @@
+/* Makes sitemap.xml readable when a person opens it in a browser. Crawlers
+   ignore the stylesheet. Plain CSS rather than XSLT: browsers are dropping
+   XSLT, while CSS on XML works everywhere. A copy of the tools site's
+   mysite/public/sitemap.css; keep the two in step. */
+@namespace xhtml url("http://www.w3.org/1999/xhtml");
+
+:root {
+  --bg: #ffffff;
+  --fg: #0f172a;
+  --muted: #64748b;
+  --line: #e2e8f0;
+  --accent: #2563eb;
+  --stripe: #f8fafc;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0b1120;
+    --fg: #e2e8f0;
+    --muted: #94a3b8;
+    --line: #1e293b;
+    --accent: #60a5fa;
+    --stripe: #0f172a;
+  }
+}
+
+urlset {
+  display: block;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  background: var(--bg);
+  color: var(--fg);
+  font: 14px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+urlset::before {
+  content: "XML Sitemap";
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+urlset::after {
+  content: "For search engines. Each row: page URL, last modified (UTC), language versions.";
+  display: block;
+  margin-top: 1rem;
+  color: var(--muted);
+}
+
+url {
+  display: block;
+  position: relative;
+  padding: 0.6rem 13rem 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--line);
+}
+url:nth-child(odd) {
+  background: var(--stripe);
+}
+
+loc {
+  display: block;
+  color: var(--accent);
+  font-weight: 500;
+  word-break: break-all;
+}
+lastmod {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.75rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+changefreq,
+priority {
+  display: none;
+}
+
+/* hreflang alternates, shown as a row of language codes under the URL. */
+xhtml|link {
+  display: inline-block;
+  margin: 0.25rem 0.375rem 0 0;
+  padding: 0 0.375rem;
+  border: 1px solid var(--line);
+  border-radius: 0.25rem;
+  color: var(--muted);
+  font-size: 12px;
+}
+xhtml|link::before {
+  content: attr(hreflang);
+}
+
+@media (max-width: 640px) {
+  url {
+    padding-right: 0.75rem;
+  }
+  lastmod {
+    position: static;
+    display: block;
+  }
+}

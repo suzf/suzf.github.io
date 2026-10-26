@@ -17,7 +17,11 @@
          hint that counts (from git, see enableGitInfo in hugo.toml), written
          in UTC. */ -}}
 {{- $pages := where .Data.Pages "Section" "!=" "gallery" -}}
-{{- $pages = where $pages "Kind" "not in" (slice "taxonomy" "term") -}}
+{{- /* static/sitemap.css lays the file out as a table for a person
+       opening it in a browser; crawlers ignore it. */ -}}
+{{ printf "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>" | safeHTML }}
+{{ printf "<?xml-stylesheet type=\"text/css\" href=\"%s\"?>" ("sitemap.css" | relLangURL) | safeHTML }}
+{{- $pages = where $pages "Kind" "not in" (slice "taxonomy" "term") }}
 <urlset
     xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
