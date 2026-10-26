@@ -1,6 +1,6 @@
 {{- /* Sitemap.
 
-       Two changes from the theme's version:
+       Changes from the theme's version:
 
        - Taxonomy and term pages are excluded. They hold no content of their
          own and outnumber the posts 60 to 26; they are noindex now (see
@@ -10,7 +10,12 @@
        - hreflang uses each language's params.hreflang codes (en / zh-CN + zh)
          rather than Hugo's internal lang key (zh-cn), plus x-default for the
          English version, so the sitemap agrees with what the pages themselves
-         emit (head/hreflang.html) and with the main suzf.net site. */ -}}
+         emit (head/hreflang.html) and with the main suzf.net site.
+
+       - No <changefreq> or <priority>: Google ignores both, and the theme's
+         age-based priority only made the file noisier. <lastmod> is the
+         hint that counts (from git, see enableGitInfo in hugo.toml), written
+         in UTC. */ -}}
 {{- $pages := where .Data.Pages "Section" "!=" "gallery" -}}
 {{- $pages = where $pages "Kind" "not in" (slice "taxonomy" "term") -}}
 <urlset
@@ -22,25 +27,19 @@
             <loc>
                 {{- .Permalink -}}
             </loc>
-            {{- if not .Lastmod.IsZero -}}
-                <lastmod>
-                    {{- .Lastmod.Format "2006-01-02T15:04:05-07:00" -}}
-                </lastmod>
-            {{- end -}}
-            {{- with .Sitemap.ChangeFreq -}}
-                <changefreq>
-                    {{- . -}}
-                </changefreq>
-            {{- end -}}
-
-            {{- if ge .Sitemap.Priority 0.0 -}}
-                {{- $weeks := div (sub now.Unix .Lastmod.Unix) 604800 -}}
-                {{- $priority := sub 1 (div $weeks 10.0 ) -}}
-                {{- if ge .Sitemap.Priority $priority -}}
-                    <priority>{{ .Sitemap.Priority }}</priority>
-                {{- else -}}
-                    <priority>{{ $priority }}</priority>
+            {{- /* A list page (blog home, archive) changes whenever one of
+                   its posts does, so it takes the newest of its own and its
+                   posts' dates; its own file is rarely touched. */ -}}
+            {{- $lastmod := .Lastmod -}}
+            {{- if .IsNode -}}
+                {{- range first 1 (where .RegularPagesRecursive.ByLastmod.Reverse "Section" "!=" "gallery") -}}
+                    {{- if .Lastmod.After $lastmod -}}{{- $lastmod = .Lastmod -}}{{- end -}}
                 {{- end -}}
+            {{- end -}}
+            {{- if not $lastmod.IsZero -}}
+                <lastmod>
+                    {{- $lastmod.UTC.Format "2006-01-02T15:04:05Z07:00" -}}
+                </lastmod>
             {{- end -}}
 
             {{- if .IsTranslated -}}
