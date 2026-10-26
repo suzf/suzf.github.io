@@ -101,7 +101,7 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       logo = ""
       # title name
       # 标题名称
-      name = "Suzf Blog"
+      name = "Suzf"
       # you can add extra information before the name (HTML format is supported), such as icons
       # 你可以在名称 (允许 HTML 格式) 之前添加其他信息, 例如图标
       # Same /logo.jpg avatar as the tools site header (served from the Next app's
@@ -480,41 +480,22 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
     # menu config
     # 菜单配置
     [languages.zh-cn.menu]
+      # Same two links as the tools site header (suzf/mysite SiteHeader.tsx).
+      # Absolute: Hugo would prefix a /path with this blog's own baseURL path.
+      # The header doesn't open them in a new tab as the theme did.
+      # Posts, tags and categories stay reachable from the blog itself; the
+      # header (layouts/_partials/header.html) marks "blog" active.
       [[languages.zh-cn.menu.main]]
         weight = 1
-        identifier = "posts"
-        name = "文章"
-        pageRef = "/posts"
-      [[languages.zh-cn.menu.main]]
-        weight = 2
-        identifier = "tags"
-        name = "标签"
-        pageRef = "/tags"
-      [[languages.zh-cn.menu.main]]
-        weight = 3
-        identifier = "categories"
-        name = "分类"
-        pageRef = "/categories"
-      [[languages.zh-cn.menu.main]]
-        weight = 4
-        identifier = "about"
-        name = ""
-        pageRef = "/about"
-        # you can add extra information before the name (HTML format is supported), such as icons
-        # 你可以在名称 (允许 HTML 格式) 之前添加其他信息, 例如图标
-        pre = "<i class='fas fa-user-circle fa-fw'></i>"
-        # you can add extra information after the name (HTML format is supported), such as icons
-        # 你可以在名称 (允许 HTML 格式) 之后添加其他信息, 例如图标
-        post = ""
-        # title will be shown when you hover on this menu link
-        # 当你将鼠标悬停在此菜单链接上时, 将显示标题
-        title = ""
-      [[languages.zh-cn.menu.main]]
-        weight = 5
         identifier = "tools"
         name = "工具"
         url = "https://suzf.net/zh/tools"
         title = "免费在线开发者工具"
+      [[languages.zh-cn.menu.main]]
+        weight = 2
+        identifier = "blog"
+        name = "博客"
+        url = "https://suzf.net/zh/blog/"
     [languages.zh-cn.params]
       # hreflang codes for this language (head/hreflang.html, sitemap.xml). The
       # posts are Simplified Chinese for every Chinese reader, so besides zh-CN
@@ -635,41 +616,22 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
     # menu config
     # 菜单配置
     [languages.en.menu]
+      # Same two links as the tools site header (suzf/mysite SiteHeader.tsx).
+      # Absolute: Hugo would prefix a /path with this blog's own baseURL path.
+      # The header doesn't open them in a new tab as the theme did.
+      # Posts, tags and categories stay reachable from the blog itself; the
+      # header (layouts/_partials/header.html) marks "blog" active.
       [[languages.en.menu.main]]
         weight = 1
-        identifier = "posts"
-        name = "Posts"
-        pageRef = "/posts"
-      [[languages.en.menu.main]]
-        weight = 2
-        identifier = "tags"
-        name = "Tags"
-        pageRef = "/tags"
-      [[languages.en.menu.main]]
-        weight = 3
-        identifier = "categories"
-        name = "Categories"
-        pageRef = "/categories"
-      [[languages.en.menu.main]]
-        weight = 4
-        identifier = "about"
-        name = ""
-        pageRef = "/about"
-        # you can add extra information before the name (HTML format is supported), such as icons
-        # 你可以在名称 (允许 HTML 格式) 之前添加其他信息, 例如图标
-        pre = "<i class='fas fa-user-circle fa-fw'></i>"
-        # you can add extra information after the name (HTML format is supported), such as icons
-        # 你可以在名称 (允许 HTML 格式) 之后添加其他信息, 例如图标
-        post = ""
-        # title will be shown when you hover on this menu link
-        # 当你将鼠标悬停在此菜单链接上时, 将显示标题
-        title = ""
-      [[languages.en.menu.main]]
-        weight = 5
         identifier = "tools"
         name = "Tools"
         url = "https://suzf.net/en/tools"
         title = "Free online developer tools"
+      [[languages.en.menu.main]]
+        weight = 2
+        identifier = "blog"
+        name = "Blog"
+        url = "https://suzf.net/en/blog/"
     [languages.en.params]
       # hreflang codes for this language; see languages.zh-cn.params.hreflang.
       hreflang = ["en"]

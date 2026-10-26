@@ -1,0 +1,24 @@
+{{- /* The tools site footer (suzf/mysite src/components/SiteFooter.tsx): the
+       same About / Privacy / Terms / Contact row and one copyright line, so
+       the blog ends like the rest of suzf.net. The blog adds its RSS feed and
+       the content licence, which only apply here. */ -}}
+{{- if ne .Site.Params.footer.enable false -}}
+    {{- $main := cond (eq .Lang "en") "en" "zh" -}}
+    {{- $zh := eq $main "zh" -}}
+    <footer class="footer">
+        <div class="footer-container">
+            <nav class="footer-line footer-links">
+                <a href="/{{ $main }}/about">{{ cond $zh "关于" "About" }}</a>
+                <a href="/{{ $main }}/privacy">{{ cond $zh "隐私政策" "Privacy" }}</a>
+                <a href="/{{ $main }}/terms">{{ cond $zh "使用条款" "Terms" }}</a>
+                <a href="/{{ $main }}/contact">{{ cond $zh "联系我们" "Contact" }}</a>
+                <a href="{{ "index.xml" | relURL }}">RSS</a>
+            </nav>
+            <div class="footer-line">
+                {{- $since := .Site.Params.footer.since -}}
+                © {{ if and $since (lt $since now.Year) }}{{ $since }}–{{ end }}{{ now.Year }} Suzf · {{ cond $zh (printf "%s 制作" .Site.Params.author.name) (printf "Built by %s" .Site.Params.author.name) }}
+                {{- with .Site.Params.footer.license }} · <span class="license">{{ . | safeHTML }}</span>{{ end -}}
+            </div>
+        </div>
+    </footer>
+{{- end -}}

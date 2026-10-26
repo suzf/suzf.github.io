@@ -69,3 +69,15 @@ $pagination-link-color: #62748e;
 $pagination-link-color-dark: #90a1b9;
 $pagination-link-hover-color: #4f39f6;
 $pagination-link-hover-color-dark: #7c86ff;
+
+// ==============================
+// Type and header shared with the tools site
+// ==============================
+// Geist, as next/font serves it there (the @font-face rules are in
+// _custom.scss). CJK falls through to the system font on both sites.
+$global-font-family: Geist, "Geist Fallback", system-ui, -apple-system, "Segoe UI", Roboto, Emoji, Helvetica, Arial, sans-serif;
+$header-title-font-family: $global-font-family;
+
+// The tools header: a 28px mark in py-4, text-xl bold brand.
+$header-height: 3.75rem;
+$header-title-font-size: 1.25rem;

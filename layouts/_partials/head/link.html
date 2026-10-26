@@ -46,6 +46,10 @@
 {{- $options = dict "Context" . "ToCSS" $toCSS | merge $options -}}
 {{- partial "plugin/style.html" $options -}}
 
+{{- /* Geist (latin), declared in _custom.scss; preloaded like next/font does
+       on the tools site so the header doesn't repaint in the fallback. */ -}}
+<link rel="preload" href="{{ "fonts/geist-latin.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
+
 {{- /* Font Awesome */ -}}
 {{- $source := $cdn.fontawesomeFreeCSS | default "lib/fontawesome-free/css/all.min.css" -}}
 {{- $options := dict "Source" $source "Fingerprint" $fingerprint "Preload" true -}}
