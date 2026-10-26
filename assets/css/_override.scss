@@ -43,3 +43,29 @@ $single-link-color: #4f39f6;
 $single-link-color-dark: #7c86ff;
 $single-link-hover-color: #432dd7;
 $single-link-hover-color-dark: #a3b3ff;
+
+// Code blocks, inline code and tables on slate instead of the theme's neutral
+// grey (#f5f5f5 / #272C34): slate-100 / slate-900.
+$code-background-color: #f1f5f9;
+$code-background-color-dark: #0f172b;
+// Inline code text: rose-700 / rose-300, kept off indigo so it isn't read as
+// a link.
+$code-color: #c70036;
+$code-color-dark: #ffa1ad;
+
+// Tables: white / slate-900 body, slate-100 / slate-800 header row (theme:
+// #ededed and the same #272c34 grey).
+$table-background-color: #fff;
+$table-background-color-dark: #0f172b;
+$table-thead-color: #f1f5f9;
+$table-thead-color-dark: #1d293d;
+
+// Blockquote bar and pager links were the theme's cyan, the one colour from
+// neither palette: indigo-400 bar, slate-500 / slate-400 pager links that turn
+// indigo on hover like every other link.
+$blockquote-color: #7c86ff;
+$blockquote-color-dark: #7c86ff;
+$pagination-link-color: #62748e;
+$pagination-link-color-dark: #90a1b9;
+$pagination-link-hover-color: #4f39f6;
+$pagination-link-hover-color-dark: #7c86ff;

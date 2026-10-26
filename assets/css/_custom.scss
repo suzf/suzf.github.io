@@ -31,3 +31,43 @@ header {
     border-bottom-color: $global-border-color-dark;
   }
 }
+
+// The home avatar is the same transparent PNG; on the dark page its dark
+// lines vanished. Give it the white disc the header mark already has.
+.home .home-profile .home-avatar img {
+  background: #fff;
+}
+
+// The theme flips/pulses every page title in on load (animate.css), which
+// reads as a glitch mid-frame and delays the LCP text. Titles just appear.
+.single-title.animate__animated {
+  animation: none;
+}
+
+// The theme's two max-width: 1440px rules cancel out, and the one at 1280px
+// narrows the column to 52%: about 600px on a laptop, so code blocks and
+// tables scrolled sideways. Widen it; the auto TOC sizes itself to the margin
+// that is left (theme.js).
+@media only screen and (max-width: 1440px) {
+  .page {
+    width: 60%;
+  }
+}
+
+@media only screen and (max-width: 1280px) {
+  .page {
+    width: 58%;
+  }
+}
+
+@media only screen and (max-width: 960px) {
+  .page {
+    width: 80%;
+  }
+}
+
+@media only screen and (max-width: 680px) {
+  .page {
+    width: 100%;
+  }
+}
