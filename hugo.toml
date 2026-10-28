@@ -137,9 +137,6 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
     # ICP info only in China (HTML format is supported)
     # ICP 备案信息，仅在中国使用 (支持 HTML 格式)
     icp = ""
-    # license info (HTML format is supported)
-    # 许可协议信息 (支持 HTML 格式)
-    license= '<a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a>'
 
   # section (all posts) page config
   # section (所有文章) 页面配置
@@ -474,9 +471,9 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
     # whether to include Chinese/Japanese/Korean
     # 是否包括中日韩文字
     hasCJKLanguage = true
-    # copyright description used only for seo schema
-    # 版权描述，仅仅用于 SEO
-    copyright = "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License."
+    # copyright notice for the SEO schema (copyrightNotice) and the RSS <copyright>
+    # 版权声明，用于 SEO schema (copyrightNotice) 和 RSS <copyright>
+    copyright = "Copyright © SUZF.NET All Rights Reserved."
     # menu config
     # 菜单配置
     [languages.zh-cn.menu]
@@ -610,9 +607,9 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
     # whether to include Chinese/Japanese/Korean
     # 是否包括中日韩文字
     hasCJKLanguage = false
-    # copyright description used only for seo schema
-    # 版权描述，仅仅用于 SEO
-    copyright = "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License."
+    # copyright notice for the SEO schema (copyrightNotice) and the RSS <copyright>
+    # 版权声明，用于 SEO schema (copyrightNotice) 和 RSS <copyright>
+    copyright = "Copyright © SUZF.NET All Rights Reserved."
     # menu config
     # 菜单配置
     [languages.en.menu]

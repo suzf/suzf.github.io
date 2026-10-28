@@ -1,7 +1,7 @@
 {{- /* The tools site footer (suzf/mysite src/components/SiteFooter.tsx): the
        same About / Privacy / Terms / Contact row and one copyright line, so
-       the blog ends like the rest of suzf.net. The blog adds its RSS feed and
-       the content licence, which only apply here. */ -}}
+       the blog ends like the rest of suzf.net. The blog adds its RSS feed,
+       which only applies here. */ -}}
 {{- if ne .Site.Params.footer.enable false -}}
     {{- $main := cond (eq .Lang "en") "en" "zh" -}}
     {{- $zh := eq $main "zh" -}}
@@ -16,8 +16,7 @@
             </nav>
             <div class="footer-line">
                 {{- $since := .Site.Params.footer.since -}}
-                © {{ if and $since (lt $since now.Year) }}{{ $since }}–{{ end }}{{ now.Year }} Suzf · {{ cond $zh (printf "%s 制作" .Site.Params.author.name) (printf "Built by %s" .Site.Params.author.name) }}
-                {{- with .Site.Params.footer.license }} · <span class="license">{{ . | safeHTML }}</span>{{ end -}}
+                Copyright © {{ if and $since (lt $since now.Year) }}{{ $since }} - {{ end }}{{ now.Year }} SUZF.NET All Rights Reserved.
             </div>
         </div>
     </footer>

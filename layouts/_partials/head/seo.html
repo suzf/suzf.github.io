@@ -61,7 +61,7 @@
             {{- end -}}
         {{- end -}}
         {{- with .Site.Copyright -}}
-            "license": "{{ . | safeHTML }}",
+            "copyrightNotice": "{{ . | safeHTML }}",
         {{- end -}}
         "name": {{ .Site.Title | safeHTML }}
     }
@@ -184,7 +184,7 @@
             "dateModified": {{ .Format "2006-01-02T15:04:05-07:00" | safeHTML }},
         {{- end -}}
         {{- with .Site.Copyright -}}
-            "license": {{ . | safeHTML }},
+            "copyrightNotice": {{ . | safeHTML }},
         {{- end -}}
         {{- $publisher := .Params.author | default .Site.Params.Author.name | default (T "author") | dict "name" -}}
         {{- $publisher = $params.seo.publisher | default dict | merge $publisher -}}
