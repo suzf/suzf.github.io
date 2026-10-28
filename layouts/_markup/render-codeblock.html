@@ -1,0 +1,6 @@
+{{- /* The theme's hook with one change: a fence without a language is
+highlighted as "text". Otherwise transform.Highlight returns a bare <pre>
+outside the .highlight wrapper that scrolls long lines and collapses long
+blocks, and a wide line (a directory tree, a log line) widens the whole
+page, on phones even for short lines. */ -}}
+{{- dict "Content" .Inner "Lang" (.Type | default "text") "Options" .Options "Page" .Page | partial "plugin/code-block.html" -}}

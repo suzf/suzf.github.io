@@ -70,6 +70,13 @@ header {
   .page {
     width: 100%;
   }
+
+  // The theme gives tables overflow-x: auto, which does nothing while they
+  // are display: table, so a wide table widened the whole page on a phone.
+  // As a block it scrolls inside the column instead.
+  .single .content table {
+    display: block;
+  }
 }
 
 // Geist, copied from the tools site's next/font build (latin and latin-ext,
