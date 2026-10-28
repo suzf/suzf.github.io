@@ -27,7 +27,7 @@ tags: ["Apache", "rsyslog", "elasticsearch", "ELK", "linux"]
 
 ### 加载所需模块
 
-```
+```text
 # The imjournal module bellow is now used as a message source instead of imuxsock.
 $ModLoad imuxsock  # provides support for local system logging (e.g. via logger command)
 $ModLoad imjournal # provides access to the systemd journal
@@ -50,7 +50,7 @@ $ModLoad omelasticsearch
 
 ### 日志输入配置
 
-```
+```text
 cat >> /etc/rsyslog.conf << EOF
 # Send all log to logserver
 *.* @log.suzf.net:514
@@ -63,7 +63,7 @@ EOF
 
 默认，所有进来的信息都会到达 main queue. 你可以指定一个，你可以使用 [rulesets](http://www.rsyslog.com/doc/master/concepts/multi_ruleset.html) 根据类别指定多个。但是让我们使他简单一些吧。
 
-```
+```text
 main_queue(
   queue.workerThreads="4"
   queue.dequeueBatchSize="1000"
@@ -81,14 +81,14 @@ main_queue(
 
 mmnormalize 模块使用 [liblognorm](https://github.com/rsyslog/liblognorm/blob/master/doc/introduction.rst) 进行解析。所以在配置中你只需简单的指定 rsyslog 的liblognorm rulebase：
 
-```
+```text
 action(type="mmnormalize" 
     ruleBase="/etc/rsyslog.d/apache_access_log.rule")
 ```
 
 apache\_access\_log.rule 文件包含了解析 Apache log 的规则；如下。具体的规则取决于你Apache log 预先定义的格式。
 
-```
+```text
 # cat /etc/rsyslog.d/apache_access_log.rule
 version=2
 # prefix=%rcvdat:date-rfc5424% %rcvdfrom:word% %tag:word%
@@ -97,13 +97,13 @@ rule=:%clientip:word% %delay:word% %identd:word% %auth:word% [%accesstime:char-t
 
 更多的配置规则详见 [liblognorm documentation](https://github.com/rsyslog/liblognorm/blob/master/doc/configuration.rst). 创建一个新的规则不是一气呵成的， 检查你的规则有没有错误, 你可以使用向这样使用 **lognormalizer <`yum install -y liblognorm-utils`>** :
 
-```
+```text
 head -1 /path/to/log.file | /usr/lib/lognorm/lognormalizer -r /path/to/rulebase.rb -e json
 ```
 
 举个栗子
 
-```
+```text
 # cat test_msg
 172.16.9.1 241 - - [26/Apr/2017:11:31:48 +0800] "GET /images/apache_pb.gif HTTP/1.1" 304 - "-" "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0"
 # head -1 test_msg | lognormalizer  -r /etc/rsyslog.d/apache_access_log.rule -e json
@@ -114,7 +114,7 @@ head -1 /path/to/log.file | /usr/lib/lognorm/lognormalizer -r /path/to/rulebase.
 
 ### Time-based indices in your own Elasticsearch cluster
 
-```
+```text
 # this is for index names to be like: apache-access-log-YYYY.MM.DD
 template(name="apache-access-log-index" type="list") {
     constant(value="apache-access-log-")
@@ -128,7 +128,7 @@ template(name="apache-access-log-index" type="list") {
 
 ### Templates
 
-```
+```text
 template(name="WebFiles" type="string" string="/var/log/web/httpd/access_%$!vhost%.log")
 template(name="apache-access-log" type="list" option.json="on") {
         constant(value="{")
@@ -165,7 +165,7 @@ template(name="all-json" type="list"){
 
 ### Actions
 
-```
+```text
 if $programname == 'access_test' then {
     action(type="mmnormalize" ruleBase="/etc/rsyslog.d/apache_access_log.rule")
     if $parsesuccess == "OK" then {         

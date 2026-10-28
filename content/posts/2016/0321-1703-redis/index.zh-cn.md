@@ -16,7 +16,7 @@ redis-cli -p ${port}    # 指定端口
 
 <!--more-->
 
-```
+```text
 ===== 键值 相关命令 =====
 keys
 返回满足给定 pattern 的所有 key

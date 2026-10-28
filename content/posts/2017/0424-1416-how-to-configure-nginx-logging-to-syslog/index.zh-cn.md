@@ -16,7 +16,7 @@ tags: ["Nginx", "Log", "syslog", "linux"]
 
 ### Nginx log configure
 
-```
+```text
 # diff -ruN /etc/nginx/nginx.conf{.old,}
 --- /etc/nginx/nginx.conf.old	2017-04-24 13:45:56.125362028 +0800
 +++ /etc/nginx/nginx.conf	2017-04-24 14:04:38.293694706 +0800
@@ -44,7 +44,7 @@ tags: ["Nginx", "Log", "syslog", "linux"]
 
 ### Remote logserver configure
 
-```
+```text
 # grep nginx_ /etc/rsyslog.conf
 if $syslogfacility-text == 'local6' and $programname == 'nginx_access' then /var/log/nginx/access_test.log
 if $syslogfacility-text == 'local6' and $programname == 'nginx_error' then /var/log/nginx/error_test.log
@@ -52,7 +52,7 @@ if $syslogfacility-text == 'local6' and $programname == 'nginx_error' then /var/
 
 ### Confirm on the logserver
 
-```
+```text
 @log.suzf.net ~# head -1 /var/log/nginx/access_test.log
 2017-04-24T13:57:22+08:00 horse.suzf.net nginx: 172.16.9.1 - - [24/Apr/2017:13:57:22 +0800] "GET / HTTP/1.1" 200 3700 "-" "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0" "-"
 ```
@@ -85,7 +85,7 @@ Disables adding the “hostname” field into the syslog message header (1.9.7).
 
 Nginx 配置文件保持不变， 使用 [Rsyslog imfile module](http://www.rsyslog.com/doc/v8-stable/configuration/modules/imfile.html) 将文本文件转换成 Rsyslog 信息。
 
-```
+```text
 # cat /etc/rsyslog.d/nginx.conf
 # needs to be done just once; suggest add it to /etc/rsyslog.conf
 $ModLoad imfile

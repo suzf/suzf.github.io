@@ -16,7 +16,7 @@ Linux 中有这么一个工具 convmv - converts filenames from one encoding to 
 
 安装方式
 
-```
+```text
  # Centos
  yum -y install convmv
 
@@ -26,7 +26,7 @@ Linux 中有这么一个工具 convmv - converts filenames from one encoding to 
 
 语法及主要参数
 
-```
+```text
 convmv [options] FILE(S) … DIRECTORY(S)
 主要选项：
 -f ENCODING  指定目前文件名的编码，如-f gbk, gb2312
@@ -39,7 +39,7 @@ convmv [options] FILE(S) … DIRECTORY(S)
 
 实例
 
-```
+```text
 # 递归转换一个目录下所有文件名称
 @_@[15:19:44][007@happycode notes]$convmv -f gb2312 -t UTF-8 --notest -r  TXT
 mv "TXT/Sublime/Package Controlʨ׃´	"TXT/Sublime/Package Control设置代理"

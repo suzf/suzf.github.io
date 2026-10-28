@@ -16,7 +16,7 @@ tags: ["rsyslog", "Log", "linux"]
 
 首先我们应该创建一个动态文件名字的模板
 
-```
+```text
 # cat /etc/rsyslog.d/dynamic_file.conf
 # Create dynamic file template
 template (name="Dyn_File" type="string" string="/var/log/app/%programname%.log")
@@ -24,7 +24,7 @@ template (name="Dyn_File" type="string" string="/var/log/app/%programname%.log")
 
 接着我们可以使用上面创建的模板了，下面我们来添加两个测试的例子
 
-```
+```text
 # grep conditions -A 9 /etc/rsyslog.d/dynamic_file.conf
 # Add conditions; if match, rewrite it to /var/log/app/%programname%.log"
 if $syslogfacility-text == 'local6' and $programname startswith 'test' then ?Dyn_File
@@ -37,21 +37,21 @@ if $programname == 'blue' then ?Dyn_File
 
 之后创建日志目录， 重载程序
 
-```
+```text
 # mkdir /var/log/app
 # systemctl restart rsyslog.service
 ```
 
 最后我们使用 `logger` 工具进行测试
 
-```
+```text
 # logger  -t blue -p local6.notice "Test Creating Dynamic File Names Based On Program Name"
 # logger  -t test_dynfile -p local6.notice "Test Creating Dynamic File Names Based On Program Name"
 ```
 
 Bingo
 
-```
+```text
 # grep -ir "Dynamic File" /var/log/app/
 /var/log/app/blue.log:2017-04-25T11:43:19.243175+08:00 monkey blue: Test Creating Dynamic File Names Based On Program Name
 /var/log/app/test_dynfile.log:2017-04-25T11:44:21.988681+08:00 monkey test_dynfile: Test Creating Dynamic File Names Based On Program Name

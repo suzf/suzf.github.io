@@ -39,7 +39,7 @@ Sentinel使用的Raft算法核心: 原则
 
 Sentinel 配置样例
 
-```
+```text
   port 26379
   dir /tmp
   sentinel monitor mymaster 127.0.0.1 6379 2
@@ -76,7 +76,7 @@ c. 启用两个sentinel进程监控redis集群状态
 
 Sentinel可以通过master Redis实例来获得它的从实例的信息.所以每一个Sentinel只配置主实例的监控即可.Sentinel之间端口有所不同.
 
-```
+```text
   port 6666
   daemonize yes
   logfile "/var/log/redis/sentinel-6666.log"
@@ -114,7 +114,7 @@ SENTINEL reset:
 SENTINEL failover
 进行一次主动的failover.即在不询问其他 Sentinel 意见的情况下, 强制开始一次自动故障迁移 .发起故障转移的 Sentinel 会向其他 Sentinel 发送一个新的配置,其他 Sentinel 会根据这个配置进行相应的更新.^\_^[17:19:25][root@master01 ~]#redis-cli  -p 6666
 
-```
+```text
 redis 127.0.0.1:6666> SENTINEL masters
 1)  1) "name"
 2) "master-1111"
@@ -285,7 +285,7 @@ redis 127.0.0.1:6666>  SENTINEL get-master-addr-by-name master-1111
 一个频道能够接收和这个频道的名字相同的事件. 比如说,名为 +sdown 的频道就可以接收所有实例进入主观下线（SDOWN）状态的事件.
 通过执行 PSUBSCRIBE \* 命令可以接收所有事件信息.例如：
 
-```
+```text
 ^_^[17:50:13][root@master01 ~]#redis-cli -p 6666 info| grep 192
 master0:name=master-1111,status=ok,address=192.168.9.10:1111,slaves=3,sentinels=2
 

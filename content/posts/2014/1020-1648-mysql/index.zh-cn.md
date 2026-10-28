@@ -40,7 +40,7 @@ PATH=$PATH:/usr/local/mysql/bin 加入到/etc/profile中
 
 ##### 查看支持的存储引擎
 
-```
+```text
 mysql> show engines;
 +------------+---------+------------------------------------------------------------+--------------+------+------------+
 | Engine | Support | Comment | Transactions | XA | Savepoints |
@@ -55,7 +55,7 @@ mysql> show engines;
 
 ##### 查看当前MySQL的默认数据引擎
 
-```
+```text
 show variables like '%engine%';
 mysql> show variables like '%engine%';
 +---------------------------+--------+
@@ -83,7 +83,7 @@ mysql>set global max\_user\_connections = 200; [仅本次修改有效]
 实时查看mysql当前连接数
 前提：对用户和远程主机有授权
 
-```
+```text
 mysql> grant all on *.* to root@192.168.9.9 identified by 'your_password';
 Query OK, 0 rows affected (0.00 sec)
 
@@ -102,7 +102,7 @@ Enter password:
 
 只查看当前连接数(Threads就是连接数）
 
-```
+```text
 # mysqladmin -uroot -pyour_password status
 Uptime: 4449 Threads: 2 Questions: 18697 Slow queries: 0 Opens: 77 Flush tables: 1 Open tables: 31 Queries per second avg: 4.202
 
@@ -133,7 +133,7 @@ show full processlist; #可以显示全部。随便说下，如果用普通账�
 1.如果你安装的是系统自带的rpm包的情况：
 修改 /etc/my.cnf
 
-```
+```text
 [mysqld]
 datadir=/var/lib/mysql
 port=3300 #修改成你自己想要的端口
@@ -182,7 +182,7 @@ dlimeter 特殊符;
 
 此命令要求mysql服务器告诉你它的版本号和当前日期
 
-```
+```text
 mysql select version(),current_date();
 +-------------------------------+----------------+
 | version() | current_date() |
@@ -204,14 +204,14 @@ show global status;
 
 ##### 修改mysql参数
 
-```
+```text
 show variables like 'max_connect%';
 set global max_connect_errors = 1000;
 ```
 
 ##### 查看mysql队列
 
-```
+```text
 show processlist;
 ```
 
@@ -242,7 +242,7 @@ $mysqlcheck -o dbname tblA tblB tblC -u root -p
 
 ##### 对表进行分析
 
-```
+```text
 mysqlanalyze table tblA;
 或
 $mysqlcheck -a dbname [tblA tblB tblC ] -u root -p
@@ -573,7 +573,7 @@ grant select,reload,lock tables on \*.\* to `xx`@`xx`;
 前者是基于某个连接会话级别的计数器
 或者是服务器级别的全局计数器
 
-```
+```text
 mysql> show status like "%warning%";
 +-------------------+-------+
 | Variable_name     | Value |
@@ -605,7 +605,7 @@ mysql> show global status like "%warning%";
 
 ##### 查看 Mysql 读取的是哪一个配置文件
 
-```
+```text
 $sudo mysqld --verbose --help | grep -A 1 'Default options'
 Default options are read from the following files in the given order:
 /etc/my.cnf /etc/mysql/my.cnf ~/.my.cnf

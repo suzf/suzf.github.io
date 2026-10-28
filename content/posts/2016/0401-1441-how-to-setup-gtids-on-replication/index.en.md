@@ -22,7 +22,7 @@ GTID replication mostly comes down to a few settings in the configuration file:
 
 <!--more-->
 
-```
+```text
 [mysqld_multi]
 mysqld = /usr/local/mysql/bin/mysqld_safe
 mysqladmin = /usr/local/mysql/bin/mysqladmin
@@ -75,13 +75,13 @@ default-character-set = utf8
 
 **Restart MySQL**
 
-```
+```text
 /etc/init.d/mysqld_multi.server restart
 ```
 
 **The mysqld_multi init script**
 
-```
+```text
 cat /etc/init.d/mysqld_multi.server
 #!/bin/sh
 #
@@ -135,7 +135,7 @@ esac
 
 **On the master**
 
-```
+```text
 mysql -uroot -S /usr/local/mysql/data/run/mysqld_3306.sock
 mysql> GRANT REPLICATION SLAVE ON *.* TO 'repluser'@'localhost' IDENTIFIED BY 'suzf.net666';
 Query OK, 0 rows affected (0.00 sec)
@@ -145,7 +145,7 @@ Query OK, 0 rows affected (0.00 sec)
 
 With GTIDs there is no binlog file and position to look up: `MASTER_AUTO_POSITION = 1` lets the slave work out where to start.
 
-```
+```text
 mysql -uroot -S /usr/local/mysql/data/run/mysqld_3307.sock
 mysql> CHANGE MASTER TO  
     -> MASTER_HOST='localhost',    
@@ -166,7 +166,7 @@ Check the result:
 
 Stop the slave, then clear its replication settings with `RESET SLAVE ALL` (MySQL 5.6.7 and later). After that, `SHOW SLAVE STATUS` returns an empty set. If the node will later replicate from a different master, also run `RESET MASTER` so that `gtid_executed` and `gtid_purged` start out empty.
 
-```
+```text
 mysql> STOP SLAVE;
 mysql> RESET SLAVE ALL;
 mysql> RESET MASTER;
@@ -178,7 +178,7 @@ Percona's [How to create/restore a slave using GTID replication in MySQL 5.6](ht
 
 Preparation: one option file per instance, for innobackupex to read.
 
-```
+```text
 $mkdir  /opt/data/backup/mysql -p
 $ cat 3306.cnf
 [mysqld]
@@ -229,7 +229,7 @@ default-character-set = utf8
 
 Take a full backup of the master:
 
-```
+```text
 $innobackupex --defaults-file=/opt/data/backup/mysql/3306.cnf --user=root  --socket=/usr/local/mysql/data/run/mysqld_3306.sock  /tmp
 ```
 
@@ -237,14 +237,14 @@ $innobackupex --defaults-file=/opt/data/backup/mysql/3306.cnf --user=root  --soc
 
 The file that matters here is `xtrabackup_binlog_info`. Its last field is the GTID set the backup contains:
 
-```
+```text
 $ cat /tmp/2016-04-05_15-26-40/xtrabackup_binlog_info
 master-binlog.000006  191 81ee72fe-c957-11e5-ae70-0800272aa66e:1-12
 ```
 
 Restore it on the slave:
 
-```
+```text
 $ innobackupex --defaults-file=/opt/data/backup/mysql/3307.cnf --user=root  --copy-back /tmp/2016-04-05_15-26-40
 ```
 
@@ -252,7 +252,7 @@ Note: `Original data directory must be empty!` The slave's data directory has to
 
 Fix the ownership and start the instance:
 
-```
+```text
 $ chown -R mysql:mysql  /usr/local/mysql/data/mysql_3307
 $ /etc/init.d/mysqld_multi.server start 3307
 $ /etc/init.d/mysqld_multi.server report
@@ -263,7 +263,7 @@ MySQL server from group: mysqld3307 is running
 
 Before setting up replication, set `gtid_purged` to the GTID set from the backup, as described in the [Percona XtraBackup documentation](https://www.percona.com/doc/percona-xtrabackup/2.1/howtos/recipes_ibkx_gtid.html). If MySQL refuses, run `RESET MASTER` first:
 
-```
+```text
 mysql>  SET GLOBAL gtid_purged="81ee72fe-c957-11e5-ae70-0800272aa66e:1-12";
 ERROR 1840 (HY000): @@GLOBAL.GTID_PURGED can only be set when @@GLOBAL.GTID_EXECUTED is empty.
 
@@ -294,13 +294,13 @@ mysql> SHOW WARNINGS;
 
 With classic replication (MySQL 5.5 and earlier), you would point the slave at a binlog file and position instead:
 
-```
+```text
 change master to master_host='lab.suzf.net', master_port=3306, master_user='repluser', master_password='suzf.net666',  master_log_file='mysql-bin.000006', master_log_pos=1026;
 ```
 
 Start the slave and check its status:
 
-```
+```text
 mysql> start slave;
 Query OK, 0 rows affected (0.01 sec)
 
@@ -317,12 +317,12 @@ mysql> show slave status\G
 
 1. Set the GTID options in each server's configuration file as in scenario 1.
 2. Make every server read-only and wait until the slaves have caught up:
-   ```
+   ```text
    mysql> SET @@global.read_only = ON;
    ```
 3. Restart the master and the slaves, one after another.
 4. Point each slave at the master with auto-positioning:
-   ```
+   ```text
    mysql> CHANGE MASTER TO
        -> MASTER_HOST = host,
        -> MASTER_PORT = port,
@@ -331,7 +331,7 @@ mysql> show slave status\G
        -> MASTER_AUTO_POSITION = 1;
    ```
 5. Start replication on the slaves:
-   ```
+   ```text
    mysql> START SLAVE;
    ```
 6. Check that replication works, then turn `read_only` off on the master.
@@ -340,7 +340,7 @@ mysql> show slave status\G
 
 `sql_slave_skip_counter` does not work with GTID replication. To skip a transaction that breaks the slave, commit an empty transaction with the same GTID on the slave, then restart replication:
 
-```
+```text
 mysql> STOP SLAVE;
 mysql> SET gtid_next='<source_uuid>:<transaction_id>';
 mysql> BEGIN; COMMIT;

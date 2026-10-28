@@ -16,14 +16,14 @@ create test group - test create test user   - test change test user to test gro
 
 click avatar img --> profile setting --> SSH keys on linux git client generate a ssh key for gitlab
 
-```
+```text
 cd $HOME
 ssh-keygen -t rsa -C "username@suzf.net" -f .ssh/gitlab_rsa
 ```
 
 reslove multi ssh key issue
 
-```
+```text
 cat  >> $HOME/.ssh/config << EOF
 Host git.suzf.net
     IdentityFile ~/.ssh/gitlab_rsa
@@ -42,14 +42,14 @@ paste the ssh keys public public, the example file is .ssh/gitlab\_rsa.pub now `
 
 Git global setup
 
-```
+```text
 git config --global user.name "Administrator"
 git config --global user.email "admin@example.com"
 ```
 
 Create a new repository
 
-```
+```text
 git clone git@git.suzf.net:test/demo.git
 cd demo
 touch README.md
@@ -60,7 +60,7 @@ git push -u origin master
 
 Existing folder or Git repository
 
-```
+```text
 cd existing_folder
 git init
 git remote add origin git@git.suzf.net:test/demo.git

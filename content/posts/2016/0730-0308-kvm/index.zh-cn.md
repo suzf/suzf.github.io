@@ -39,7 +39,7 @@ virt-install也可以以一种交互的形式  或者使用一部分的脚本�
 举个栗子
 本地安装
 
-```
+```text
 virt-install \
 --connect qemu:///system \
 --name kvm_node_name \
@@ -57,7 +57,7 @@ virt-install \
 
 通过网络安装 虚拟机
 
-```
+```text
 virt-install \
 --name smile \
 --ram 512 \
@@ -74,7 +74,7 @@ virt-install \
 
 指定 KS 文件
 
-```
+```text
 --extra-args="ks=ftp://lab.suzf.net/ks/myks.cfg"
 or
 --extra-args "ks=file:/myks.cfg"
@@ -82,7 +82,7 @@ or
 
 指定 console
 
-```
+```text
 --console pty,target_type=serial \
 --extra-args='console=tty0 console=ttyS0,115200n8 serial'
 ```

@@ -27,7 +27,7 @@ The steps are:
 
 ### Load the modules
 
-```
+```text
 # The imjournal module bellow is now used as a message source instead of imuxsock.
 $ModLoad imuxsock  # provides support for local system logging (e.g. via logger command)
 $ModLoad imjournal # provides access to the systemd journal
@@ -50,7 +50,7 @@ $ModLoad omelasticsearch
 
 ### Log input
 
-```
+```text
 cat >> /etc/rsyslog.conf << EOF
 # Send all log to logserver
 *.* @log.suzf.net:514
@@ -63,7 +63,7 @@ Then restart rsyslog on the web server so the Apache access log goes to the cent
 
 By default, every incoming message goes to the main queue. You can define more queues with [rulesets](http://www.rsyslog.com/doc/master/concepts/multi_ruleset.html), split by category, but let's keep it simple:
 
-```
+```text
 main_queue(
   queue.workerThreads="4"
   queue.dequeueBatchSize="1000"
@@ -81,14 +81,14 @@ main_queue(
 
 mmnormalize does its parsing with [liblognorm](https://github.com/rsyslog/liblognorm/blob/master/doc/introduction.rst), so in the configuration you only point it at a liblognorm rulebase:
 
-```
+```text
 action(type="mmnormalize" 
     ruleBase="/etc/rsyslog.d/apache_access_log.rule")
 ```
 
 apache\_access\_log.rule holds the rule for parsing Apache logs, shown below. The exact rule depends on the log format you defined in Apache.
 
-```
+```text
 # cat /etc/rsyslog.d/apache_access_log.rule
 version=2
 # prefix=%rcvdat:date-rfc5424% %rcvdfrom:word% %tag:word%
@@ -97,13 +97,13 @@ rule=:%clientip:word% %delay:word% %identd:word% %auth:word% [%accesstime:char-t
 
 See the [liblognorm documentation](https://github.com/rsyslog/liblognorm/blob/master/doc/configuration.rst) for the rule syntax. A new rule rarely works on the first try. To check it for errors, use **lognormalizer** (`yum install -y liblognorm-utils`):
 
-```
+```text
 head -1 /path/to/log.file | /usr/lib/lognorm/lognormalizer -r /path/to/rulebase.rb -e json
 ```
 
 For example:
 
-```
+```text
 # cat test_msg
 172.16.9.1 241 - - [26/Apr/2017:11:31:48 +0800] "GET /images/apache_pb.gif HTTP/1.1" 304 - "-" "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0"
 # head -1 test_msg | lognormalizer  -r /etc/rsyslog.d/apache_access_log.rule -e json
@@ -114,7 +114,7 @@ Note: anything the rule cannot parse ends up in `unparsed-data`.
 
 ### Time-based indices in your own Elasticsearch cluster
 
-```
+```text
 # this is for index names to be like: apache-access-log-YYYY.MM.DD
 template(name="apache-access-log-index" type="list") {
     constant(value="apache-access-log-")
@@ -128,7 +128,7 @@ template(name="apache-access-log-index" type="list") {
 
 ### Templates
 
-```
+```text
 template(name="WebFiles" type="string" string="/var/log/web/httpd/access_%$!vhost%.log")
 template(name="apache-access-log" type="list" option.json="on") {
         constant(value="{")
@@ -165,7 +165,7 @@ template(name="all-json" type="list"){
 
 ### Actions
 
-```
+```text
 if $programname == 'access_test' then {
     action(type="mmnormalize" ruleBase="/etc/rsyslog.d/apache_access_log.rule")
     if $parsesuccess == "OK" then {         

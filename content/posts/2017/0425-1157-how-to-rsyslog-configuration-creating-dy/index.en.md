@@ -16,7 +16,7 @@ I wanted rsyslog, the logging daemon that ships with RHEL/CentOS, to write each 
 
 First, create a template for the dynamic file name:
 
-```
+```text
 # cat /etc/rsyslog.d/dynamic_file.conf
 # Create dynamic file template
 template (name="Dyn_File" type="string" string="/var/log/app/%programname%.log")
@@ -24,7 +24,7 @@ template (name="Dyn_File" type="string" string="/var/log/app/%programname%.log")
 
 Then use the template. Here are two example rules:
 
-```
+```text
 # grep conditions -A 9 /etc/rsyslog.d/dynamic_file.conf
 # Add conditions; if match, rewrite it to /var/log/app/%programname%.log"
 if $syslogfacility-text == 'local6' and $programname startswith 'test' then ?Dyn_File
@@ -37,21 +37,21 @@ if $programname == 'blue' then ?Dyn_File
 
 Create the log directory and restart rsyslog:
 
-```
+```text
 # mkdir /var/log/app
 # systemctl restart rsyslog.service
 ```
 
 Finally, test it with `logger`:
 
-```
+```text
 # logger  -t blue -p local6.notice "Test Creating Dynamic File Names Based On Program Name"
 # logger  -t test_dynfile -p local6.notice "Test Creating Dynamic File Names Based On Program Name"
 ```
 
 Each program got its own file:
 
-```
+```text
 # grep -ir "Dynamic File" /var/log/app/
 /var/log/app/blue.log:2017-04-25T11:43:19.243175+08:00 monkey blue: Test Creating Dynamic File Names Based On Program Name
 /var/log/app/test_dynfile.log:2017-04-25T11:44:21.988681+08:00 monkey test_dynfile: Test Creating Dynamic File Names Based On Program Name

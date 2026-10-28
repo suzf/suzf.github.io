@@ -26,7 +26,7 @@ Hostname: lab.suzf.net
 
 <!--more-->
 
-```
+```text
 [mysqld_multi]
 mysqld = /usr/local/mysql/bin/mysqld_safe
 mysqladmin = /usr/local/mysql/bin/mysqladmin
@@ -79,7 +79,7 @@ default-character-set = utf8
 **重启mysql**
 /etc/init.d/mysqld\_multi.server restart
 **Mysql 多实例启动脚本**
-```
+```text
 cat /etc/init.d/mysqld_multi.server
 #!/bin/sh
 #
@@ -131,13 +131,13 @@ case "$1" in
 esac
 ```
 **Master OPS**
-```
+```text
 mysql -uroot -S /usr/local/mysql/data/run/mysqld_3306.sock
 mysql> GRANT REPLICATION SLAVE ON *.* TO 'repluser'@'localhost' IDENTIFIED BY 'suzf.net666';
 Query OK, 0 rows affected (0.00 sec)
 ```
 **Slave OPS**
-```
+```text
 mysql -uroot -S /usr/local/mysql/data/run/mysqld_3307.sock
 mysql> CHANGE MASTER TO  
     -> MASTER_HOST='localhost',    
@@ -157,22 +157,22 @@ Query OK, 0 rows affected (0.19 sec)
 ##### 场景二：移除  Replication
 
 首先关闭 SLAVE
-```
+```text
 mysql> STOP SLAVE;
 Query OK, 0 rows affected (0.00 sec)
 ```
 使用ALL 参数 重置 SLAVE (MySQL >= 5.6.7):
-```
+```text
 mysql> RESET SLAVE ALL;
 Query OK, 0 rows affected (0.02 sec)
 ```
 此时 mysql replication 已经消失了
-```
+```text
 mysql> SHOW SLAVE STATUS\G
 Empty set (0.00 sec)
 ```
 如果你希望这个SLAVE节点继续做一个新的MASTER的slave 节点，那么请设置 gtid\_purged,你应该发出一下命令（即使 gtid\_puerged 看起来是空的，你也应该重置一下MASTER.）
-```
+```text
 mysql> reset master;
 Query OK, 0 rows affected (0.11 sec)
 
@@ -197,11 +197,11 @@ mysql> show variables like '%gtid%';
 #### Using mysqldump
 
 在 slave 几点初始化数据库
-```
+```text
 $ ./scripts/mysql_install_db --datadir=/usr/local/mysql/data/mysql_3307
 ```
 为了更简单使用 mysqldump, 是将下列参数加入配置文件
-```
+```text
 [mysqldump]
 quick
 max_allowed_packet = 16M
@@ -209,7 +209,7 @@ port = 3306
 socket = /usr/local/mysql/data/run/mysqld_3306.sock
 ```
 之后使用下面命令导出 Master 节点的 Cherry 数据库
-```
+```text
 $ mysqldump --defaults-file=/usr/local/mysql/data/etc/my.cnf --user=root --password=`cat ~mysql/.root_password` --single-transaction --databases Cherry > backup.sql
 Warning: Using a password on the command line interface can be insecure.
 Warning: A partial dump from a server that has GTIDs will by default include the GTIDs of all transactions, even those that changed suppressed parts of the database. If you don't want to restore GTIDs, pass --set-gtid-purged=OFF. To make a complete dump, pass --all-databases --triggers --routines --events.
@@ -217,21 +217,21 @@ Warning: A partial dump from a server that has GTIDs will by default include the
 备注
 --defaults-file 参数必须放在第一个位置, 否则你将会入到一个我认为已经修复的 [bug](http://bugs.mysql.com/bug.php?id=31312).
 GTID 的诀窍在这里，当然它是通过 mysqldump 来实现的
-```
+```text
 $grep -i gtid 、/tmp/backup.sql
 -- GTID state at the beginning of the backup
 SET @@GLOBAL.GTID_PURGED='770d3753-c6e4-11e2-8e78-080027d93e15:1-8';
 ```
 之后将dump 文件传送到 slave 节点，然后导入它；
-```
+```text
 mysql> source /tmp/backup.sql;
 ```
 我最初得到了下面的错误：
-```
+```text
 ERROR 1840 (HY000): @@GLOBAL.GTID_PURGED can only be set when @@GLOBAL.GTID_EXECUTED is empty.
 ```
 但是我的 gtid\_executed 参数是空的:
-```
+```text
 mysql> show variables like '%gtid%';
 +--------------------------+------------------------------------------+
 | Variable_name            | Value                                    |
@@ -246,7 +246,7 @@ mysql> show variables like '%gtid%';
 6 rows in set (0.00 sec)
 ```
 错误消息显示冲突 一个[bug](http://bugs.mysql.com/bug.php?id=68038)已经打开。实际上，gtid\_purged也必须是空的，以便能够设置它。[官方文档](http://dev.mysql.com/doc/refman/5.6/en/replication-options-gtids.html)中引用的唯一解决方法是使用下面的命令：
-```
+```text
 mysql> DROP DATABASE replicationdb;
 Query OK, 1 row affected (0.07 sec)
 
@@ -267,7 +267,7 @@ mysql> SHOW VARIABLES LIKE '%gtid%';
 6 rows in set (0.01 sec)
 ```
 一旦完成你可以从新导入备份文件，如果最后没有错误出现，那么现在可以设置 replication 了。
-```
+```text
 mysql> change master to master_host='lab.suzf.net', master_port=3306, master_user='repluser', master_password='suzf.net666', master_auto_position=1;
 Query OK, 0 rows affected, 2 warnings (0.16 sec)
 
@@ -283,11 +283,11 @@ mysql> SHOW SLAVE STATUS\G
       Slave_SQL_Running_State: Slave has read all relay log; waiting for the slave I/O thread to update it
 ```
 如果使用的是mysql 5.5 可能会用到
-```
+```text
 change master to master_host='lab.suzf.net', master_port=3306, master_user='repluser', master_password='suzf.net666',  master_log_file='mysql-bin.000006', master_log_pos=1026;
 ```
 从哪里可以获得 master\_log\_file 和 log\_position（在你导入数据时请不要将 master 设置为 read-only ）
-```
+```text
 mysql> FLUSH TABLES WITH READ LOCK;
 mysql> SHOW MASTER STATUS;
 ```
@@ -295,7 +295,7 @@ mysql> SHOW MASTER STATUS;
 #### Using XtraBackup
 
 准备工作
-```
+```text
 $mkdir  /opt/data/backup/mysql -p
 $ cat 3306.cnf
 [mysqld]
@@ -344,24 +344,24 @@ skip_slave_start=1
 default-character-set = utf8
 ```
 我们将使用下面命令完整数据库备份：
-```
+```text
 $innobackupex --defaults-file=/opt/data/backup/mysql/3306.cnf --user=root  --socket=/usr/local/mysql/data/run/mysqld_3306.sock  /tmp
 ```
 ![innobackup](innobackup.png)
 这里要注意的重要的文件是在xtrabackup\_binlog\_info
-```
+```text
 $ cat /tmp/2016-04-05_15-26-40/xtrabackup_binlog_info
 master-binlog.000006  191 81ee72fe-c957-11e5-ae70-0800272aa66e:1-12
 ```
 在 Slave 节点恢复数据
-```
+```text
 $ innobackupex --defaults-file=/opt/data/backup/mysql/3307.cnf --user=root  --copy-back /tmp/2016-04-05_15-26-40
 ```
 备注
 Original data directory must be empty!
 即 Slave 节点数据目录必须为空
 权限修复 启动实例
-```
+```text
 $ chown -R mysql:mysql  /usr/local/mysql/data/mysql_3307
 $ /etc/init.d/mysqld_multi.server start 3307
 $ /etc/init.d/mysqld_multi.server report
@@ -370,7 +370,7 @@ MySQL server from group: mysqld3306 is running
 MySQL server from group: mysqld3307 is running
 ```
 你需要先设置 gtid\_purged 然后再创建 replication，在 [Percona 文档](https://www.percona.com/doc/percona-xtrabackup/2.1/howtos/recipes_ibkx_gtid.html) 中有说明
-```
+```text
 mysql>  SET GLOBAL gtid_purged="81ee72fe-c957-11e5-ae70-0800272aa66e:1-12";
 ERROR 1840 (HY000): @@GLOBAL.GTID_PURGED can only be set when @@GLOBAL.GTID_EXECUTED is empty.
 
@@ -399,11 +399,11 @@ mysql> SHOW WARNINGS;
 2 rows in set (0.00 sec)
 ```
 在经典的复制中（MySQL的5.5及以下）命令应该是这样的：
-```
+```text
 change master to master_host='lab.suzf.net', master_port=3306, master_user='repluser', master_password='suzf.net666',  master_log_file='mysql-bin.000006', master_log_pos=1026;
 ```
 启动 slave 查看状态
-```
+```text
 mysql> start slave;
 Query OK, 0 rows affected (0.01 sec)
 
@@ -439,7 +439,7 @@ f. 验证主从复制
 
 ### Skip counter with GTID
 
-```
+```text
 mysql> show slave status\G
 *************************** 1. row ***************************
            Retrieved_Gtid_Set: 770d3753-c6e4-11e2-8e78-080027d93e15:1-9
@@ -449,7 +449,7 @@ mysql> show slave status\G
 1 row in set (0.00 sec)
 ```
 从上面我们可以猜测到 事务执行到 事务ID 8 可能出现错误，接下来我们需要注入相同的空事务ID。
-```
+```text
 mysql> stop slave;
 Query OK, 0 rows affected (0.00 sec)
 

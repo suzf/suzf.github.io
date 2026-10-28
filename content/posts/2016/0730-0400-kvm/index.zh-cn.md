@@ -9,7 +9,7 @@ tags: ["KVM", "linux"]
 ---
 
 获取磁盘信息
-```
+```text
 # qemu-img  info /opt/data/kvm/images/hello_kvm.img
 image: /opt/data/kvm/images/hello_kvm.img
 file format: qcow2
@@ -21,11 +21,11 @@ Format specific information:
     lazy refcounts: true
 ```
 创建磁盘镜像文件
-```
+```text
 # qemu-img create -f qcow2 ubuntu.img 20G
 ```
 磁盘扩容
-```
+```text
 # qemu-img resize /opt/data/kvm/images/hello_kvm.img  +5G
 Image resized.
 # qemu-img  info /opt/data/kvm/images/hello_kvm.img
@@ -98,11 +98,11 @@ the next reboot or after you run partprobe(8) or kpartx(8)
 Syncing disks.
 ```
 # 分区生效
-```
+```text
 partprobe
 ```
 # 查看分区
-```
+```text
 # df -Th --total
 Filesystem              Type      Size  Used Avail Use% Mounted on
 /dev/mapper/centos-root xfs       8.5G  788M  7.7G  10% /
@@ -114,7 +114,7 @@ tmpfs                   tmpfs     245M     0  245M   0% /sys/fs/cgroup
 total                   -         9.9G  912M  9.1G   9% -
 ```
 # 创建物理卷
-```
+```text
 # pvcreate /dev/vda3
   Physical volume "/dev/vda3" successfully created
 
@@ -123,7 +123,7 @@ total                   -         9.9G  912M  9.1G   9% -
   centos   1   2   0 wz--n- 9.51g 40.00m
 ```
 把物理卷分区加进卷组
-```
+```text
 # vgextend centos /dev/vda3
   Volume group "centos" successfully extended
 
@@ -152,7 +152,7 @@ EXT
 resize2fs /dev/mapper/centos-root
 ```
 添加虚拟磁盘
-```
+```text
 # mkdir /opt/data/kvm/disk
 # qemu-img create -f qcow2 /opt/data/kvm/disk/hello_kvm.qcow2 5G
 
@@ -160,7 +160,7 @@ resize2fs /dev/mapper/centos-root
 # virsh edit hello_kvm
 ```
 添加新的磁盘
-```
+```text
     <disk type='file' device='disk'>
       <driver name='qemu' type='qcow2'/>
       <source file='/opt/data/kvm/disk/hello_kvm.qcow2'/>

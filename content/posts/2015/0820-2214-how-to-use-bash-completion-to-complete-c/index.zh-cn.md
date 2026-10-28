@@ -16,7 +16,7 @@ tags: ["linux"]
 
 bash-completion这个包的安装位置因不同的发行版会有所区别，但是大致上启用的原理是类似的，一般会有一个名为bash\_completion的脚本，这个脚本会在shell初始化时加载。例如对于RHEL系统来说，这个脚本位于/etc/bash\_completion，而该脚本会由/etc/profile.d/bash\_completion.sh中导入：
 
-```
+```text
 # Check for interactive bash and that we haven't already been sourced.
 [ -z "$BASH_VERSION" -o -z "$PS1" -o -n "$BASH_COMPLETION" ] && return
 
@@ -33,7 +33,7 @@ unset bash bmajor bminor
 
 而在bash\_completion脚本中会加载/etc/bash\_completion.d下面的补全脚本：
 
-```
+```text
 if [[ $BASH_COMPLETION_DIR != $BASH_COMPLETION_COMPAT_DIR && \
     -d $BASH_COMPLETION_DIR && -r $BASH_COMPLETION_DIR && \
     -x $BASH_COMPLETION_DIR ]]; then
@@ -48,7 +48,7 @@ unset i
 
 补全脚本的名称一般就是命令名，这样比较容易查找：
 
-```
+```text
 $ ls i*
 iconv  iftop  ifupdown  info  iproute2  iptables
 ```
@@ -57,7 +57,7 @@ iconv  iftop  ifupdown  info  iproute2  iptables
 
 Bash内置有两个补全命令，分别是compgen和complete。compgen命令根据不同的参数，生成匹配单词的候选补全列表，例如：
 
-```
+```text
 $ compgen -W 'hi hello how world' h
 hi
 hello
@@ -68,7 +68,7 @@ compgen最常用的选项是-W，通过-W参数指定空格分隔的单词列表
 
 complete命令的参数有点类似compgen，不过它的作用是说明命令如何进行补全，例如同样使用-W参数指定候选的单词列表：
 
-```
+```text
 $ complete -W 'word1 word2 word3 hello' foo
 $ foo w<Tab>
 $ foo word<Tab>
@@ -92,7 +92,7 @@ COMP\_LINE: 类型为字符串，表示当前的命令行输入；
 
 例如我们定义这样一个补全函数\_foo：
 
-```
+```text
 $ function _foo()
 > {
 >     echo -e "\n"
@@ -107,7 +107,7 @@ $ complete -F _foo foo
 
 假设我们在命令行下输入以下内容，再按下Tab键补全：
 
-```
+```text
 $ foo b
 
 declare -a COMP_WORDS='([0]="foo" [1]="b")'
@@ -133,7 +133,7 @@ prev="${COMP\_WORDS[COMP\_CWORD-1]}"
 
 初始化相应的变量后，我们需要定义补全行为，即输入什么的情况下补全什么内容，例如当输入-开头的选项的时候，我们将所有的选项作为候选的补全结果：
 
-```
+```text
 local opts="-h --help -f --file -o --output"
 
 if [[ ${cur} == -* ]] ; then
@@ -146,7 +146,7 @@ fi
 
 现在完整的补全函数是这样的：
 
-```
+```text
 function _foo() {
     local cur prev opts
 
@@ -165,7 +165,7 @@ function _foo() {
 
 现在在命令行下就可以对foo命令进行参数补全了：
 
-```
+```text
 $ complete -F _foo foo
 $ foo -
 -f        --file    -h        --help    -o        --output
@@ -173,7 +173,7 @@ $ foo -
 
 当然，似乎我们这里的例子没有用到prev变量。用好prev变量可以让补全的结果更加完整，例如当输入--file之后，我们希望补全特殊的文件（假设以.sh结尾的文件）：
 
-```
+```text
 case "${prev}" in
 -f|--file)
 COMPREPLY=( $(compgen -o filenames -W "`ls *.sh`" -- ${cur}) )
@@ -183,7 +183,7 @@ esac
 
 现在再执行foo命令，--file参数的值也可以补全了：
 
-```
+```text
 $ foo --file<Tab>
 a.sh b.sh c.sh
 ```
