@@ -32,39 +32,54 @@ expect脚本必须以interact或expect eof结束，执行自动化任务通常ex
 
 设置expect永不超时
 
+```text
 set timeout -1
+```
 
 设置expect 300秒超时，如果超过300没有expect内容出现，则推出
 
+```text
 set timeout 300
+```
 
 expect编写语法，expect使用的是tcl语法。
 
 一条Tcl命令由空格分割的单词组成. 其中, 第一个单词是命令名称, 其余的是命令参数
 
+```text
 cmd arg arg arg
+```
 
 $符号代表变量的值. 在本例中, 变量名称是foo.
 
+```text
 $foo
+```
 
 方括号执行了一个嵌套命令. 例如, 如果你想传递一个命令的结果作为另外一个命令的参数, 那么你使用这个符号
 
+```text
 [cmd arg]
+```
 
 双引号把词组标记为命令的一个参数. "$"符号和方括号在双引号内仍被解释
 
+```text
 "some stuff"
+```
 
 大括号也把词组标记为命令的一个参数. 但是, 其他符号在大括号内不被解释
 
+```text
 {some stuff}
+```
 
 反斜线符号是用来引用特殊符号. 例如：\n 代表换行. 反斜线符号也被用来关闭"$"符号, 引号,方括号和大括号的特殊含义
 
-#自动登录运程主机并执行命令
+### 自动登录运程主机并执行命令
 
-[root@www expect]# cat ssh\_log\_cmd.expect
+```text
+[root@www expect]# cat ssh_log_cmd.expect
 #!/usr/bin/expect
 set user "root"
 set password "jeffery"
@@ -73,19 +88,21 @@ set ip "172.16.7.91"
 spawn ssh $user@$ip
 
 expect {
-"yes/no" {send "yes\r";exp\_continue}
+"yes/no" {send "yes\r";exp_continue}
 "password:" {send "$password\r"}
 }
-expect "]\*"
+expect "]*"
 send "touch /tmp/haha.txt\r"
-expect "]\*"
+expect "]*"
 send "echo haha > /tmp/haha.txt\r"
-expect "]\*"
+expect "]*"
 send "exit\r"
+```
 
-#使用rsync同步文件
+### 使用rsync同步文件
 
-[root@www expect]# cat sync\_file.expect
+```text
+[root@www expect]# cat sync_file.expect
 #!/usr/bin/expect
 # Desc: auto sync file
 # Author: Jeffery.su
@@ -101,10 +118,12 @@ expect {
 "yes/no" {send "yes\r"}
 "password" {send "$password\r"}
 }
+```
 
-#参数的使用
+### 参数的使用
 
-[root@www expect]# cat trans\_para.expect
+```text
+[root@www expect]# cat trans_para.expect
 #!/usr/bin/expect
 # Desc: transmit parameter
 # Author: Jeffery.Su
@@ -122,9 +141,10 @@ expect {
 "password" {send "$password\r"}
 }
 
-expect "]\*"
+expect "]*"
 send "$cm\r"
-expect "]\*"
+expect "]*"
 send "exit\r"
+```
 
-#调用 expect trans\_para.expect root 172.16.7.91 date
+调用：`expect trans_para.expect root 172.16.7.91 date`

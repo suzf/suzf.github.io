@@ -97,11 +97,11 @@ The kernel still uses the old table. The new table will be used at
 the next reboot or after you run partprobe(8) or kpartx(8)
 Syncing disks.
 ```
-# 分区生效
+分区生效
 ```text
 partprobe
 ```
-# 查看分区
+查看分区
 ```text
 # df -Th --total
 Filesystem              Type      Size  Used Avail Use% Mounted on
@@ -113,7 +113,7 @@ tmpfs                   tmpfs     245M     0  245M   0% /sys/fs/cgroup
 /dev/vda1               xfs       497M  120M  378M  25% /boot
 total                   -         9.9G  912M  9.1G   9% -
 ```
-# 创建物理卷
+创建物理卷
 ```text
 # pvcreate /dev/vda3
   Physical volume "/dev/vda3" successfully created

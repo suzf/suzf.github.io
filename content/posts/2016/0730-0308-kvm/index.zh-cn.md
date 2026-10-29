@@ -10,10 +10,11 @@ tags: ["KVM", "linux"]
 
 两种方式：
 
-virt-manager
-virt-install
+- virt-manager
+- virt-install
 
-virt-manager
+### virt-manager
+
 virt-manager 是基于 libvirt 的图像化虚拟机管理软件，请注意不同的发行版上 virt-manager 的版本可能不同，图形界面和操作方法也可能不同。创建KVM虚拟机最简单的方法是通过virt-manager接口。
 
 1. 需要对localhost进行连接配置
@@ -21,17 +22,24 @@ virt-manager 是基于 libvirt 的图像化虚拟机管理软件，请注意不�
 3. 创建或添加存储，可以是逻辑卷，也可以硬盘文件
 
 安装
+
+```text
 yum install virt-manager -y
+```
 
 图形操作直接略过, 多点几下就会用了基本上。
 
-virt-install
+### virt-install
+
 你可以通过使用 virt-install 命令行来创建客户虚拟机。
 virt-install也可以以一种交互的形式  或者使用一部分的脚本来自动化创建虚拟机。
 也可以将 virt-install 和 ks 文件结合起来 实现自动部署
 
 查看帮助
+
+```text
 # virt-install --help
+```
 
 请注意，你需要以root权限进行的virt-install命令。qemu-img 是一个相关的命令在virt-安装配置存储选项 之前可以使用。
 一个重要的选项是--graphics选项，允许一个虚拟机的图形化安装。

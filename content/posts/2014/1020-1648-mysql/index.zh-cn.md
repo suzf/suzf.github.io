@@ -457,39 +457,68 @@ MySQL默认的数据文件存储目录为/var/lib/mysql。假如要把目录移�
 cd /home
 mkdir data
 2、把MySQL服务进程停掉：
+
+```text
 mysqladmin -u root -p shutdown
+```
+
 3、把/var/lib/mysql整个目录移到/home/data
+
+```text
 mv /var/lib/mysql　/home/data/
+```
+
 这样就把MySQL的数据文件移动到了/home/data/mysql下
 4、找到my.cnf配置文件
 如果/etc/目录下没有my.cnf配置文件，请到/usr/share/mysql/下找到\*.cnf文件，拷贝其中一个到/etc/并改名为my.cnf)中。命令如下：
+
+```text
 [root@test1 mysql]# cp /usr/share/mysql/my-medium.cnf　/etc/my.cnf
+```
+
 5、编辑MySQL的配置文件/etc/my.cnf
 为保证MySQL能够正常工作，需要指明mysql.sock文件的产生位置。 修改socket=/var/lib/mysql/mysql.sock一行中等号右边的值为：/home/mysql/mysql.sock 。
 操作如下：
+
+```text
 vi　 my.cnf
 # The MySQL server
 [mysqld]
 port　　　= 3306
 #socket　 = /var/lib/mysql/mysql.sock（原内容，为了更稳妥用#注释此行）
 socket　 = /home/data/mysql/mysql.sock　　　（加上此行）
+```
+
 6、修改MySQL启动脚本/etc/rc.d/init.d/mysql
 最后,需要修改MySQL启动脚本/etc/rc.d/init.d/mysql，把其中datadir=/var/lib/mysql一行中，等号右边的路径改成你现在的实际存放路径：home/data/mysql。
+
+```text
 [root@test1 etc]# vi　/etc/rc.d/init.d/mysql
 #datadir=/var/lib/mysql　　　　（注释此行）
 datadir=/home/data/mysql　　 （加上此行）
+```
+
 7、重新启动MySQL服务
+
+```text
 /etc/rc.d/init.d/mysql　start
+```
+
 如果工作正常移动就成功了，否则对照前面的7步再检查一下。
 
 ##### 查看表的最后mysql修改时间
 
-select TABLE\_NAME,UPDATE\_TIME from INFORMATION\_SCHEMA.tables where TABLE\_SCHEMA='数据库名';
+```text
+select TABLE_NAME,UPDATE_TIME from INFORMATION_SCHEMA.tables where TABLE_SCHEMA='数据库名';
+```
+
 可以通过查看数据库中表的mysql修改时间，来确定mysql数据库是否已经长期不再使用。
 
 ##### 查看表的创建时间
 
-select TABLE\_NAME,CREATE\_TIME from information\_schema.TABLES where TABLE\_SCHEMA='数据库名' and information\_schema.TABLES.TABLE\_NAME = '表名';
+```text
+select TABLE_NAME,CREATE_TIME from information_schema.TABLES where TABLE_SCHEMA='数据库名' and information_schema.TABLES.TABLE_NAME = '表名';
+```
 
 ##### 查看数据大小
 
@@ -549,22 +578,32 @@ mysql> select concat(round(sum(DATA\_LENGTH/1024/1024),2),'MB') as data
 
 ##### 如何使用mysql 命令行 查看mysql数据库大小、表大小、数据大小、索引大小
 
-select \* from information\_schema.TABLES
-where information\_schema.TABLES.TABLE\_SCHEMA='databasename'
-and information\_schema.TABLES.TABLE\_NAME='tablename'\G
+```text
+select * from information_schema.TABLES
+where information_schema.TABLES.TABLE_SCHEMA='databasename'
+and information_schema.TABLES.TABLE_NAME='tablename'\G
+```
 
 ##### mysql使用普通用户备份
 
+```text
 # mysqldump -u dbuser -ppass db > db.sql
 #mysqldump: Got error: 1044: Access denied for user 'dbuser'@'localhost' to database 'db' when using LOCK TABLES
+```
 
 解决一：
 加上-skip-lock-tables选项即可。即：
+
+```text
 # mysqldump -u dbuser -ppass db --skip-lock-tables > db.sql
+```
 
 解决2：
 使用具有lock权限的用户进行备份。
-grant select,reload,lock tables on \*.\* to `xx`@`xx`;
+
+```text
+grant select,reload,lock tables on *.* to `xx`@`xx`;
+```
 
 #####
 
