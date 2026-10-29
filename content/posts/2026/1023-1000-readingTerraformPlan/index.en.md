@@ -89,7 +89,7 @@ To look at drift without proposing anything else, run `terraform plan -refresh-o
 
 ## 7. Moves, imports and removals
 
-Configuration blocks now cover the state commands from the [daily state operations](https://suzf.net/en/blog/posts/terraform-state-management-best-practices/#5-daily-state-operations):
+Configuration blocks now cover the state commands from the [changing state safely](https://suzf.net/en/blog/posts/terraform-state-management-best-practices/#5-changing-state-safely-moved-import-and-removed-blocks):
 
 | Block | Plan shows | Same as |
 |---|---|---|
@@ -101,7 +101,7 @@ A refactor with `moved` blocks should show moves and nothing else. If the same p
 
 ## 8. Sensitive values
 
-Values marked sensitive show as `(sensitive value)` in the text plan. The saved plan file and `terraform show -json` still contain them in plain text, as does the state ([security considerations](https://suzf.net/en/blog/posts/terraform-state-management-best-practices/#6-security-considerations)). Don't upload `tfplan` or `plan.json` as a public CI artifact, and don't paste a JSON plan into a tool that sends it somewhere.
+Values marked sensitive show as `(sensitive value)` in the text plan. The saved plan file and `terraform show -json` still contain them in plain text, as does the state ([secrets in state](https://suzf.net/en/blog/posts/terraform-state-management-best-practices/#6-secrets-in-state)). Don't upload `tfplan` or `plan.json` as a public CI artifact, and don't paste a JSON plan into a tool that sends it somewhere.
 
 ## 9. Before you apply
 

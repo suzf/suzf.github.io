@@ -89,7 +89,7 @@ plan 时 Terraform 会刷新每个资源，再和 state 比较。如果有人手
 
 ## 7. 移动、导入和移除
 
-[State 日常运维命令](https://suzf.net/zh/blog/posts/terraform-state-management-best-practices/#5-state-日常运维命令)里的几个命令，现在都可以用配置块来完成：
+[安全地修改 State](https://suzf.net/zh/blog/posts/terraform-state-management-best-practices/#5-安全地修改-statemovedimport-和-removed-块)里的几个命令，现在都可以用配置块来完成：
 
 | 配置块 | plan 显示 | 相当于 |
 |---|---|---|
@@ -101,7 +101,7 @@ plan 时 Terraform 会刷新每个资源，再和 state 比较。如果有人手
 
 ## 8. 敏感值
 
-标记为 sensitive 的值在文本 plan 里显示为 `(sensitive value)`。但保存的 plan 文件和 `terraform show -json` 的输出里仍然是明文，state 也一样（[安全注意事项](https://suzf.net/zh/blog/posts/terraform-state-management-best-practices/#6-安全注意事项)）。不要把 `tfplan` 或 `plan.json` 作为公开的 CI 构建产物上传，也不要把 JSON plan 粘贴到会把它发送出去的工具里。
+标记为 sensitive 的值在文本 plan 里显示为 `(sensitive value)`。但保存的 plan 文件和 `terraform show -json` 的输出里仍然是明文，state 也一样（[State 里的密钥](https://suzf.net/zh/blog/posts/terraform-state-management-best-practices/#6-state-里的密钥)）。不要把 `tfplan` 或 `plan.json` 作为公开的 CI 构建产物上传，也不要把 JSON plan 粘贴到会把它发送出去的工具里。
 
 ## 9. apply 之前
 
