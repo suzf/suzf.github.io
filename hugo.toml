@@ -60,7 +60,8 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
   defaultTheme = "auto"
   # public git repo url only then enableGitInfo is true
   # 公共 git 仓库路径，仅在 enableGitInfo 设为 true 时有效
-  gitRepo = "https://github.com/suzf/suzf.github.io"
+  # 留空：文章页脚不显示更新所在的 commit hash（enableGitInfo 仍用于 Lastmod）
+  gitRepo = ""
   # which hash function used for SRI, when empty, no SRI is used
   # ["sha256", "sha384", "sha512", "md5"]
   # 哪种哈希函数用来 SRI, 为空时表示不使用 SRI
@@ -502,7 +503,7 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       hreflang = ["zh-CN", "zh"]
       # site description for RSS, SEO, Open Graph and X Cards
       # 网站描述, 用于 RSS, SEO, Open Graph 和 X Cards
-      description = "Jeffrey Su 的运维与开发实践笔记：Terraform、Docker、Consul 和 Nomad 集群升级，以及正则、SSL 证书、UUID、Base64、Cron 等开发者工具详解。"
+      description = "Jeffrey Su 的运维与开发实践笔记：Terraform、Docker、Consul 和 Nomad 集群升级，以及正则、SSL 证书、UUID、Base64、Unix 时间戳等开发者工具详解。"
       # site keywords
       # 网站关键词
       keywords = ["suzf", "suzf blog", "JeffreySu"]
@@ -634,7 +635,7 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       hreflang = ["en"]
       # site description for RSS, SEO, Open Graph and X Cards
       # 网站描述, 用于 RSS, SEO, Open Graph 和 X Cards
-      description = "Hands-on DevOps and developer notes by Jeffrey Su: Terraform, Docker, Consul and Nomad upgrades, plus regex, SSL, UUID, Base64 and cron explained."
+      description = "Hands-on DevOps and developer notes by Jeffrey Su: Terraform, Docker, Consul and Nomad upgrades, plus regex, SSL, UUID, Base64 and Unix timestamps explained."
       # site keywords
       # 网站关键词
       keywords = ["suzf", "suzf blog", "JeffreySu"]

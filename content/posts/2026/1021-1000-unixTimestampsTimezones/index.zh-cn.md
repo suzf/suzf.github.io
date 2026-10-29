@@ -92,7 +92,7 @@ TZ=Asia/Shanghai date -d @1792548000   # 按指定时区显示
 
 想核对日志、JWT 或数据库里的某个时间戳，可以用免费的[时间戳转换](https://suzf.net/zh/tools/timestamp)工具：它能自动识别秒级和毫秒级，在本地时间和 UTC 之间切换，还会实时显示当前时间戳，全部在浏览器里运行。
 
-另外两篇文章从别的角度讲到了同一件事：[UUID v7](https://suzf.net/zh/blog/posts/uuid-v4-vs-v7-database-ids/) 在每个 ID 里都嵌了一个毫秒级时间戳，而 [Cron 的时区坑](https://suzf.net/zh/blog/posts/cron-expressions-explained-practical-guide/)就是坑 3 在定时任务里的版本。
+另一篇文章从别的角度讲到了同一件事：[UUID v7](https://suzf.net/zh/blog/posts/uuid-v4-vs-v7-database-ids/) 在每个 ID 里都嵌了一个毫秒级时间戳。
 
 ## 要点
 

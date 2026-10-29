@@ -92,7 +92,7 @@ A signed 32-bit integer can hold at most `2147483647`, which as a Unix timestamp
 
 To check a timestamp from a log, a JWT or a database row, the free [Timestamp Converter](https://suzf.net/en/tools/timestamp) tells seconds from milliseconds automatically, switches between local time and UTC, and shows the live current timestamp. It runs entirely in your browser.
 
-Two related posts cover the same ground from other angles: [UUID v7](https://suzf.net/en/blog/posts/uuid-v4-vs-v7-database-ids/) embeds a millisecond timestamp in every ID, and [cron's time zone trap](https://suzf.net/en/blog/posts/cron-expressions-explained-practical-guide/) is the scheduling version of trap 3.
+A related post covers the same ground from another angle: [UUID v7](https://suzf.net/en/blog/posts/uuid-v4-vs-v7-database-ids/) embeds a millisecond timestamp in every ID.
 
 ## Takeaways
 
