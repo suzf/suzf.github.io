@@ -129,7 +129,7 @@ Many common questions already have a tool. On Ubuntu, install `bpfcc-tools`; the
 
 The bpftrace package ships a similar set of tools written as bpftrace scripts. On Ubuntu they live in `/usr/sbin/` with a `.bt` suffix, for example `execsnoop.bt`, `biolatency.bt` and `tcpretrans.bt`. They are good bpftrace examples too, worth reading before you write your own scripts.
 
-For performance work, Brendan Gregg's ["60-second analysis"](https://www.brendangregg.com/Articles/Netflix_Linux_Perf_Analysis_60s.pdf) is a good order: use the classic tools (`uptime`, `vmstat`, `iostat`) to tell whether it is CPU, memory, disk or network, then drill down with the matching eBPF tool.
+For performance work, Brendan Gregg's ["60-second analysis"](https://www.brendangregg.com/Articles/Netflix_Linux_Perf_Analysis_60s.pdf) is a good order: use the classic tools (`uptime`, `vmstat`, `iostat`) to tell whether it is CPU, memory, disk or network, then drill down with the matching eBPF tool. The follow-up post, [Troubleshooting a Slow Linux Server with eBPF](https://suzf.net/en/blog/posts/ebpf-troubleshooting-playbook/), walks through that symptom by symptom: which tool to run, which flags matter and how to read the output.
 
 ## 6. Write your own: libbpf + CO-RE
 
@@ -332,7 +332,7 @@ Remember the cost: your program runs once per event. On high-frequency events su
 ## 11. Summary
 
 - eBPF is a safe sandbox in the kernel: the verifier keeps it from crashing, the JIT keeps it fast, maps carry data to user space.
-- For troubleshooting, start with the BCC tools and bpftrace one-liners; most problems need no code.
+- For troubleshooting, start with the BCC tools and bpftrace one-liners; most problems need no code. The [troubleshooting playbook](https://suzf.net/en/blog/posts/ebpf-troubleshooting-playbook/) maps symptoms to tools.
 - For something long-running, use libbpf + CO-RE: build once, run on many kernels with BTF.
 - Prefer tracepoints; run 5.8+ kernels with BTF in production; aggregate in the kernel on hot events.
 

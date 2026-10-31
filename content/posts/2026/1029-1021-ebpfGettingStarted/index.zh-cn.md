@@ -129,7 +129,7 @@ sudo bpftrace -e 'profile:hz:99 /pid == 1234/ { @[ustack] = count(); }'
 
 bpftrace 包也自带一套同类工具，用 bpftrace 脚本写成，Ubuntu 上装在 `/usr/sbin/` 下、以 `.bt` 结尾，比如 `execsnoop.bt`、`biolatency.bt`、`tcpretrans.bt`。它们本身就是很好的 bpftrace 范例，写自己的脚本前可以先打开看看。
 
-排查性能问题时，Brendan Gregg 的[「60 秒分析」](https://www.brendangregg.com/Articles/Netflix_Linux_Perf_Analysis_60s.pdf)思路很好用：先用 `uptime`、`vmstat`、`iostat` 这些传统工具定位是 CPU、内存、磁盘还是网络，再用对应的 eBPF 工具往下钻。
+排查性能问题时，Brendan Gregg 的[「60 秒分析」](https://www.brendangregg.com/Articles/Netflix_Linux_Perf_Analysis_60s.pdf)思路很好用：先用 `uptime`、`vmstat`、`iostat` 这些传统工具定位是 CPU、内存、磁盘还是网络，再用对应的 eBPF 工具往下钻。续篇[《用 eBPF 排查变慢的 Linux 服务器》](https://suzf.net/zh/blog/posts/ebpf-troubleshooting-playbook/)按症状逐个讲解：该跑哪个工具、哪些参数要紧、输出怎么读。
 
 ## 6. 写一个自己的程序：libbpf + CO-RE
 
@@ -332,7 +332,7 @@ sudo bpftool prog tracelog                 # bpf_printk() 的输出，即 /sys/k
 ## 11. 小结
 
 - eBPF 是内核里的安全沙箱：verifier 保证不崩溃，JIT 保证够快，map 负责和用户态交换数据。
-- 排查问题先用 BCC 工具和 bpftrace 单行命令，大部分问题不需要写代码。
+- 排查问题先用 BCC 工具和 bpftrace 单行命令，大部分问题不需要写代码。[按症状排查的速查手册](https://suzf.net/zh/blog/posts/ebpf-troubleshooting-playbook/)把症状和工具一一对应起来。
 - 需要长期运行时用 libbpf + CO-RE，一次编译，在开启 BTF 的多个内核上运行。
 - 优先用 tracepoint；生产环境选 5.8+ 并开启 BTF 的内核；高频事件上在内核里聚合。
 
