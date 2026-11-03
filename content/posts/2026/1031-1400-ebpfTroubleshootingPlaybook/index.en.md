@@ -116,7 +116,7 @@ biolatency-bpfcc -Q -D 10 1     # include time queued in the OS, not just on the
 
 Two humps usually mean two kinds of I/O, such as small cached reads and large writes, or a device that is mostly fast with periodic stalls. Compare the numbers with what the device should do: local NVMe mostly stays under a millisecond, while network block storage such as EBS is in single-digit milliseconds. If `-Q` adds a lot on top, I/O is waiting in the OS queue, which means more requests are in flight than the device can serve.
 
-To see who is doing the I/O, `biosnoop` prints each request with its process, direction, size and latency (`QUE(ms)` with `-Q`, `LAT(ms)` on the device). One caveat from its man page: the process name is whoever was running when the I/O was issued, so writes flushed later by the kernel often show up as a kernel worker rather than the program that wrote the data.
+To see who is doing the I/O, `biosnoop` prints each request with its process, direction, size and latency (`QUE(ms)` with `-Q`, `LAT(ms)` on the device). One caveat from its example file (`biosnoop_example.txt`): the process name is whoever was running when the I/O was issued, so writes flushed later by the kernel often show up as a kernel worker rather than the program that wrote the data.
 
 What the application feels is filesystem latency, which includes locks, page cache misses and the disk. The `*slower` tools trace operations at the filesystem level and print the slow ones with the file name:
 
@@ -143,15 +143,20 @@ A connect that takes just over one second, or three, is a retransmitted SYN: the
 For established connections, look at retransmits and drops:
 
 ```bash
-tcpretrans-bpfcc          # each retransmit: addresses, ports, TCP state
-tcpretrans-bpfcc -c       # count retransmits per flow instead, printed on Ctrl-C
-tcpdrop-bpfcc             # packets the kernel dropped, each with the kernel stack that dropped it
-tcpsynbl-bpfcc            # SYN backlog length when each SYN arrives, one histogram per backlog limit
+tcpretrans.bt                                         # each retransmit: addresses, ports, TCP state
+bpftrace -e 'tracepoint:tcp:tcp_retransmit_skb { @[ntop(args.daddr_v6), args.dport] = count(); }'   # retransmits per destination, printed on Ctrl-C
+bpftrace -e 'tracepoint:skb:kfree_skb { @[args.reason] = count(); }'   # dropped packets, counted by drop reason
+nstat -az TcpExtListenOverflows TcpExtListenDrops     # accept queue overflows since boot
+ss -ltn                                               # each listener: Recv-Q is its accept queue now, Send-Q the limit
 ```
+
+On Ubuntu 24.04, BCC's `tcpretrans-bpfcc` fails to compile against the distribution's own 6.8 kernel (`use of undeclared identifier 'BPF_CGROUP_UNIX_CONNECT'`), so the commands above use bpftrace. Where the BCC tool works, `tcpretrans-bpfcc` and `tcpretrans-bpfcc -c` do the same two jobs. The one-liner reads the IPv6 address field so that it covers both families; IPv4 peers show up as `::ffff:10.0.0.1`.
 
 `tcpretrans` names the flows that are losing packets. If they all go to one peer or one subnet, the problem is on that path; if they're spread everywhere, look at the local NIC, the host's bandwidth limit or the instance type. Its `PID` column is usually 0, because most retransmits fire from a kernel timer, not from the process.
 
-`tcpdrop` prints the kernel stack for each dropped packet, and the function names there tell you which check discarded it: a full accept queue, a socket buffer limit, a failed checksum, a netfilter rule. On recent kernels it uses the `skb:kfree_skb` tracepoint, which records a drop reason. If `tcpsynbl` shows the backlog at its limit, the application isn't calling `accept()` fast enough or the `listen()` backlog is too small. `nstat -az TcpExtListenOverflows` confirms it.
+The drop counter prints one line per reason, such as `@[53]: 11`. bpftrace shows the reason as a number, so translate it with the running kernel's own list: `bpftool btf dump file /sys/kernel/btf/vmlinux format c | grep SKB_DROP_REASON_`. Don't use a table copied from somewhere else, because the numbers aren't stable even within one kernel series: on Ubuntu's 6.8.0-147, 53 is `TC_EGRESS`, while on 6.8.0-139 it is `CPU_BACKLOG`. Names such as `NETFILTER_DROP`, `TC_EGRESS`, `TCP_CSUM` or `SOCKET_RCVBUFF` point straight at the cause. `NOT_SPECIFIED` means the code that dropped the packet doesn't report a reason. BCC's `tcpdrop` reads the same tracepoint but skips packets that don't belong to a socket yet, which covers most drops on the receive path, so it can stay silent while packets are being lost.
+
+A full accept queue barely shows up in either tool. In a test where a listener overflowed about 500 times in 30 seconds, the drop counter's `NOT_SPECIFIED` line reached only 22, and `tcpdrop` printed nothing in a similar run. Use `nstat` for this: if `TcpExtListenOverflows` keeps rising, the application isn't calling `accept()` fast enough or its `listen()` backlog is too small. `ss -ltn` then shows which listener it is: its `Recv-Q` has reached `Send-Q`.
 
 ## 8. Memory: OOM kills, reclaim and the page cache
 
@@ -161,7 +166,7 @@ drsnoop-bpfcc -p 1234     # direct reclaim events and how long they stalled the 
 memleak-bpfcc -p 1234 30  # outstanding allocations by stack, every 30 seconds
 ```
 
-`dmesg` also records OOM kills, but `oomkill` shows which task was allocating when it happened, which is often not the one that got killed. `drsnoop` explains a particular kind of latency spike: when free memory runs low, a process asking for memory has to reclaim pages itself before it can continue, and the tool prints how long each of those stalls lasted. `memleak` follows every `malloc()` and `free()` to find allocations that are never freed. It's useful when a process grows steadily, but its overhead is high, so attach it briefly or on a test instance.
+`dmesg` also records OOM kills, but `oomkill` shows which task was allocating when it happened, which is often not the one that got killed. `drsnoop` explains a particular kind of latency spike: when free memory runs low, a process asking for memory has to reclaim pages itself before it can continue, and the tool prints how long each of those stalls lasted and how many pages it reclaimed. `memleak` follows every `malloc()` and `free()` to find allocations that are never freed. It's useful when a process grows steadily, but its overhead is high, so attach it briefly or on a test instance.
 
 ## 9. Something fails quietly
 
@@ -183,11 +188,11 @@ The BCC suite also has general-purpose tools that trace any function you name:
 ```bash
 funclatency-bpfcc -m -p 1234 c:fsync                          # histogram of libc fsync() time
 funclatency-bpfcc -u vfs_read                                 # kernel vfs_read() latency, in microseconds
-trace-bpfcc 'r::do_sys_openat2 (retval < 0) "open failed: %d", retval'   # print failing opens
+trace-bpfcc 'r::do_sys_openat2 ((long)retval < 0) "open failed: %ld", (long)retval'   # print failing opens
 argdist-bpfcc -p 1234 -C 'p:c:write(int fd):int:fd'           # count write() calls per file descriptor
 ```
 
-The prefix says where the function lives: no prefix or `p::` for kernel functions, `r::` for their return, `c:` for the C library, or a path to any binary or library. Kernel function names change between versions (on 6.x kernels opens go through `do_sys_openat2`, which older tutorials call `do_sys_open`), so check with `bpftrace -l 'kprobe:do_sys_open*'` first. Tracepoints such as `syscalls:sys_enter_openat` are the stable alternative.
+`trace` treats `retval` as unsigned, so cast it to `long` before comparing it with 0; with a plain `retval < 0` the condition is never true and nothing prints. The prefix says where the function lives: no prefix or `p::` for kernel functions, `r::` for their return, `c:` for the C library, or a path to any binary or library. Kernel function names change between versions (on 6.x kernels opens go through `do_sys_openat2`, which older tutorials call `do_sys_open`), so check with `bpftrace -l 'kprobe:do_sys_open*'` first. Tracepoints such as `syscalls:sys_enter_openat` are the stable alternative.
 
 For anything that needs custom aggregation, write a bpftrace one-liner. For example, the distribution of bytes returned by `read()` for each process:
 
@@ -197,11 +202,11 @@ bpftrace -e 'tracepoint:syscalls:sys_exit_read /args.ret > 0/ { @bytes[comm] = h
 
 ## 11. Overhead and safety
 
-These tools are designed to be run on production machines, and the verifier guarantees they can't crash the kernel. They still cost something per event, and that's the thing to manage:
+These tools are designed to be run on production machines: the verifier rejects any program that could read memory it shouldn't or loop forever, so barring kernel bugs they can't crash the kernel. They still cost something per event, and that's the thing to manage:
 
 - **Cheap**: tools that hook rare events, such as `execsnoop`, `tcpconnlat`, `tcpretrans`, `oomkill` and `ext4slower` with a threshold.
 - **Moderate**: summaries of frequent events aggregated in the kernel, such as `biolatency`, `runqlat` and `profile` at 99 Hz.
-- **Expensive**: anything that hooks every scheduler switch, every allocation or every syscall and sends events to user space: `offcputime`, `memleak`, `syscount` on a very busy process, `opensnoop` without a filter.
+- **Expensive**: anything that hooks every scheduler switch, every allocation or every syscall: `offcputime`, `memleak`, `syscount` on a very busy process, `opensnoop` without a filter. The first three aggregate in the kernel; they are expensive because on a busy machine their program can run hundreds of thousands of times a second, not because of what they send to user space.
 
 Start with the cheap ones, filter by PID, and give the rest a duration. When a tool exits it unloads its programs; `bpftool prog list` shows anything that is still attached.
 
@@ -212,11 +217,11 @@ Start with the cheap ones, filter by PID, and give the rest a duration. When a t
 | CPU busy, no culprit in `top` | `execsnoop -T` | `exitsnoop -x` |
 | One process using CPU | `profile -F 99 -f -p PID` → flame graph | `syscount -p PID -L` |
 | Latency with idle CPU | `runqlat -m 10 1` | `runqslower -P`, cgroup `cpu.stat` |
-| Slow, low CPU | `offcputime -f -p PID` → flame graph | the matching section below |
+| Slow, low CPU | `offcputime -f -p PID` → flame graph | [6](#6-disk-and-filesystem-latency) or [7](#7-network-slow-connections-retransmits-and-drops), depending on what it waits for |
 | Disk slow | `biolatency -D -m 10 1` | `biosnoop`, `ext4slower 10` |
 | Reads slower over time | `cachestat 1` | `free -m`, memory limits |
-| Slow or failing connects | `tcpconnlat 100` | `tcpsynbl`, `nstat` |
-| Timeouts on established connections | `tcpretrans -c` | `tcpdrop` |
+| Slow or failing connects | `tcpconnlat 100` | `nstat`, `ss -ltn` |
+| Timeouts on established connections | `tcpretrans.bt` | drop reasons from `skb:kfree_skb` |
 | DNS slow | `gethostlatency` | resolver config |
 | Process killed | `oomkill` | `drsnoop`, `memleak` |
 | Silent failures | `opensnoop -x`, `syscount -x -P` | `trace` |

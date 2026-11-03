@@ -122,12 +122,12 @@ sudo bpftrace -e 'profile:hz:99 /pid == 1234/ { @[ustack] = count(); }'
 | `biolatency-bpfcc` | 块设备 I/O 延迟分布 |
 | `biosnoop-bpfcc` | 每一次磁盘 I/O 的进程、大小、延迟 |
 | `tcplife-bpfcc` | 每条 TCP 连接的起止时间、收发字节数 |
-| `tcpretrans-bpfcc` | 哪些连接在重传 |
+| `ext4slower-bpfcc` | ext4 上哪些读、写、打开和 fsync 慢于阈值 |
 | `runqlat-bpfcc` | 进程在运行队列里等了多久（CPU 争抢） |
 | `profile-bpfcc` | CPU 采样，输出可直接生成火焰图 |
 | `oomkill-bpfcc` | OOM killer 杀了谁、当时谁在申请内存 |
 
-bpftrace 包也自带一套同类工具，用 bpftrace 脚本写成，Ubuntu 上装在 `/usr/sbin/` 下、以 `.bt` 结尾，比如 `execsnoop.bt`、`biolatency.bt`、`tcpretrans.bt`。它们本身就是很好的 bpftrace 范例，写自己的脚本前可以先打开看看。
+bpftrace 包也自带一套同类工具，用 bpftrace 脚本写成，Ubuntu 上装在 `/usr/sbin/` 下、以 `.bt` 结尾，比如 `execsnoop.bt`、`biolatency.bt`、`tcpretrans.bt`。它们本身就是很好的 bpftrace 范例，写自己的脚本前可以先打开看看。有时它们也是能用的那个版本：在 Ubuntu 24.04 上，`tcpretrans-bpfcc` 对着 6.8 内核头文件编译会失败（`BPF_CGROUP_UNIX_CONNECT` 未声明），而 `tcpretrans.bt` 可以正常运行。
 
 排查性能问题时，Brendan Gregg 的[「60 秒分析」](https://www.brendangregg.com/Articles/Netflix_Linux_Perf_Analysis_60s.pdf)思路很好用：先用 `uptime`、`vmstat`、`iostat` 这些传统工具定位是 CPU、内存、磁盘还是网络，再用对应的 eBPF 工具往下钻。续篇[《用 eBPF 排查变慢的 Linux 服务器》](https://suzf.net/zh/blog/posts/ebpf-troubleshooting-playbook/)按症状逐个讲解：该跑哪个工具、哪些参数要紧、输出怎么读。
 

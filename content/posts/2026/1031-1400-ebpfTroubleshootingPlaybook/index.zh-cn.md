@@ -116,7 +116,7 @@ biolatency-bpfcc -Q -D 10 1     # 把在系统队列里排队的时间也算进�
 
 出现两个峰通常意味着两类 I/O，比如小的缓存读和大的写，或者一个大多数时候很快、偶尔卡顿的设备。把数字和设备应有的表现比一比：本地 NVMe 大多在 1 毫秒以内，而 EBS 这类网络块存储在个位数毫秒。如果加上 `-Q` 后多出很多，说明 I/O 在系统队列里排队，同时发出的请求超过了设备能处理的量。
 
-要看是谁在做 I/O，`biosnoop` 会逐条打印请求的进程、读写方向、大小和延迟（`-Q` 时有 `QUE(ms)`，设备上的延迟是 `LAT(ms)`）。它的 man page 里有一个提醒：进程名是发出 I/O 时正在运行的那个进程，所以由内核稍后刷盘的写操作，常常显示为内核工作线程，而不是写数据的那个程序。
+要看是谁在做 I/O，`biosnoop` 会逐条打印请求的进程、读写方向、大小和延迟（`-Q` 时有 `QUE(ms)`，设备上的延迟是 `LAT(ms)`）。它的示例文件（`biosnoop_example.txt`）里有一个提醒：进程名是发出 I/O 时正在运行的那个进程，所以由内核稍后刷盘的写操作，常常显示为内核工作线程，而不是写数据的那个程序。
 
 应用真正感受到的是文件系统延迟，其中包括锁、页缓存未命中和磁盘。`*slower` 系列工具在文件系统层追踪操作，并把慢的操作连同文件名打印出来：
 
@@ -143,15 +143,20 @@ gethostlatency-bpfcc      # DNS 解析及其耗时
 对已建立的连接，看重传和丢包：
 
 ```bash
-tcpretrans-bpfcc          # 每次重传：地址、端口、TCP 状态
-tcpretrans-bpfcc -c       # 改为按连接统计重传次数，按 Ctrl-C 时打印
-tcpdrop-bpfcc             # 内核丢弃的包，每个都带上丢弃它的内核调用栈
-tcpsynbl-bpfcc            # 每个 SYN 到达时的 SYN 积压长度，每种积压上限一张直方图
+tcpretrans.bt                                         # 每次重传：地址、端口、TCP 状态
+bpftrace -e 'tracepoint:tcp:tcp_retransmit_skb { @[ntop(args.daddr_v6), args.dport] = count(); }'   # 按目的地址统计重传次数，按 Ctrl-C 时打印
+bpftrace -e 'tracepoint:skb:kfree_skb { @[args.reason] = count(); }'   # 被丢弃的包，按丢包原因计数
+nstat -az TcpExtListenOverflows TcpExtListenDrops     # 开机以来 accept 队列溢出的次数
+ss -ltn                                               # 每个监听端口：Recv-Q 是当前 accept 队列长度，Send-Q 是上限
 ```
+
+在 Ubuntu 24.04 上，BCC 的 `tcpretrans-bpfcc` 对着发行版自带的 6.8 内核编译会失败（`use of undeclared identifier 'BPF_CGROUP_UNIX_CONNECT'`），所以上面用的是 bpftrace。在 BCC 工具能用的系统上，`tcpretrans-bpfcc` 和 `tcpretrans-bpfcc -c` 做的是同样两件事。这条单行命令读的是 IPv6 地址字段，这样两种协议族都能覆盖；IPv4 对端会显示成 `::ffff:10.0.0.1`。
 
 `tcpretrans` 会点出正在丢包的连接。如果全都发往同一个对端或同一个网段，问题在那条路径上；如果分散在各处，就看本机网卡、主机带宽上限或实例规格。它的 `PID` 列通常是 0，因为大多数重传由内核定时器触发，而不是由进程发起。
 
-`tcpdrop` 为每个被丢弃的包打印内核调用栈，栈里的函数名告诉你是哪道检查把它丢掉的：accept 队列满了、socket 缓冲区上限、校验和错误、netfilter 规则。在较新的内核上它使用 `skb:kfree_skb` tracepoint，该 tracepoint 会记录丢包原因。如果 `tcpsynbl` 显示积压已到上限，说明应用调用 `accept()` 不够快，或者 `listen()` 的 backlog 设得太小，可以用 `nstat -az TcpExtListenOverflows` 确认。
+丢包计数每种原因打印一行，比如 `@[53]: 11`。bpftrace 把原因显示成数字，要用当前内核自己的列表来翻译：`bpftool btf dump file /sys/kernel/btf/vmlinux format c | grep SKB_DROP_REASON_`。不要用从别处抄来的对照表，因为即使在同一个内核系列里编号也不固定：在 Ubuntu 的 6.8.0-147 上 53 是 `TC_EGRESS`，在 6.8.0-139 上却是 `CPU_BACKLOG`。`NETFILTER_DROP`、`TC_EGRESS`、`TCP_CSUM`、`SOCKET_RCVBUFF` 这类名字直接指出了原因；`NOT_SPECIFIED` 表示丢包的那段代码没有报告原因。BCC 的 `tcpdrop` 读的是同一个 tracepoint，但会跳过还没归属到 socket 的包，而接收路径上的丢包大多属于这种，所以包在丢它也可能一声不吭。
+
+accept 队列满在这两个工具里都几乎看不出来。在一次测试里，一个监听端口 30 秒内溢出了约 500 次，丢包计数里 `NOT_SPECIFIED` 那一行只到 22；在类似的一次运行里，`tcpdrop` 什么都没打印。这种情况要看 `nstat`：如果 `TcpExtListenOverflows` 一直在涨，说明应用调用 `accept()` 不够快，或者 `listen()` 的 backlog 设得太小。再用 `ss -ltn` 找出是哪个监听端口：它的 `Recv-Q` 已经到了 `Send-Q`。
 
 ## 8. 内存：OOM、直接回收和页缓存
 
@@ -183,11 +188,11 @@ BCC 工具集里还有几个通用工具，可以追踪你指定的任意函数�
 ```bash
 funclatency-bpfcc -m -p 1234 c:fsync                          # libc fsync() 耗时的直方图
 funclatency-bpfcc -u vfs_read                                 # 内核 vfs_read() 的延迟，单位微秒
-trace-bpfcc 'r::do_sys_openat2 (retval < 0) "open failed: %d", retval'   # 打印失败的 open
+trace-bpfcc 'r::do_sys_openat2 ((long)retval < 0) "open failed: %ld", (long)retval'   # 打印失败的 open
 argdist-bpfcc -p 1234 -C 'p:c:write(int fd):int:fd'           # 按文件描述符统计 write() 次数
 ```
 
-前缀表示函数在哪里：没有前缀或 `p::` 是内核函数，`r::` 是内核函数的返回，`c:` 是 C 库，也可以写任意二进制或库的路径。内核函数名会随版本变化（6.x 内核上 open 走的是 `do_sys_openat2`，老教程里写的是 `do_sys_open`），所以先用 `bpftrace -l 'kprobe:do_sys_open*'` 确认。`syscalls:sys_enter_openat` 这样的 tracepoint 是更稳定的选择。
+`trace` 把 `retval` 当作无符号数，所以和 0 比较前要先转成 `long`；直接写 `retval < 0` 条件永远不成立，什么也不会打印。前缀表示函数在哪里：没有前缀或 `p::` 是内核函数，`r::` 是内核函数的返回，`c:` 是 C 库，也可以写任意二进制或库的路径。内核函数名会随版本变化（6.x 内核上 open 走的是 `do_sys_openat2`，老教程里写的是 `do_sys_open`），所以先用 `bpftrace -l 'kprobe:do_sys_open*'` 确认。`syscalls:sys_enter_openat` 这样的 tracepoint 是更稳定的选择。
 
 需要自定义聚合时，就写一行 bpftrace。例如统计每个进程 `read()` 返回字节数的分布：
 
@@ -197,11 +202,11 @@ bpftrace -e 'tracepoint:syscalls:sys_exit_read /args.ret > 0/ { @bytes[comm] = h
 
 ## 11. 开销与安全
 
-这些工具本来就是为在生产机器上运行而设计的，验证器保证它们不会让内核崩溃。但每个事件仍然有成本，要管住的就是这个：
+这些工具本来就是为在生产机器上运行而设计的：可能越界读内存或死循环的程序都会被验证器拒绝，所以除非碰上内核 bug，它们不会让内核崩溃。但每个事件仍然有成本，要管住的就是这个：
 
 - **便宜**：挂在低频事件上的工具，比如 `execsnoop`、`tcpconnlat`、`tcpretrans`、`oomkill`，以及带阈值的 `ext4slower`。
 - **中等**：在内核里聚合高频事件的汇总类工具，比如 `biolatency`、`runqlat` 和 99 Hz 的 `profile`。
-- **昂贵**：挂在每次调度切换、每次内存分配或每次系统调用上并把事件送到用户态的工具：`offcputime`、`memleak`、对非常繁忙的进程跑 `syscount`、不加过滤的 `opensnoop`。
+- **昂贵**：挂在每次调度切换、每次内存分配或每次系统调用上的工具：`offcputime`、`memleak`、对非常繁忙的进程跑 `syscount`、不加过滤的 `opensnoop`。前三个其实都在内核里聚合，贵在机器繁忙时程序每秒可能运行几十万次，而不在往用户态送了多少数据。
 
 先用便宜的，按 PID 过滤，其他的给定时长。工具退出时会卸载自己的程序；`bpftool prog list` 能看到还挂着的东西。
 
@@ -212,11 +217,11 @@ bpftrace -e 'tracepoint:syscalls:sys_exit_read /args.ret > 0/ { @bytes[comm] = h
 | CPU 忙，`top` 里找不到元凶 | `execsnoop -T` | `exitsnoop -x` |
 | 某个进程占 CPU | `profile -F 99 -f -p PID` → 火焰图 | `syscount -p PID -L` |
 | CPU 闲着但延迟高 | `runqlat -m 10 1` | `runqslower -P`、cgroup `cpu.stat` |
-| 慢，CPU 低 | `offcputime -f -p PID` → 火焰图 | 对应的后续小节 |
+| 慢，CPU 低 | `offcputime -f -p PID` → 火焰图 | 按它等的东西看[第 6 节](#6-磁盘和文件系统延迟)或[第 7 节](#7-网络建连慢重传和丢包) |
 | 磁盘慢 | `biolatency -D -m 10 1` | `biosnoop`、`ext4slower 10` |
 | 读越来越慢 | `cachestat 1` | `free -m`、内存限制 |
-| 建连慢或失败 | `tcpconnlat 100` | `tcpsynbl`、`nstat` |
-| 已建立的连接超时 | `tcpretrans -c` | `tcpdrop` |
+| 建连慢或失败 | `tcpconnlat 100` | `nstat`、`ss -ltn` |
+| 已建立的连接超时 | `tcpretrans.bt` | `skb:kfree_skb` 的丢包原因 |
 | DNS 慢 | `gethostlatency` | 解析器配置 |
 | 进程被杀 | `oomkill` | `drsnoop`、`memleak` |
 | 静默失败 | `opensnoop -x`、`syscount -x -P` | `trace` |
