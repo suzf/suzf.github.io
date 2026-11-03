@@ -16,7 +16,7 @@ draft: false
 
 <!--more-->
 
-所有命令都使用 Ubuntu `bpfcc-tools` 包里的 BCC 工具（这里是 0.29 版），命令名带 `-bpfcc` 后缀；其他发行版通常放在 `/usr/share/bcc/tools/` 下，没有后缀。所有工具都需要 root。逐个事件打印的工具会一直输出，直到按 Ctrl-C；做汇总的工具和 `vmstat` 一样，接受间隔和次数两个参数。
+大多数命令使用 Ubuntu `bpfcc-tools` 包里的 BCC 工具（这里是 0.29 版），命令名带 `-bpfcc` 后缀，BCC 工具不能用的地方改用 bpftrace；其他发行版通常放在 `/usr/share/bcc/tools/` 下，没有后缀。所有工具都需要 root。逐个事件打印的工具会一直输出，直到按 Ctrl-C；做汇总的工具和 `vmstat` 一样，接受间隔和次数两个参数。
 
 ## 1. 先确定是哪种资源
 
@@ -154,7 +154,7 @@ ss -ltn                                               # 每个监听端口：Rec
 
 `tcpretrans` 会点出正在丢包的连接。如果全都发往同一个对端或同一个网段，问题在那条路径上；如果分散在各处，就看本机网卡、主机带宽上限或实例规格。它的 `PID` 列通常是 0，因为大多数重传由内核定时器触发，而不是由进程发起。
 
-丢包计数每种原因打印一行，比如 `@[53]: 11`。bpftrace 把原因显示成数字，要用当前内核自己的列表来翻译：`bpftool btf dump file /sys/kernel/btf/vmlinux format c | grep SKB_DROP_REASON_`。不要用从别处抄来的对照表，因为即使在同一个内核系列里编号也不固定：在 Ubuntu 的 6.8.0-147 上 53 是 `TC_EGRESS`，在 6.8.0-139 上却是 `CPU_BACKLOG`。`NETFILTER_DROP`、`TC_EGRESS`、`TCP_CSUM`、`SOCKET_RCVBUFF` 这类名字直接指出了原因；`NOT_SPECIFIED` 表示丢包的那段代码没有报告原因。BCC 的 `tcpdrop` 读的是同一个 tracepoint，但会跳过还没归属到 socket 的包，而接收路径上的丢包大多属于这种，所以包在丢它也可能一声不吭。
+丢包计数需要 5.17 及以上的内核，`reason` 字段是从这个版本加进来的，更老的内核上 bpftrace 会直接报错。它每种原因打印一行，比如 `@[53]: 11`。bpftrace 把原因显示成数字，要用当前内核自己的列表来翻译：`bpftool btf dump file /sys/kernel/btf/vmlinux format c | grep SKB_DROP_REASON_ | grep -v SUBSYS`（`SUBSYS` 开头的条目是另一套编号，也从 2 开始）。不要用从别处抄来的对照表，因为即使在同一个内核系列里编号也不固定：在 Ubuntu 的 6.8.0-147 上 53 是 `TC_EGRESS`，在 6.8.0-139 上却是 `CPU_BACKLOG`。`NETFILTER_DROP`、`TC_EGRESS`、`TCP_CSUM`、`SOCKET_RCVBUFF` 这类名字直接指出了原因；`NOT_SPECIFIED` 表示丢包的那段代码没有报告原因。BCC 的 `tcpdrop` 读的是同一个 tracepoint，但会跳过还没归属到 socket 的包，而接收路径上的丢包大多属于这种，所以包在丢它也可能一声不吭。
 
 accept 队列满在这两个工具里都几乎看不出来。在一次测试里，一个监听端口 30 秒内溢出了约 500 次，丢包计数里 `NOT_SPECIFIED` 那一行只到 22；在类似的一次运行里，`tcpdrop` 什么都没打印。这种情况要看 `nstat`：如果 `TcpExtListenOverflows` 一直在涨，说明应用调用 `accept()` 不够快，或者 `listen()` 的 backlog 设得太小。再用 `ss -ltn` 找出是哪个监听端口：它的 `Recv-Q` 已经到了 `Send-Q`。
 
