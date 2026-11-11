@@ -25,7 +25,7 @@ terraform show -json tfplan > plan.json
 terraform apply tfplan            # 执行的正是你审查过的内容
 ```
 
-不带已保存 plan 的 `terraform apply` 会重新计算一份 plan，如果中间有任何变化，它和你看过的那份可能不一样。在 CI 里，plan 任务保存 plan 文件，apply 任务执行这个文件（见[多云实践里的 CI/CD 工作流](https://suzf.net/zh/blog/posts/terraform-multi-cloud-best-practices/#6-cicd-工作流统一)）。
+不带已保存 plan 的 `terraform apply` 会重新计算一份 plan，如果中间有任何变化，它和你看过的那份可能不一样。在 CI 里，plan 任务保存 plan 文件，apply 任务执行这个文件（见[多云实践里的 CI/CD 工作流](https://suzf.net/zh/blog/posts/terraform-multi-cloud-best-practices/#9-cicdpr-上-planapply-已保存的-plan)）。
 
 `terraform show -json` 输出的 JSON 比文本多出不少信息：导致替换的具体属性、资源被删除的原因、哪些资源发生了漂移。它也以明文包含所有值，敏感值也不例外，所以要像对待 state 文件一样对待 `plan.json`。
 
@@ -85,7 +85,7 @@ Note: Objects have changed outside of Terraform
 
 plan 时 Terraform 会刷新每个资源，再和 state 比较。如果有人手工改过资源，plan 会先列出漂移的内容，再在下面列出把它改回去的变更。执行这个 plan 会**撤销手工改动**——这可能正是你想要的，也可能把一次紧急修复给改回去了。
 
-想只看漂移、不提出其他变更，运行 `terraform plan -refresh-only`。然后要么把这个改动写进配置，要么让下一次 apply 把它改回去。在 CI 里定期跑 plan 可以尽早发现漂移（[常见陷阱](https://suzf.net/zh/blog/posts/terraform-multi-cloud-best-practices/#8-常见陷阱)）。
+想只看漂移、不提出其他变更，运行 `terraform plan -refresh-only`。然后要么把这个改动写进配置，要么让下一次 apply 把它改回去。在 CI 里定期跑 plan 可以尽早发现漂移（[多云那篇文章的漂移检测](https://suzf.net/zh/blog/posts/terraform-multi-cloud-best-practices/#10-漂移检测与策略检查)）。
 
 ## 7. 移动、导入和移除
 

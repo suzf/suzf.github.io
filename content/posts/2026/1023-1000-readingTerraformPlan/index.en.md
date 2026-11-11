@@ -25,7 +25,7 @@ terraform show -json tfplan > plan.json
 terraform apply tfplan            # applies exactly what you reviewed
 ```
 
-Running `terraform apply` without a saved plan computes a new plan, which can differ from the one you read if anything changed in between. In CI, save the plan in the plan job and apply that file in the apply job (see the [CI/CD workflow in the multi-cloud post](https://suzf.net/en/blog/posts/terraform-multi-cloud-best-practices/#6-unified-cicd-workflow)).
+Running `terraform apply` without a saved plan computes a new plan, which can differ from the one you read if anything changed in between. In CI, save the plan in the plan job and apply that file in the apply job (see the [CI/CD workflow in the multi-cloud post](https://suzf.net/en/blog/posts/terraform-multi-cloud-best-practices/#9-cicd-plan-on-pr-apply-the-saved-plan)).
 
 The JSON from `terraform show -json` carries more than the text: the exact attribute that forces each replacement, why a resource is deleted, and what drifted. It also contains every value in plain text, sensitive ones included, so treat `plan.json` like the state file.
 
@@ -85,7 +85,7 @@ Note: Objects have changed outside of Terraform
 
 During plan, Terraform refreshes each resource and compares it with the state. When someone changed a resource by hand, the plan shows what drifted and then, below it, the changes that would put it back. Applying that plan **undoes the manual change**, which may be exactly what you want, or may revert a hotfix.
 
-To look at drift without proposing anything else, run `terraform plan -refresh-only`. Then either bring the change into the configuration, or let the next apply revert it. Running plan regularly in CI catches drift early ([common pitfalls](https://suzf.net/en/blog/posts/terraform-multi-cloud-best-practices/#8-common-pitfalls)).
+To look at drift without proposing anything else, run `terraform plan -refresh-only`. Then either bring the change into the configuration, or let the next apply revert it. Running plan regularly in CI catches drift early ([drift detection in the multi-cloud post](https://suzf.net/en/blog/posts/terraform-multi-cloud-best-practices/#10-drift-detection-and-policy-checks)).
 
 ## 7. Moves, imports and removals
 
