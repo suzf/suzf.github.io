@@ -12,7 +12,7 @@ draft: false
 
 Terraform 在多云上的卖点是：一个工具、一种语言就能管 AWS、Google Cloud 和 Azure。这一点没错。但它给不了你一套统一的*模型*：每朵云依然有自己的身份体系、网络、命名规则、配额和故障方式，而每个 Provider 只是对这朵云 API 的一层薄封装。多云 Terraform 的麻烦，大多来自假装这些差异不存在。
 
-这篇文章是一个团队同时管理多朵云时我用的做法：怎样组织仓库、锁定和配置 Provider、让 CI 不存密钥就能登录、存放 State、设计模块、把云和云连起来、统一打标签，以及安全地跑 plan 和 apply。文中示例都用 Terraform 1.17 和 AWS 6.x、Google 8.x、AzureRM 5.x Provider 跑过 `terraform validate`。
+这篇文章是一个团队同时管理多朵云时我用的做法：怎样组织仓库、锁定和配置 Provider、让 CI 不存密钥就能登录、存放 State、设计模块、把云和云连起来、统一打标签，以及安全地跑 plan 和 apply。文中的 HCL 示例都用 Terraform 1.17 和 AWS 6.x、Google 8.x、AzureRM 5.x Provider 跑过 `terraform validate`。
 
 <!--more-->
 
@@ -36,6 +36,7 @@ infrastructure/
 │   ├── aws-network/
 │   ├── gcp-network/
 │   ├── azure-network/
+│   ├── aws-peering/            # 需要两套 AWS Provider 配置
 │   └── ipam/                   # 地址规划，只有数据，没有资源
 ├── live/
 │   ├── aws/
@@ -85,7 +86,7 @@ terraform {
 
 `~> 6.0` 允许任何 6.x，挡住 7.0，而破坏性变更都在大版本里。一个 stack 只列出自己用到的 Provider，AWS 的 stack 没理由去下载 Azure 的 Provider。
 
-版本约束决定范围，**锁文件** `.terraform.lock.hcl` 则锁定确切的版本和校验和。一定要提交它。没有它，两个人（或者笔记本和 CI）同一天可能解析出不同的版本。锁文件只记录执行 `init` 的那个平台的校验和，所以如果团队用 ARM 的 macOS、CI 跑在 Linux 上，就要为两个平台都生成，否则 CI 会在校验和检查上失败：
+版本约束决定范围，**锁文件** `.terraform.lock.hcl` 则锁定确切的版本和校验和。一定要提交它。没有它，两个人（或者笔记本和 CI）同一天可能解析出不同的版本。从公共 registry 下载的 Provider，锁文件里会记录所有平台的校验和，所以在 Mac 上生成的锁文件在 Linux 的 CI 里也能用。但从网络镜像或本地缓存安装的 Provider，只记录执行 `init` 的那个平台的校验和。如果你用了镜像，就要显式加上其他平台，否则 CI 会在校验和检查上失败：
 
 ```bash
 terraform providers lock -platform=linux_amd64 -platform=darwin_arm64
@@ -107,7 +108,7 @@ provider "aws" {
 }
 
 module "peering" {
-  source = "../../modules/aws-peering"
+  source = "../../../../modules/aws-peering" # 相对于 live/aws/prod/<stack>/
   providers = {
     aws.requester = aws
     aws.accepter  = aws.shared
@@ -358,6 +359,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.17.1 # plan 和 apply 用同一个版本
 
       - if: matrix.cloud == 'aws'
         uses: aws-actions/configure-aws-credentials@v4
@@ -379,7 +382,7 @@ jobs:
           retention-days: 3 # plan 文件里有密钥
 ```
 
-apply 任务用同样的矩阵，用 apply 身份登录，只在推送到 `main` 时运行，并多三样东西：`needs: plan`、`environment: production`（这样必须有评审人批准），以及一个下载 `tfplan-${{ matrix.id }}` 并执行 `terraform apply -input=false tfplan` 的步骤。apply 已保存的文件，意味着你 apply 的正是评审过的内容。如果中间有任何变化，Terraform 会拒绝 apply 这份过期的 plan，而不是悄悄做别的事。
+apply 任务用同样的矩阵，用 apply 身份登录，只在推送到 `main` 时运行，并多三样东西：`needs: plan`、`environment: production`（这样必须有评审人批准），以及一个下载 `tfplan-${{ matrix.id }}` 并执行 `terraform apply -input=false tfplan` 的步骤。那里也要锁定同样的 `terraform_version`：保存下来的 plan 必须由生成它的那个 Terraform 版本来 apply。apply 已保存的文件，意味着你 apply 的正是评审过的内容。如果中间有任何变化，Terraform 会拒绝 apply 这份过期的 plan，而不是悄悄做别的事。
 
 在多云环境下更要注意的几点：
 
@@ -398,12 +401,13 @@ on:
 # 矩阵和登录步骤与 plan 任务相同，然后：
       - uses: hashicorp/setup-terraform@v3
         with:
+          terraform_version: 1.17.1
           terraform_wrapper: false # 让步骤拿到 Terraform 自己的退出码
       - run: terraform init -input=false
-      - run: terraform plan -input=false -lock=false -detailed-exitcode
+      - run: terraform plan -input=false -lock=false -refresh-only -detailed-exitcode
 ```
 
-加上 `-detailed-exitcode` 后，`plan` 无变化时退出码为 0，出错为 1，有变化为 2。把 2 当作漂移：让任务失败，并开一个 issue 或给负责这个 stack 的团队发消息。`terraform plan -refresh-only` 只显示 State 和实际情况之间的差异，不包含你的代码要做的改动。之后要么把手工改动写进代码，要么让下一次 apply 把它改回去。
+加上 `-detailed-exitcode` 后，`plan` 无变化时退出码为 0，出错为 1，有变化为 2。`-refresh-only` 只比较 State 和实际情况，不包含你的代码要做的改动，所以这里的 2 才真正代表漂移，而不是某个已合并、但 apply 失败了的改动。退出码为 2 时让任务失败，并开一个 issue 或给负责这个 stack 的团队发消息。之后要么把手工改动写进代码，要么让下一次 apply 把它改回去。在同一个定时任务里再跑一次普通的 `plan -detailed-exitcode` 作为第二道检查也有用：它还能发现 `main` 上从未被 apply 的代码。
 
 静态检查能在 plan 之前就发现问题。`terraform fmt -check` 和 `terraform validate` 几乎没有成本。TFLint 配上 AWS、Google 和 AzureRM 的规则集，能抓到 `validate` 看不出来的无效实例类型、已弃用参数和命名错误。Checkov 或 Trivy 用一个工具就能在三朵云上标出公开的存储桶、全开的安全组和缺失的加密。把它们放进 plan 任务，出错就失败。
 

@@ -12,7 +12,7 @@ draft: false
 
 Terraform's pitch for multi-cloud is that one tool and one language cover AWS, Google Cloud and Azure. That part is true. What it doesn't give you is one *model*: each cloud still has its own identity system, networking, naming rules, quotas and failure modes, and the provider for each one is a thin layer over that cloud's API. Most multi-cloud Terraform trouble comes from pretending otherwise.
 
-This post is the setup I use when one team manages infrastructure on more than one cloud: how to lay out the repository, pin and configure providers, log in from CI without stored keys, store state, design modules, connect the clouds to each other, tag consistently, and run plan and apply safely. The examples were checked with `terraform validate` on Terraform 1.17 with the AWS 6.x, Google 8.x and AzureRM 5.x providers.
+This post is the setup I use when one team manages infrastructure on more than one cloud: how to lay out the repository, pin and configure providers, log in from CI without stored keys, store state, design modules, connect the clouds to each other, tag consistently, and run plan and apply safely. The HCL examples were checked with `terraform validate` on Terraform 1.17 with the AWS 6.x, Google 8.x and AzureRM 5.x providers.
 
 <!--more-->
 
@@ -36,6 +36,7 @@ infrastructure/
 │   ├── aws-network/
 │   ├── gcp-network/
 │   ├── azure-network/
+│   ├── aws-peering/            # needs two AWS provider configurations
 │   └── ipam/                   # address plan as data, no resources
 ├── live/
 │   ├── aws/
@@ -85,7 +86,7 @@ terraform {
 
 `~> 6.0` allows any 6.x and blocks 7.0, which is where breaking changes go. A stack only lists the providers it uses; an AWS stack has no reason to download the Azure provider.
 
-The constraint picks the range; the **lock file** `.terraform.lock.hcl` pins the exact version and its checksums. Commit it. Without it, two people (or a laptop and CI) can resolve different versions on the same day. The lock file only records checksums for the platform that ran `init`, so if the team uses macOS on ARM and CI runs Linux, generate it for both or CI will fail the checksum check:
+The constraint picks the range; the **lock file** `.terraform.lock.hcl` pins the exact version and its checksums. Commit it. Without it, two people (or a laptop and CI) can resolve different versions on the same day. Providers downloaded from the public registry get checksums for every platform in the lock file, so a file created on a Mac works in Linux CI. Providers installed from a network mirror or a local cache only get the checksum of the platform that ran `init`. If you use a mirror, add the other platforms explicitly, or CI will fail the checksum check:
 
 ```bash
 terraform providers lock -platform=linux_amd64 -platform=darwin_arm64
@@ -107,7 +108,7 @@ provider "aws" {
 }
 
 module "peering" {
-  source = "../../modules/aws-peering"
+  source = "../../../../modules/aws-peering" # from live/aws/prod/<stack>/
   providers = {
     aws.requester = aws
     aws.accepter  = aws.shared
@@ -358,6 +359,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.17.1 # same version for plan and apply
 
       - if: matrix.cloud == 'aws'
         uses: aws-actions/configure-aws-credentials@v4
@@ -379,7 +382,7 @@ jobs:
           retention-days: 3 # the plan file contains secrets
 ```
 
-The apply job has the same matrix and logins with the apply identities, runs only on `push` to `main`, and adds three things: `needs: plan`, `environment: production` (so a reviewer has to approve it), and a step that downloads `tfplan-${{ matrix.id }}` and runs `terraform apply -input=false tfplan`. Applying the saved file means you apply exactly what was reviewed. If anything changed in between, Terraform refuses to apply a stale plan instead of quietly doing something else.
+The apply job has the same matrix and logins with the apply identities, runs only on `push` to `main`, and adds three things: `needs: plan`, `environment: production` (so a reviewer has to approve it), and a step that downloads `tfplan-${{ matrix.id }}` and runs `terraform apply -input=false tfplan`. Pin the same `terraform_version` there too: a saved plan has to be applied by the Terraform version that created it. Applying the saved file means you apply exactly what was reviewed. If anything changed in between, Terraform refuses to apply a stale plan instead of quietly doing something else.
 
 A few details that matter more with several clouds:
 
@@ -398,12 +401,13 @@ on:
 # same matrix and logins as the plan job, then:
       - uses: hashicorp/setup-terraform@v3
         with:
+          terraform_version: 1.17.1
           terraform_wrapper: false # let the step see Terraform's own exit code
       - run: terraform init -input=false
-      - run: terraform plan -input=false -lock=false -detailed-exitcode
+      - run: terraform plan -input=false -lock=false -refresh-only -detailed-exitcode
 ```
 
-With `-detailed-exitcode`, `plan` exits with 0 when nothing changed, 1 on error and 2 when there are changes. Treat 2 as drift: fail the job and open an issue or send a message to the team that owns the stack. `terraform plan -refresh-only` shows only the differences between state and reality, without the changes your code would make. Then either put the manual change into the code, or let the next apply revert it.
+With `-detailed-exitcode`, `plan` exits with 0 when nothing changed, 1 on error and 2 when there are changes. `-refresh-only` limits the comparison to state versus reality, leaving out the changes your code would make, so a 2 here really is drift and not a merged change whose apply failed. Fail the job on 2 and open an issue or send a message to the team that owns the stack. Then either put the manual change into the code, or let the next apply revert it. A plain `plan -detailed-exitcode` on the same schedule is still useful as a second check: it also catches code on `main` that was never applied.
 
 Static checks catch problems before a plan even runs. `terraform fmt -check` and `terraform validate` cost nothing. TFLint with the AWS, Google and AzureRM rulesets catches invalid instance types, deprecated arguments and naming mistakes that `validate` can't see. Checkov or Trivy flag public buckets, open security groups and missing encryption across all three clouds with one tool. Run them in the plan job and fail on errors.
 
