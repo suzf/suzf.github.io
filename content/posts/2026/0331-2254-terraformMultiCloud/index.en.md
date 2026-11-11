@@ -20,7 +20,7 @@ This post is the setup I use when one team manages infrastructure on more than o
 
 "Multi-cloud" covers very different setups, and the right structure depends on which one you have:
 
-- **Different workloads on different clouds.** The data platform runs on Google Cloud for BigQuery, the product runs on AWS, the corporate apps are on Azure. This is the most common case and the easiest: each cloud is mostly independent, with a few shared pieces such as DNS, identity and the network links between them.
+- **Different workloads on different clouds.** The data platform runs on Google Cloud for BigQuery, the product runs on AWS, the corporate apps are on Azure. This is a very common case, and the easiest: each cloud is mostly independent, with a few shared pieces such as DNS, identity and the network links between them.
 - **The same workload on several clouds** for redundancy or customer requirements. Much harder: you need equivalent infrastructure on each side and a way to keep them in step.
 - **A migration** from one cloud to another, where both exist for a year or two.
 
@@ -128,7 +128,7 @@ Three clouds usually means three sets of long-lived credentials stored in CI, ea
 | Google Cloud | A Workload Identity Pool and provider, and a service account it may impersonate | Exchanges the CI token for a short-lived access token |
 | Azure | A federated credential on an app registration or user-assigned managed identity | The azurerm provider exchanges the CI token itself (`use_oidc = true`) |
 
-In every case, restrict the trust to your repository and, for production, to the protected branch or environment. A trust policy that accepts any repository in the organisation is the most common mistake here.
+In every case, restrict the trust to your repository and, for production, to the protected branch or environment. A trust policy that accepts any repository in the organisation is a common and dangerous mistake.
 
 Give each stack two identities: a **plan** identity with read-only access, used on pull requests, and an **apply** identity with write access, used only after review. A pull request from a feature branch then can't change anything, whatever the code says. One catch: with locking on, even `plan` writes a lock file to the state backend, so the plan identity needs write access to that one object (on S3 the `<key>.tflock` object next to the state), or PR plans run with `-lock=false`.
 
@@ -170,9 +170,9 @@ terraform {
 }
 ```
 
-Turn on versioning for the S3 bucket and the GCS bucket and soft delete for the Azure container, so a bad write can be rolled back. State holds every attribute of every resource, including secrets, so access to these buckets deserves the same care as access to production itself. The [Terraform State post](https://suzf.net/en/blog/posts/terraform-state-management-best-practices/) covers locking, recovery and keeping secrets out of state in detail.
+Turn on versioning for the S3 bucket and the GCS bucket, and blob versioning or soft delete on the Azure storage account, so a bad write can be rolled back. State holds every attribute of every resource, including secrets, so access to these buckets deserves the same care as access to production itself. The [Terraform State post](https://suzf.net/en/blog/posts/terraform-state-management-best-practices/) covers locking, recovery and keeping secrets out of state in detail.
 
-The bootstrapping question (where does the state of the bucket that holds state go?) has a dull answer: create the three state buckets once from a small stack with local state, commit nothing secret, and don't touch it again.
+The bootstrapping question (where does the state of the bucket that holds state go?) has a dull answer: create the three state buckets from a small stack with local state, then add a backend block pointing at the bucket you just made and run `terraform init -migrate-state`. The bootstrap stack's state then lives in its own bucket like everything else, and no local state file is left on anyone's laptop.
 
 ## 6. Modules: share interfaces, not abstractions
 
@@ -280,8 +280,8 @@ Consistent metadata is what makes cost reports, ownership lookups and cleanup sc
 
 | | AWS tags | Google Cloud labels | Azure tags |
 |---|---|---|---|
-| Keys | Case-sensitive | Lowercase letters, digits, `_` and `-` only | Case-insensitive |
-| Values | Any case | Same rules as keys | Any case |
+| Keys | Case-sensitive | Lowercase letters, digits, `_` and `-`; must start with a letter; up to 63 characters | Case-insensitive |
+| Values | Any case | Same characters, up to 63; may be empty | Any case |
 | Limit per resource | 50 | 64 | 50 |
 | Set defaults in the provider | `default_tags` | `default_labels` | No: pass `tags` to every resource |
 
@@ -357,32 +357,32 @@ jobs:
       ARM_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
       ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: hashicorp/setup-terraform@v3
+      - uses: actions/checkout@v7
+      - uses: hashicorp/setup-terraform@v4
         with:
           terraform_version: 1.17.1 # same version for plan and apply
 
       - if: matrix.cloud == 'aws'
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: ${{ vars.AWS_PLAN_ROLE_ARN }}
           aws-region: us-east-1
       - if: matrix.cloud == 'gcp'
-        uses: google-github-actions/auth@v2
+        uses: google-github-actions/auth@v3
         with:
           workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
           service_account: ${{ vars.GCP_PLAN_SA }}
 
       - run: terraform init -input=false
       - run: terraform plan -input=false -out=tfplan
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: tfplan-${{ matrix.id }}
           path: infrastructure/${{ matrix.dir }}/tfplan
           retention-days: 3 # the plan file contains secrets
 ```
 
-The apply job has the same matrix and logins with the apply identities, runs only on `push` to `main`, and adds three things: `needs: plan`, `environment: production` (so a reviewer has to approve it), and a step that downloads `tfplan-${{ matrix.id }}` and runs `terraform apply -input=false tfplan`. Pin the same `terraform_version` there too: a saved plan has to be applied by the Terraform version that created it. Applying the saved file means you apply exactly what was reviewed. If anything changed in between, Terraform refuses to apply a stale plan instead of quietly doing something else.
+The apply job has the same matrix and logins with the apply identities, runs only on `push` to `main`, and adds three things: `needs: plan`, `environment: production` (so a reviewer has to approve it), and a step that downloads `tfplan-${{ matrix.id }}` and runs `terraform apply -input=false tfplan`. Pin the same `terraform_version` there too: a saved plan has to be applied by the Terraform version that created it. Applying the saved file means you apply exactly what was reviewed. If another apply changed the state in between, Terraform refuses to apply the stale plan instead of quietly doing something else. It can't notice a change someone made in the cloud console that never touched the state, which is one more reason to check for drift (next section).
 
 A few details that matter more with several clouds:
 
@@ -399,7 +399,7 @@ on:
   schedule:
     - cron: "0 6 * * 1-5" # 06:00 UTC on weekdays
 # same matrix and logins as the plan job, then:
-      - uses: hashicorp/setup-terraform@v3
+      - uses: hashicorp/setup-terraform@v4
         with:
           terraform_version: 1.17.1
           terraform_wrapper: false # let the step see Terraform's own exit code
@@ -407,7 +407,7 @@ on:
       - run: terraform plan -input=false -lock=false -refresh-only -detailed-exitcode
 ```
 
-With `-detailed-exitcode`, `plan` exits with 0 when nothing changed, 1 on error and 2 when there are changes. `-refresh-only` limits the comparison to state versus reality, leaving out the changes your code would make, so a 2 here really is drift and not a merged change whose apply failed. Fail the job on 2 and open an issue or send a message to the team that owns the stack. Then either put the manual change into the code, or let the next apply revert it. A plain `plan -detailed-exitcode` on the same schedule is still useful as a second check: it also catches code on `main` that was never applied.
+With `-detailed-exitcode`, `plan` exits with 0 when nothing changed, 1 on error and 2 when there are changes. `-refresh-only` limits the comparison to state versus reality, leaving out the changes your code would make, so a 2 here is almost always drift and not a merged change whose apply failed. The one exception: a root module output whose definition changed in the code but hasn't been applied also shows up in a refresh-only plan. Fail the job on 2 and open an issue or send a message to the team that owns the stack. Then either put the manual change into the code, or let the next apply revert it. A plain `plan -detailed-exitcode` on the same schedule is still useful as a second check: it also catches code on `main` that was never applied.
 
 Static checks catch problems before a plan even runs. `terraform fmt -check` and `terraform validate` cost nothing. TFLint with the AWS, Google and AzureRM rulesets catches invalid instance types, deprecated arguments and naming mistakes that `validate` can't see. Checkov or Trivy flag public buckets, open security groups and missing encryption across all three clouds with one tool. Run them in the plan job and fail on errors.
 
@@ -415,7 +415,7 @@ Static checks catch problems before a plan even runs. `terraform fmt -check` and
 
 - Write resources natively per cloud; share conventions, outputs and pipelines, not a cloud-neutral layer.
 - One stack per cloud, environment and component, each with its own state; cross-cloud links in their own stacks.
-- Pin providers to a major version, commit `.terraform.lock.hcl` for every platform you use, upgrade one stack at a time.
+- Pin providers to a major version, commit `.terraform.lock.hcl` (with every platform's checksums if you install from a mirror), upgrade one stack at a time.
 - Log in from CI with OIDC; separate read-only plan and write apply identities; restrict trust to your repository and branch.
 - Keep each cloud's state on that cloud, with locking and versioning.
 - Pass data between stacks through a shared constants module, remote state or a parameter store.

@@ -20,7 +20,7 @@ Terraform 在多云上的卖点是：一个工具、一种语言就能管 AWS、
 
 "多云"涵盖的情况差别很大，合适的结构取决于你是哪一种：
 
-- **不同业务在不同的云上。** 数据平台为了 BigQuery 放在 Google Cloud，产品跑在 AWS，公司内部应用在 Azure。这是最常见、也最简单的情况：各朵云基本独立，只有少数共享部分，比如 DNS、身份，以及云之间的网络连接。
+- **不同业务在不同的云上。** 数据平台为了 BigQuery 放在 Google Cloud，产品跑在 AWS，公司内部应用在 Azure。这种情况很常见，也最简单：各朵云基本独立，只有少数共享部分，比如 DNS、身份，以及云之间的网络连接。
 - **同一业务跑在多朵云上**，为了冗余或客户要求。难得多：每一边都要有对等的基础设施，还要有办法让它们保持一致。
 - **迁移**：从一朵云迁到另一朵，两边要并存一两年。
 
@@ -128,7 +128,7 @@ module "peering" {
 | Google Cloud | 一个 Workload Identity 池和提供方，以及一个允许它模拟的服务账号 | 用 CI 令牌换取短期访问令牌 |
 | Azure | 应用注册或用户分配托管标识上的联合凭据 | azurerm Provider 自己完成令牌交换（`use_oidc = true`） |
 
-每种情况下，都要把信任限定到你的仓库，生产环境还要限定到受保护的分支或环境。信任策略允许组织里任意仓库，是这里最常见的错误。
+每种情况下，都要把信任限定到你的仓库，生产环境还要限定到受保护的分支或环境。信任策略允许组织里任意仓库，是一个常见又危险的错误。
 
 给每个 stack 两个身份：一个只读的 **plan** 身份，用于 PR；一个可写的 **apply** 身份，只在评审之后使用。这样无论代码写了什么，来自功能分支的 PR 都改不了任何东西。有一个坑：开启锁之后，连 `plan` 都会往 State 后端写锁文件，所以 plan 身份需要对这一个对象有写权限（S3 上就是 State 旁边的 `<key>.tflock`），或者 PR 的 plan 用 `-lock=false` 运行。
 
@@ -170,9 +170,9 @@ terraform {
 }
 ```
 
-给 S3 和 GCS 存储桶开启版本控制，给 Azure 容器开启软删除，这样一次错误的写入可以回滚。State 里有每个资源的每个属性，包括密钥，所以这些存储桶的访问权限要像生产环境本身一样严格管控。[Terraform State 那篇文章](https://suzf.net/zh/blog/posts/terraform-state-management-best-practices/)详细讲了锁、故障恢复，以及怎样不让密钥进 State。
+给 S3 和 GCS 存储桶开启版本控制，在 Azure 存储账户上开启 blob 版本控制或软删除，这样一次错误的写入可以回滚。State 里有每个资源的每个属性，包括密钥，所以这些存储桶的访问权限要像生产环境本身一样严格管控。[Terraform State 那篇文章](https://suzf.net/zh/blog/posts/terraform-state-management-best-practices/)详细讲了锁、故障恢复，以及怎样不让密钥进 State。
 
-"存 State 的存储桶，它自己的 State 放哪？"这个自举问题，答案很平淡：用一个使用本地 State 的小 stack 一次性创建三个存储桶，不提交任何敏感内容，之后不再动它。
+"存 State 的存储桶，它自己的 State 放哪？"这个自举问题，答案很平淡：用一个使用本地 State 的小 stack 创建三个存储桶，然后加上指向刚建好的存储桶的 backend 块，运行 `terraform init -migrate-state`。这样自举 stack 的 State 也和其他 State 一样放进了存储桶，谁的笔记本上都不会留下本地 State 文件。
 
 ## 6. 模块：共享接口，而不是抽象
 
@@ -280,8 +280,8 @@ resource "google_compute_firewall" "from_aws" {
 
 | | AWS tags | Google Cloud labels | Azure tags |
 |---|---|---|---|
-| 键 | 区分大小写 | 只允许小写字母、数字、`_` 和 `-` | 不区分大小写 |
-| 值 | 大小写均可 | 与键规则相同 | 大小写均可 |
+| 键 | 区分大小写 | 只允许小写字母、数字、`_` 和 `-`；必须以字母开头；最长 63 个字符 | 不区分大小写 |
+| 值 | 大小写均可 | 字符规则相同，最长 63；可以为空 | 大小写均可 |
 | 每个资源上限 | 50 | 64 | 50 |
 | 在 Provider 上设默认值 | `default_tags` | `default_labels` | 不支持：每个资源都要传 `tags` |
 
@@ -357,32 +357,32 @@ jobs:
       ARM_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
       ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: hashicorp/setup-terraform@v3
+      - uses: actions/checkout@v7
+      - uses: hashicorp/setup-terraform@v4
         with:
           terraform_version: 1.17.1 # plan 和 apply 用同一个版本
 
       - if: matrix.cloud == 'aws'
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: ${{ vars.AWS_PLAN_ROLE_ARN }}
           aws-region: us-east-1
       - if: matrix.cloud == 'gcp'
-        uses: google-github-actions/auth@v2
+        uses: google-github-actions/auth@v3
         with:
           workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
           service_account: ${{ vars.GCP_PLAN_SA }}
 
       - run: terraform init -input=false
       - run: terraform plan -input=false -out=tfplan
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: tfplan-${{ matrix.id }}
           path: infrastructure/${{ matrix.dir }}/tfplan
           retention-days: 3 # plan 文件里有密钥
 ```
 
-apply 任务用同样的矩阵，用 apply 身份登录，只在推送到 `main` 时运行，并多三样东西：`needs: plan`、`environment: production`（这样必须有评审人批准），以及一个下载 `tfplan-${{ matrix.id }}` 并执行 `terraform apply -input=false tfplan` 的步骤。那里也要锁定同样的 `terraform_version`：保存下来的 plan 必须由生成它的那个 Terraform 版本来 apply。apply 已保存的文件，意味着你 apply 的正是评审过的内容。如果中间有任何变化，Terraform 会拒绝 apply 这份过期的 plan，而不是悄悄做别的事。
+apply 任务用同样的矩阵，用 apply 身份登录，只在推送到 `main` 时运行，并多三样东西：`needs: plan`、`environment: production`（这样必须有评审人批准），以及一个下载 `tfplan-${{ matrix.id }}` 并执行 `terraform apply -input=false tfplan` 的步骤。那里也要锁定同样的 `terraform_version`：保存下来的 plan 必须由生成它的那个 Terraform 版本来 apply。apply 已保存的文件，意味着你 apply 的正是评审过的内容。如果中间有另一次 apply 改动了 State，Terraform 会拒绝 apply 这份过期的 plan，而不是悄悄做别的事。但有人在云控制台里做的、没有经过 State 的改动，它是发现不了的，这也是要做漂移检测（见下一节）的又一个原因。
 
 在多云环境下更要注意的几点：
 
@@ -399,7 +399,7 @@ on:
   schedule:
     - cron: "0 6 * * 1-5" # 工作日 UTC 06:00
 # 矩阵和登录步骤与 plan 任务相同，然后：
-      - uses: hashicorp/setup-terraform@v3
+      - uses: hashicorp/setup-terraform@v4
         with:
           terraform_version: 1.17.1
           terraform_wrapper: false # 让步骤拿到 Terraform 自己的退出码
@@ -407,7 +407,7 @@ on:
       - run: terraform plan -input=false -lock=false -refresh-only -detailed-exitcode
 ```
 
-加上 `-detailed-exitcode` 后，`plan` 无变化时退出码为 0，出错为 1，有变化为 2。`-refresh-only` 只比较 State 和实际情况，不包含你的代码要做的改动，所以这里的 2 才真正代表漂移，而不是某个已合并、但 apply 失败了的改动。退出码为 2 时让任务失败，并开一个 issue 或给负责这个 stack 的团队发消息。之后要么把手工改动写进代码，要么让下一次 apply 把它改回去。在同一个定时任务里再跑一次普通的 `plan -detailed-exitcode` 作为第二道检查也有用：它还能发现 `main` 上从未被 apply 的代码。
+加上 `-detailed-exitcode` 后，`plan` 无变化时退出码为 0，出错为 1，有变化为 2。`-refresh-only` 只比较 State 和实际情况，不包含你的代码要做的改动，所以这里的 2 几乎都代表漂移，而不是某个已合并、但 apply 失败了的改动。唯一的例外：代码里改了某个根模块输出的定义但还没 apply，这个变化也会出现在 refresh-only 的 plan 里。退出码为 2 时让任务失败，并开一个 issue 或给负责这个 stack 的团队发消息。之后要么把手工改动写进代码，要么让下一次 apply 把它改回去。在同一个定时任务里再跑一次普通的 `plan -detailed-exitcode` 作为第二道检查也有用：它还能发现 `main` 上从未被 apply 的代码。
 
 静态检查能在 plan 之前就发现问题。`terraform fmt -check` 和 `terraform validate` 几乎没有成本。TFLint 配上 AWS、Google 和 AzureRM 的规则集，能抓到 `validate` 看不出来的无效实例类型、已弃用参数和命名错误。Checkov 或 Trivy 用一个工具就能在三朵云上标出公开的存储桶、全开的安全组和缺失的加密。把它们放进 plan 任务，出错就失败。
 
@@ -415,7 +415,7 @@ on:
 
 - 资源按每朵云的原生方式写；共享约定、输出和流水线，而不是一层云中立的抽象。
 - 每个云、环境和组件一个 stack，各有各的 State；跨云连接单独成 stack。
-- Provider 锁定到大版本，为团队用到的每个平台提交 `.terraform.lock.hcl`，一次升级一个 stack。
+- Provider 锁定到大版本，提交 `.terraform.lock.hcl`（如果从镜像安装，要包含所有平台的校验和），一次升级一个 stack。
 - CI 用 OIDC 登录；plan 用只读身份、apply 用可写身份分开；信任限定到你的仓库和分支。
 - 每朵云的 State 放在那朵云上，开启锁和版本控制。
 - stack 之间通过共享常量模块、远程 State 或参数存储传递数据。
